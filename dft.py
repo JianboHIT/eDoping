@@ -53,7 +53,7 @@ class Cell():
         elif postype[0] in 'cCkK':
             pass  # todo: cooridite
 
-    def uniquepos(self, atoms, number):
+    def uniquepos(self):
         '''
         Unique position order in POSCAR
         '''
@@ -100,7 +100,7 @@ class Cell():
             idx = atom_type.index(atom1)
         
         # Alter atom_type & _num list
-        if atom_num == 1:
+        if atom_num[idx] == 1:
             atom_type[idx] = atom2
         else:
             atom_num[idx] -= 1
@@ -434,41 +434,3 @@ def _read_dos(data, fermi=0):
             energy.append(data[0]-fermi)
             dos.append(data[1])
     return energy, dos
-
-
-# def uniquepos(atoms, number):
-#     '''
-#     Unique position order in POSCAR
-#
-#     Parameters
-#     ----------
-#     atoms : string list
-#         Elements list, allow duplicate.
-#     number : int list
-#         Number of each elemets.
-#
-#     Returns
-#     -------
-#     atoms2 : string list
-#         Elements list, without duplicate.
-#     number2 : int list
-#         Number of each elemets.
-#     posidx : int list
-#         Position index of new order.
-#
-#     '''
-#     atoms_uni = OrderedDict()
-#     for elmt in atoms:
-#         if elmt not in atoms_uni:
-#             atoms_uni[elmt] = []
-#
-#     pidx = 0
-#     for num, atom in zip(number, atoms):
-#         for _ in range(num):
-#             atoms_uni[atom].append(pidx)
-#             pidx += 1
-#     atoms2 = list(atoms_uni.keys())
-#     number2 = list(map(len, atoms_uni.values()))
-#     posidx = list(chain(*atoms_uni.values()))
-#
-#     return atoms2, number2, posidx

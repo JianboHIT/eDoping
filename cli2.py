@@ -19,19 +19,19 @@ def get_argparse():
     parser_cal.add_argument('-o', '--output', metavar='FILENAME', default=fileout, help='Assign output file name')
 
     parser_energy = sub_parser.add_parser('energy', help='Read final energy from OUTCAR')
-    parser_energy.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename')
+    parser_energy.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename(default: OUTCAR)')
 
     parser_ewald = sub_parser.add_parser('ewald', help='Read Ewald from OUTCAR')
-    parser_ewald.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename')
+    parser_ewald.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename(default: OUTCAR)')
     
     parser_volume = sub_parser.add_parser('volume', help='Read volume from OUTCAR')
-    parser_volume.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename')
+    parser_volume.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename(default: OUTCAR)')
 
     # parser_epsilon = sub_parser.add_parser('epsilon', help='Read epsilon from OUTCAR')
     # parser_ewald.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename')
 
     parser_evbm = sub_parser.add_parser('evbm', help='Read VBM from EIGENVAL')
-    parser_evbm.add_argument('-f', '--filename', default='EIGENVAL', help='Assign filename')
+    parser_evbm.add_argument('-f', '--filename', default='EIGENVAL', help='Assign filename(default: EIGENVAL)')
     parser_evbm.add_argument('-r', '--ratio', type=float, default=0.1, help='Threshold of filling ratio')
 
     # parser_move = sub_parser.add_parser('move', help='Move atomic position in cell')
@@ -40,11 +40,11 @@ def get_argparse():
     # parser_move.add_argument('y', type=float, help='y')
     # parser_move.add_argument('z', type=float, help='z')
 
-    parser_replace = sub_parser.add_parser('replace', help='Replace atoms by new')
-    parser_replace.add_argument('old', help='Name of old atom')
-    parser_replace.add_argument('new', help='Name of new atom')
-    parser_replace.add_argument('-i', '--input', default='POSCAR', help='Input filename')
-    parser_replace.add_argument('-o', '--output', default='POSCAR', help='Output filename')
+    parser_replace = sub_parser.add_parser('replace', help='Replace atoms X by Y')
+    parser_replace.add_argument('old', metavar='X', help='Name of previous atom')
+    parser_replace.add_argument('new', metavar='Y', help='Name of new atom')
+    parser_replace.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Input filename(default: POSCAR)')
+    parser_replace.add_argument('-o', '--output', metavar='FILENAME', default='POSCAR', help='Output filename(default: POSCAR)')
 
     parser_scfermi = sub_parser.add_parser('scfermi', help='Calculate sc-fermi level')
     parser_scfermi.add_argument('-t', '--temperature', type=float, default=1000, help='Temperature')
@@ -95,7 +95,8 @@ def cmd(arg=None):
         pos = Cell(poscar=args.input)
         pos.replace(args.old, args.new)
         pos.write(poscar=args.output)
-        print('New POSCAR is saved to {}.'.format(args.output))
+        dsp = 'Replace {} by {}, and new POSCAR is saved to {}'
+        print(dsp.format(args.old, args.new, args.output))
     elif args.task == 'scfermi':
         EF, Ne = scfermi(args.temperature, doscar=args.dos, *args.filename)
         dsp = ('Self-consistent Fermi level (eV)',
