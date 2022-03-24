@@ -2,7 +2,7 @@ import argparse
 from defect import formation
 from misc import filein, fileout
 from misc import __prog__, __description__, __version__, __ref__
-from dft import Cell, read_energy, read_ewald, read_evbm
+from dft import Cell, read_energy, read_ewald, read_volume, read_evbm
 from fermi import scfermi, scfermi_fz
 
 
@@ -23,6 +23,9 @@ def get_argparse():
 
     parser_ewald = sub_parser.add_parser('ewald', help='Read Ewald from OUTCAR')
     parser_ewald.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename')
+    
+    parser_volume = sub_parser.add_parser('volume', help='Read volume from OUTCAR')
+    parser_volume.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename')
 
     # parser_epsilon = sub_parser.add_parser('epsilon', help='Read epsilon from OUTCAR')
     # parser_ewald.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename')
@@ -79,6 +82,9 @@ def cmd(arg=None):
     elif args.task == 'ewald':
         value = read_ewald(outcar=args.filename)
         print('Final (absolute) Ewald: {:.4f}'.format(value))
+    elif args.task == 'volume':
+        value = read_volume(outcar=args.filename)
+        print('Final volume of cell: {:.4f}'.format(value))
     elif args.task == 'evbm':
         vb, cb, gp = read_evbm(eigenval=args.filename, pvalue=args.ratio)
         pf = '{:<8.4f} (band #{:<3d}) [{:>9.4f}{:>9.4f}{:>9.4f} ]'
