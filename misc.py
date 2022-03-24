@@ -1,7 +1,7 @@
 import sys
 
 
-__all__ = ['filein', 'fileout', 'filedata', 'filedebug',
+__all__ = ['filein', 'fileout', 'filedata', 'filetrans', 'filedebug',
            '__prog__', '__author__', '__version__', '__date__', '__description__',
            '__changelog__', '__info__', '__link__', '__ref__',
            'required', 'Logger']

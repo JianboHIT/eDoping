@@ -1,7 +1,8 @@
 import sys, os, time
 import numpy as np
-from misc import *
-from dft import *
+from misc import Logger, filein, filetrans, filedata
+from misc import __author__, __version__, __date__
+from dft import Cell, read_energy, read_volume, read_evbm, read_pot
 
 __all__ = ['InputList', 'formation', 'read_formation', 'read_H0']
 
@@ -187,15 +188,6 @@ def formation(inputlist=None, infolevel=1):
         Evbm = ipt.evbm
         print('Read VBM from INPUT: {}'.format(Evbm))
 
-    # Read Energy of Perfect Cell
-    if ipt.penergy == float('inf'):
-        Eperfect = read_energy(
-            os.path.join(ipt.dperfect, 'OUTCAR'))
-        print('Read energy of perfect cell from OUTCAR: {}'.format(Eperfect))
-    else:
-        Eperfect = ipt.penergy
-        print('Read energy of perfect cell from INPUT: {}'.format(Eperfect))
-
     # Read volume of perfect cell
     if ipt.pvolume == float('inf'):
         Volume = read_volume(
@@ -204,6 +196,15 @@ def formation(inputlist=None, infolevel=1):
     else:
         Volume = ipt.pvolume
         print('Read volume of perfect cell from INPUT: {}'.format(Volume))
+
+    # Read Energy of Perfect Cell
+    if ipt.penergy == float('inf'):
+        Eperfect = read_energy(
+            os.path.join(ipt.dperfect, 'OUTCAR'))
+        print('Read energy of perfect cell from OUTCAR: {}'.format(Eperfect))
+    else:
+        Eperfect = ipt.penergy
+        print('Read energy of perfect cell from INPUT: {}'.format(Eperfect))
 
     # Read Energy of defect Cells
     print('Read energy of defect cells from OUTCARs:')
@@ -335,7 +336,56 @@ def read_formation(filename, to_reduce=False):
     return (Efermi, energy, charge), volume, gx
 
 
-def read_H0(filename):
+def read_H0(filename=filetrans):
+    '''
+    Read *.trans file or extract *.trans file from log file. In trans file, at 
+    least 2 columns must be contained. If more than 2 columns, the 3rd column
+    is treated as degenerate factor, and the others are ignored. The end of 2 
+    items in title regard as volume and degenerate factor, respectively. 
+
+    Parameters
+    ----------
+    filename : str, optional
+        *.trans file or *.log file.
+
+    Returns
+    -------
+    data : float list
+        List with shape of (N,3), i.e. [(charge, H0, gx),...]
+    volume : float
+        The volume.
+
+    '''
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+        
+    index = [None, None]    # assume file is in *.trans
+    for idx, line in enumerate(lines):
+        if 'Read volume' in line:
+            index[0] = idx
+        elif 'SUMMARY' in line:
+            index[1] = idx  # confirm *.log
+            break
+    
+    if index[1] != None:
+        # read log file and rewrite it to trans file
+        pvolume_ = lines[index[0]].strip().split()[-1]
+        charge, H0 = [], []
+        idx = index[1]+3    # shift pointer to the start of data
+        for line in lines[idx:]:
+            if '=========' in line:
+                break
+            else:
+                q_, *_, H_ = line.strip().split()
+                charge.append(q_)
+                H0.append(H_)
+        with open(filetrans, 'w') as f:
+            f.write('# {} {}\n'.format(pvolume_, 1))
+            for qi, hi in zip(charge, H0):
+                f.write(' {}   {}   {}\n'.format(qi, hi, 1))
+        filename = filetrans
+    
+    # read data from *.trans file
     with open(filename, 'r') as f:
         header = f.readline()
     *_, volume, gx = header.strip().split()
@@ -352,3 +402,4 @@ def read_H0(filename):
         data = data[:, :3]
 
     return data, volume
+
