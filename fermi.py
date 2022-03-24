@@ -93,13 +93,16 @@ def scfermi_bs(t, doscar='DOSCAR', *filenames):
 
 
 @required(is_import_scipy, 'scipy')
-def scfermi_fz(t, conc, charge, volume, doscar='DOSCAR'):
+def scfermi_fz(t, conc, charge, volume, doscar='DOSCAR', Evbm=0, detail=False):
+    '''
+    
+    '''
     kbT = 8.617333262e-05 * t
     Q2x = conc * volume * 1E-24
-    if Q2x*charge > 0:
+    if Q2x*charge < 0:
         raise RuntimeError('Doping conc. and charge must in same sign.')
         
-    dosE, dosV = np.array(read_dos(doscar))   # energy and dos_value
+    dosE, dosV = np.array(read_dos(doscar, efermi=Evbm))   # energy and dos_value
     Nele = trapezoid((dosE<=0)*dosV, dosE)
     
     @np.vectorize
@@ -107,31 +110,36 @@ def scfermi_fz(t, conc, charge, volume, doscar='DOSCAR'):
         '''
         Q2 = n-p
         '''
-        Q2 = trapezoid(dosE*fd((dosE-xfermi)/kbT), dosE) - Nele
+        Q2 = trapezoid(dosV*fd((dosE-xfermi)/kbT), dosE) - Nele
         return Q2
     
     fq2x = lambda x: fq2(x) - Q2x
     amp_max = np.min(np.abs(dosE[[0,-1]]))
     amp = 0.5
     while amp < amp_max:
-        if fq2(-amp)*fq2(amp) < 0:
+        if fq2x(-amp)*fq2x(amp) < 0:
             break
         else:
             amp += 0.5
     else:
         raise RuntimeError('Out the energy range of DOS.')
-        
+    
     efermi = brentq(fq2x, -amp, amp)
     DHq = -kbT * np.log(Q2x/charge)   # q*exp(-DHq/kbT) = Q2
     DH0 = DHq - charge*efermi       # DHq = DH0 + q*Ef
-    return DH0, DHq
+    if detail:
+        return Q2x, DH0, DHq, efermi
+    else:
+        return DH0, DHq, efermi
 
 
 @required(is_import_scipy, 'scipy')
-def scfermi(t, doscar='DOSCAR', Evbm=0, *filenames, detail=False):
+def scfermi(t, *filenames, doscar='DOSCAR', Evbm=0, detail=False):
     kbT = 8.617333262e-05 * t
-    dosE, dosV = np.array(read_dos(doscar))   # energy and dos_value
+    dosE, dosV = np.array(read_dos(doscar, efermi=Evbm))   # energy and dos_value
     Nele = trapezoid((dosE<=0)*dosV, dosE)
+    np.savetxt('data.dat', np.c_[dosE, (dosE<=0)*dosV], fmt='%.4f')
+    print(Evbm, Nele)
 
     defect = []
     volume = []
@@ -157,7 +165,7 @@ def scfermi(t, doscar='DOSCAR', Evbm=0, *filenames, detail=False):
         '''
         Q2 = n-p
         '''
-        Q2 = trapezoid(dosE*fd((dosE-xfermi)/kbT), dosE) - Nele
+        Q2 = trapezoid(dosV*fd((dosE-xfermi)/kbT), dosE) - Nele
         return Q2
     
     fqtot = lambda x: fq2(x) - fq1(x)     # net ele, increase with Efermi
@@ -173,9 +181,10 @@ def scfermi(t, doscar='DOSCAR', Evbm=0, *filenames, detail=False):
         raise RuntimeError('Out the energy range of DOS.')
     
     efermi = brentq(fqtot, -amp, amp)
+    n_p = fq2(efermi)
+    conc = n_p / volume
     
     if detail:
-        pass
-    else:
-        conc = fq2(efermi) / volume      
+        return n_p, efermi, conc
+    else:     
         return efermi, conc

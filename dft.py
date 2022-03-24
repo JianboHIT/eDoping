@@ -430,7 +430,7 @@ def _read_dos(data, fermi=0):
     dos = []
     for line in data:
         if not line.startswith('#'):
-            data = [float(item) for item in line.strip.split()]
+            data = [float(item) for item in line.strip().split()]
             energy.append(data[0]-fermi)
             dos.append(data[1])
     return energy, dos
