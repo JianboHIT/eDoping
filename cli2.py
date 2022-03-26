@@ -3,7 +3,7 @@ from defect import formation
 from misc import filein, fileout
 from misc import __prog__, __description__, __version__, __ref__
 from dft import Cell, read_energy, read_ewald, read_volume, read_evbm
-from fermi import scfermi, scfermi_fz
+from fermi import scfermi, scfermi_fz, equ_defect
 
 
 def get_argparse():
@@ -62,6 +62,16 @@ def get_argparse():
     parser_fzfermi.add_argument('charge', type=float, help='Charge of defect')
     parser_fzfermi.add_argument('volume', type=float, help='Volume of cell in A^3')
 
+    # (t, *filenames, efermi=(0, ), detail=False)
+    parser_equi = sub_parser.add_parser('equi', help='Confirm the equivalent defect')
+    parser_equi.add_argument('-t', '--temperature', type=float, default=1000, help='Temperature')
+    parser_equi.add_argument('filename', metavar='FILENAME', nargs='+', help='Defect formation energy file')
+    parser_equi.add_argument('--fermi', type=float, nargs='+', default=[0,], help='Fermi level')
+    parser_equi.add_argument('--emin', type=float, default=0, help='The upper bound of Fermi level')
+    parser_equi.add_argument('--emax', type=float, default=1, help='The lower bound of Fermi level')
+    parser_equi.add_argument('-n', '--npoints', type=int, default=0, help='The number of points')
+    parser_equi.add_argument('-r', '--ratio', action='store_true', help='only show key output')
+    
     return parser
 
 
@@ -166,6 +176,39 @@ def cmd(arg=None):
             DH0, DHq, Ef = out
             print(dsp[0].format(DH0, args.charge))
             print(dsp[1].format(Ef, DHq))
+    elif args.task == 'equi':
+        # equ_defect(t, *filenames, efermi=(0, ), detail=False)
+        # not_detail: header, (Ef, q_eff, H_eff)
+        #  is_detail: header, (Ef, q_eff, H_eff, Ntot, Nq)
+        if args.npoints == 0:
+            fermi = args.fermi
+        else:
+            E0, E1, N = args.emin, args.emax, args.npoints
+            dE = (E1-E0)/N
+            fermi = [E0+i*dE for i in range(N+1)]
+        out = equ_defect(args.temperature,
+                         *args.filename,
+                         efermi=fermi,
+                         detail=is_detail)
+        
+        def disp(data, header=None):
+            if header is not None:
+                print(header)
+            for dd in data:
+                Ef, q_eff, H_eff, *Nq = dd
+                print('{:10.4f}{:10.4f}{:10.4f}'.format(Ef, q_eff, H_eff),end='')
+                for ni in Nq:
+                    print('{:10.3E}'.format(ni), end='')
+                print()
+        
+        header, data = out
+        if is_detail and args.ratio:
+            data[:,4:] /= data[:,3:4]
+            
+        if is_quiet:
+            disp(data)
+        else:
+            disp(data, header)
 
 
 if __name__ == '__main__':

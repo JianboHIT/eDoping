@@ -188,3 +188,35 @@ def scfermi(t, *filenames, doscar='DOSCAR', Evbm=0, detail=False):
         return n_p, efermi, conc
     else:     
         return efermi, conc
+    
+
+def equ_defect(t, *filenames, efermi=(0, ), detail=False):
+    '''
+    equivalent defect
+    '''
+    kbT = 8.617333262e-05 * t
+    
+    defect = []
+    for filename in filenames:
+        defect_i, *_ = read_H0(filename)  # (data: charge, H0, gx),volume
+        defect.append(defect_i)
+    defect = np.vstack(defect)    # shape of (N,3)
+    charge, H0, gx = np.transpose(defect)       # shape of (N, )
+    
+    efermi = np.array(efermi).reshape((-1,1))   # shape of (Nf, 1)
+    Nq = gx*np.exp(-(H0+charge*efermi)/kbT)     # shape of (Nf, N)
+    Ntot = np.sum(Nq, axis=-1, keepdims=True)      # shape of (Nf,1)
+    Heff = -kbT*np.log(Ntot)
+    Q1 = np.sum(charge*Nq, axis=-1, keepdims=True)
+    qeff = Q1/Ntot
+    
+    header = 'E_fermi q_eff H_eff '
+    data = np.hstack([efermi, qeff, Heff])
+    if detail:
+        header += 'Ntot '
+        for q in charge:
+            header += 'Nq({}) '.format(q)
+        data = np.hstack([data, Ntot, Nq])
+    return header, data
+        
+    
