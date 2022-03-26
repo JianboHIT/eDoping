@@ -185,7 +185,7 @@ class Cell():
             Whether differential information is displayed. The default is False.
         out : str, optional
             What return. Value is one of the following:
-              - diff : differential sites (default)
+              - diff : differential sites (default), and ruturn None
               - far  : the indexes of farthest site pair and the distance
 
         '''
@@ -263,7 +263,7 @@ class Cell():
         
         # display information
         dsp_head = '{:^7s}{:^8}{:^8}{:^8}{:^12s}{:^12s}'
-        head = dsp_head.format('No.','f_a', 'f_b', 'f_c', 'old', 'new')
+        head = dsp_head.format('No.','f_a', 'f_b', 'f_c', 'previous', 'present')
         dsp = '{:^3s}{:<4d}{:>8.4f}{:>8.4f}{:>8.4f}{:^12s}{:^12s}'
         if showdetail:
             headi = head+'{:^12s}'.format('d_min')

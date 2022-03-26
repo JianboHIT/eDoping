@@ -35,17 +35,27 @@ def get_argparse():
     parser_evbm.add_argument('-f', '--filename', default='EIGENVAL', help='Assign filename(default: EIGENVAL)')
     parser_evbm.add_argument('-r', '--ratio', type=float, default=0.1, help='Threshold of filling ratio')
 
-    # parser_move = sub_parser.add_parser('move', help='Move atomic position in cell')
-    # parser_move.add_argument('index', help='The index of atom needed to displace')
-    # parser_move.add_argument('x', type=float, help='x')
-    # parser_move.add_argument('y', type=float, help='y')
-    # parser_move.add_argument('z', type=float, help='z')
+    parser_boxhyd = sub_parser.add_parser('boxhyd', help='Place a single hydrogen atom in the box')
+    parser_boxhyd.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Reference structure(default: POSCAR)')
+    parser_boxhyd.add_argument('-o', '--output', metavar='FILENAME', default='POSCAR.H', help='Output filename(default: POSCAR.H)')
+
+    parser_move = sub_parser.add_parser('move', help='Move atomic position in cell')
+    parser_move.add_argument('index', type=int, help='The index of atom needed to displace')
+    parser_move.add_argument('x', type=float, default=0, help='Displacement along x-axis direction')
+    parser_move.add_argument('y', type=float, default=0, help='Displacement along y-axis direction')
+    parser_move.add_argument('z', type=float, default=0, help='Displacement along z-axis direction')
+    parser_move.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Input filename(default: POSCAR)')
+    parser_move.add_argument('-o', '--output', metavar='FILENAME', default='POSCAR', help='Output filename(default: POSCAR)')
 
     parser_replace = sub_parser.add_parser('replace', help='Replace atoms X by Y')
     parser_replace.add_argument('old', metavar='X', help='Name of previous atom')
-    parser_replace.add_argument('new', metavar='Y', help='Name of new atom')
+    parser_replace.add_argument('new', metavar='Y', help='Name of present atom')
     parser_replace.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Input filename(default: POSCAR)')
     parser_replace.add_argument('-o', '--output', metavar='FILENAME', default='POSCAR', help='Output filename(default: POSCAR)')
+    
+    parser_diff = sub_parser.add_parser('diff', help='Compare two POSCAR')
+    parser_diff.add_argument('filename1', help='Filename of the first POSCAR')
+    parser_diff.add_argument('filename2', help='Filename of the second POSCAR')
 
     parser_scfermi = sub_parser.add_parser('scfermi', help='Calculate sc-fermi level')
     parser_scfermi.add_argument('-t', '--temperature', type=float, default=1000, help='Temperature')
@@ -120,7 +130,30 @@ def cmd(arg=None):
             print(('VBM: ' + pf).format(vb[0]))
             print(('VBM: ' + pf).format(cb[0]))
             print(('GAP: ' + pf).format(gp))
-            
+    elif args.task == 'boxhyd':
+        pos = Cell(poscar=args.input)
+        poshyd = Cell()
+        poshyd.basis = pos.basis
+        poshyd.atom_type = ['H']
+        poshyd.atom_num = [1]
+        poshyd.sites = [[0,0,0]]
+        poshyd.uniquepos()
+        poshyd.write(args.output)
+        if not is_quiet:
+            dsp='The new POSCAR is saved to {}'
+            print(dsp.format(args.output))
+    elif args.task == 'move':
+        pos = Cell(poscar=args.input)
+        idx = args.index - 1   # convert common 1-start to pythonic 0-start
+        dr = [args.x, args.y, args.z]
+        pos.move(idx, dr)
+        pos.write(poscar=args.output)
+        if not is_quiet:
+            if is_detail:
+                dsp1 = 'Move {} with displacement of ({:.2f}, {:.2f}, {:.2f})'
+                print(dsp1.format(pos.labels[idx], *dr))
+            dsp='The new POSCAR is saved to {}'
+            print(dsp.format(args.output))
     elif args.task == 'replace':
         pos = Cell(poscar=args.input)
         pos.replace(args.old, args.new)
@@ -128,6 +161,10 @@ def cmd(arg=None):
         dsp = 'Replace {} by {}, and new POSCAR is saved to {}'
         if not is_quiet:
             print(dsp.format(args.old, args.new, args.output))
+    elif args.task == 'diff':
+        c1 = Cell(poscar=args.filename1)
+        c2 = Cell(poscar=args.filename2)
+        c1.diff(c2, showdetail=is_detail, showdiff=True)
     elif args.task == 'scfermi':
         # scfermi(t, *filenames, doscar='DOSCAR', Evbm=0, detail=False)
         out = scfermi(args.temperature, 
