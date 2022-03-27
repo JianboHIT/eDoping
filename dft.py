@@ -5,7 +5,7 @@ from itertools import chain
 
 
 __all__ = ['Cell', 'read_energy', 'read_ewald', 'read_pot', 
-           'read_volume', 'read_epsilon', 'read_evbm', 'read_dos']
+           'read_volume', 'read_epsilon', 'read_eigval', 'read_evbm', 'read_dos']
 
 
 class Cell():
@@ -382,6 +382,41 @@ def read_epsilon(outcar='OUTCAR', isNumeric=False):
             line = f.readline()
     return datalines
     
+
+def read_eigval(eigenval='EIGENVAL'):
+    '''
+    Read EIGENVAL file
+
+    Parameters
+    ----------
+    eigenval : str, optional
+        Filename of EIGENVAL. The default is 'EIGENVAL'.
+
+    Returns
+    -------
+    (ele_num, kpt_num, eig_num), (kpts, kptw), (energy, weight)
+    *_num: scalar
+    kpts: (Nkpt,3)
+    kptw: (Nkpt,)
+    energy & weight: (Nbd, Nkpt)
+
+    '''
+    with open(eigenval, 'r') as f:
+        data = f.readlines()
+    ele_num, kpt_num, eig_num = map(int, data[5].rstrip().split())
+    kptdata = np.loadtxt(StringIO(''.join(data[7::eig_num+2])))
+    kpts = kptdata[:,:3]  # shape of (Nkpt,3)
+    kptw = kptdata[:,3]  # shape of (Nkpt,)
+    energy = []   # shape of (Nbd, Nkpt)
+    weight = []   # shape of (Nbd, Nkpt)
+    for i in range(eig_num):
+        ei,wi = np.loadtxt(StringIO(
+            ''.join(data[8+i::eig_num+2])),
+            usecols=(1, 2), unpack=True)
+        energy.append(ei)
+        weight.append(wi)
+    return (ele_num, kpt_num, eig_num), (kpts, kptw), (energy, weight)
+
 
 def read_evbm(eigenval='EIGENVAL', pvalue=0.1):
     '''

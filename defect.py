@@ -2,7 +2,9 @@ import sys, os, time
 import numpy as np
 from misc import Logger, filein, filetrans, filedata
 from misc import __author__, __version__, __date__
-from dft import Cell, read_energy, read_volume, read_evbm, read_pot
+from dft import Cell, read_energy, read_volume
+from dft import read_eigval, read_evbm, read_pot
+
 
 __all__ = ['InputList', 'formation', 'read_formation', 'read_H0']
 
@@ -14,10 +16,12 @@ class InputList():
                 'ddname': 'auto',
                 'prefix': 'charge_',
                 'evbm': float('inf'),
+                'ecbm': float('inf'),
                 'penergy': float('inf'),
                 'pvolume': float('inf'),
                 'ewald': 0,
                 'epsilon': float('inf'),
+                'bftype': 0,
                 'cmpot': [0, 0],
                 'emin': -1,
                 'emax': 2,
@@ -120,11 +124,11 @@ class InputList():
                 if name in ['dperfect', 'ddefect', 'prefix']:
                     value = p2.strip()  # String
 
-                elif name in ['npts']:
+                elif name in ['npts', 'bftype']:
                     value = int(p2)  # Int
 
                 elif name in ['ewald', 'epsilon', 'penergy',
-                              'evbm', 'emin', 'emax', 'pvolume']:
+                              'evbm', 'ecbm', 'emin', 'emax', 'pvolume']:
                     value = float(p2)  # Float
 
                 elif name in ['valence']:
@@ -180,13 +184,27 @@ def formation(inputlist=None, infolevel=1):
 
     # Read Evbm
     if ipt.evbm == float('inf'):
-        Evbm = read_evbm(
+        Eband = read_evbm(
             os.path.join(ipt.dperfect, 'EIGENVAL'))
-        Evbm = Evbm[0][0]
+        Evbm = Eband[0][0]
+        Eband_cbm = Eband[1][0]
         print('Read VBM from EIGENVAL: {}'.format(Evbm))
     else:
         Evbm = ipt.evbm
+        Eband_cbm = None
         print('Read VBM from INPUT: {}'.format(Evbm))
+    
+    # Read Ecbm
+    if ipt.ecbm == float('inf'):
+        if Eband_cbm is None:
+            Ecbm = None
+            print('Failed to read CBM from neither EIGENVAL nor INPUT.')
+        else:
+            Ecbm = Eband_cbm
+            print('Read CBM from EIGENVAL: {}'.format(Ecbm))
+    else:
+        Ecbm = ipt.ecbm
+        print('Read CBM from INPUT: {}'.format(Ecbm))
 
     # Read volume of perfect cell
     if ipt.pvolume == float('inf'):
@@ -240,7 +258,49 @@ def formation(inputlist=None, infolevel=1):
         # 2/3*(q**2)*Ewald/epsilon
         Eic_q2 = 2 / 3 * ipt.ewald / ipt.epsilon
         print('( Eic/q^2 = {:.4f} )'.format(Eic_q2))
-
+    
+    # Band-filling correction (alias Moss-Burstein correction)
+    print('Band-filling correction: ', end='')
+    Ecbf = [0 for _ in range(len(ipt.valence))]
+    Evbf = [0 for _ in range(len(ipt.valence))]
+    bftype = ipt.bftype
+    if bftype == 0:
+        print('Negligible')
+    else:
+        if bftype == -1:
+            dsp = 'Only valence bands'
+        elif bftype == 1:
+            dsp = 'Only conduction bands'
+        else:
+            bftype = 0
+            dsp = 'Both valence and conduction bands'
+            
+        kptw = []
+        eig = []
+        ocp = []
+        for fname in ipt.ddname:
+            *_, (*_, i_kptw), (i_eig, i_ocp) = read_eigval(fname)
+            kptw.append(i_kptw)
+            eig.append(i_eig)
+            ocp.append(i_ocp)
+            
+        if bftype <= 0:
+            Evbf = []
+            for i_kptw ,i_eig, i_ocp in zip(kptw, eig, ocp):
+                corr_bf = (Evbm < i_eig)*i_kptw*(1-i_ocp)*(Evbm-i_eig)
+                Evbf.append(-2*np.sum(corr_bf))
+                pass              
+        if bftype >= 0:
+            if Ecbm is None:
+                dsp += ' ' * 25
+                dsp += '(Failed to correct CB for missed Ecbm)'
+            else:
+                Ecbf = []
+                for i_kptw ,i_eig, i_ocp in zip(kptw, eig, ocp):
+                    corr_bf = (i_eig > Ecbm)*i_kptw*i_ocp*(i_eig-Ecbm)
+                    Ecbf.append(-2*np.sum(corr_bf))
+        print(dsp)
+        
     # Potential alignment correction
     print('Find defect site(s) for potential alignment correction:')
     # print('Potential alignment correction:')
