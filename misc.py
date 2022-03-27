@@ -1,7 +1,7 @@
 import sys
 
 
-__all__ = ['filein', 'fileout', 'filedata', 'filetrans', 'filedebug',
+__all__ = ['filein', 'fileout', 'filedata', 'filetrans', 'filecmpot', 'filedebug',
            '__prog__', '__author__', '__version__', '__date__', '__description__',
            '__changelog__', '__info__', '__link__', '__ref__',
            'required', 'Logger']
@@ -11,6 +11,7 @@ filein = 'PYDEFECT.in'
 fileout = 'PYDEFECT.log'
 filedata = 'PYDEFECT.dat'
 filetrans = 'PYDEFECT.trans'
+filecmpot = 'PYDEFECT.cmpot'
 filedebug = 'PYDEFECT.debug'
 
 __prog__ = 'PYDEFECT'

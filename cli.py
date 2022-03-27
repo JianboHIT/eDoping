@@ -1,9 +1,10 @@
 import argparse
 from defect import formation
-from misc import filein, fileout
+from misc import filein, fileout, filecmpot
 from misc import __prog__, __description__, __version__, __ref__
 from dft import Cell, read_energy, read_ewald, read_volume, read_evbm, read_epsilon
 from fermi import scfermi, scfermi_fz, equ_defect
+from cpot import pminmax
 
 
 def get_argparse():
@@ -56,6 +57,9 @@ def get_argparse():
     parser_diff = sub_parser.add_parser('diff', help='Compare two POSCAR')
     parser_diff.add_argument('filename1', help='Filename of the first POSCAR')
     parser_diff.add_argument('filename2', help='Filename of the second POSCAR')
+    
+    parser_chempot = sub_parser.add_parser('chempot', help='Calculate chemical potential')
+    parser_chempot.add_argument('-f', '--filename', default=filecmpot, help='Assign filename(default: {})'.format(filecmpot))
 
     parser_scfermi = sub_parser.add_parser('scfermi', help='Calculate sc-fermi level')
     parser_scfermi.add_argument('-t', '--temperature', type=float, default=1000, help='Temperature')
@@ -181,6 +185,34 @@ def cmd(arg=None):
         c1 = Cell(poscar=args.filename1)
         c2 = Cell(poscar=args.filename2)
         c1.diff(c2, showdetail=is_detail, showdiff=True)
+    elif args.task == 'chempot':
+        # (name, x0, status, msg)
+        results = pminmax(args.filename)
+        if is_quiet:
+            for rst in results:
+                if is_detail:
+                    print('{:5d}'.format(rst[2]), end='')
+                for miu in rst[1]:
+                    print('{:10.4f}'.format(miu))
+        else:
+            dsp1 = '{:8d}{:10s}'
+            dsp2 = '{:10.4f}'
+            dsp3 = '{:<s}'
+            
+            header = '{:8s}{:14s}'.format('status', 'condition')
+            for rst in results:
+                header += '{:10s}'.format(rst[0])
+            if is_detail:
+                header += '{:<s}'.format('Information')  
+            print(header)
+            
+            for rst in results:
+                print(dsp1.format(rst[2], rst[0]))
+                for miu in rst[1]:
+                    print(dsp2.format(miu))
+                if is_detail:
+                    print(dsp3.format(rst[3]))
+        
     elif args.task == 'scfermi':
         # scfermi(t, *filenames, doscar='DOSCAR', Evbm=0, detail=False)
         out = scfermi(args.temperature, 
