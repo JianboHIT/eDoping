@@ -26,7 +26,8 @@ def read_cmpot(filename=filecmpot):
     energy = data[:,-1:]   # (n,1)
     Nelmt = coefs.shape[-1]
     if header is None:
-        header = ['A{:02d}'.format(idx+1) for idx in range(Nelmt)]
+        header = [chr(idx+65) for idx in range(Nelmt)]   # A, B, C, ...
+        # header = ['A{:02d}'.format(idx+1) for idx in range(Nelmt)]
     elif len(header) < Nelmt:
         raise RuntimeError('The number of element is less than the coefficients')
     else:
@@ -44,33 +45,44 @@ def read_cmpot(filename=filecmpot):
 
 
 @required(is_import_lnp, 'scipy')
-def pminmax(filename):
+def pminmax(filename, objcoefs=None):
     '''
-    
+    Calculate chemical potential under poor and rich conditions.
 
     Parameters
     ----------
     filename : str
-        A file contains formation energy to calculate chemical potential .
+        A file contains formation energy.
+    objcoefs : float-list
+        Customized coefficients of the linear objective function.
 
     Returns
     -------
     results : tuple-list
-        [(name, x0, status, msg),...]
+        [(name, x0, status, msg),...], elmt_labels
 
     '''
-    names, constraints = read_cmpot(filename)
+    labels, constraints = read_cmpot(filename)
     A_ub, b_ub, A_eq, b_eq = constraints
     bounds = (None, None)
     
+    if objcoefs is None:
+        names = labels
+        objcoefs = np.identity(A_eq.shape[-1])
+    else:
+        if len(objcoefs) == A_ub.shape[-1]:
+            names = ['Cond']
+            objcoefs = [np.array(objcoefs),]
+        else:
+            raise RuntimeError('Encounter unmatched objective coefficients')
+            
     results= []
-    for name, copt in zip(names, np.identity(A_eq.shape[-1])):
+    for name, copt in zip(names, objcoefs):
         rst = linprog(copt, A_ub, b_ub, A_eq, b_eq, bounds) # poor condition
         result = ('{}-poor'.format(name), rst.x, rst.status, rst.message)
         results.append(result)
         
         rst = linprog(-copt, A_ub, b_ub, A_eq, b_eq, bounds) # rich conditon
-        result = ('{}-poor'.format(name), rst.x, rst.status, rst.message)
+        result = ('{}-rich'.format(name), rst.x, rst.status, rst.message)
         results.append(result)
-        
-    return results
+    return results, labels

@@ -60,6 +60,7 @@ def get_argparse():
     
     parser_chempot = sub_parser.add_parser('chempot', help='Calculate chemical potential')
     parser_chempot.add_argument('-f', '--filename', default=filecmpot, help='Assign filename(default: {})'.format(filecmpot))
+    parser_chempot.add_argument('--cond', metavar='WEIGHT', type=float, nargs='+', help='Customized conditions')
 
     parser_scfermi = sub_parser.add_parser('scfermi', help='Calculate sc-fermi level')
     parser_scfermi.add_argument('-t', '--temperature', type=float, default=1000, help='Temperature')
@@ -186,32 +187,36 @@ def cmd(arg=None):
         c2 = Cell(poscar=args.filename2)
         c1.diff(c2, showdetail=is_detail, showdiff=True)
     elif args.task == 'chempot':
-        # (name, x0, status, msg)
-        results = pminmax(args.filename)
+        # pminmax(filename, objcoefs=None)
+        # return (name, x0, status, msg),labels
+        results,labels = pminmax(args.filename, objcoefs=args.cond)
         if is_quiet:
             for rst in results:
                 if is_detail:
-                    print('{:5d}'.format(rst[2]), end='')
+                    print('{:^5d}'.format(rst[2]), end='')
                 for miu in rst[1]:
-                    print('{:10.4f}'.format(miu))
+                    print('{:<10.4f}'.format(miu), end='')
+                print()
         else:
-            dsp1 = '{:8d}{:10s}'
-            dsp2 = '{:10.4f}'
-            dsp3 = '{:<s}'
+            dsp1 = '{:^8d}{:<10s}'
+            dsp2 = '{:>10.4f}'
+            dsp3 = '   {:<s}'
             
-            header = '{:8s}{:14s}'.format('status', 'condition')
-            for rst in results:
-                header += '{:10s}'.format(rst[0])
+            header = '{:8s}{:10s}'.format('status', 'condition')
+            for elmt in labels:
+                header += '{:>10s}'.format('miu('+elmt+')')
             if is_detail:
-                header += '{:<s}'.format('Information')  
+                header += '   {:<s}'.format('Information')  
             print(header)
             
             for rst in results:
-                print(dsp1.format(rst[2], rst[0]))
+                print(dsp1.format(rst[2], rst[0]), end='')
                 for miu in rst[1]:
-                    print(dsp2.format(miu))
+                    print(dsp2.format(miu), end='')
                 if is_detail:
                     print(dsp3.format(rst[3]))
+                else:
+                    print()
         
     elif args.task == 'scfermi':
         # scfermi(t, *filenames, doscar='DOSCAR', Evbm=0, detail=False)
