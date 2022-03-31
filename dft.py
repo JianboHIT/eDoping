@@ -415,6 +415,8 @@ def read_eigval(eigenval='EIGENVAL'):
             usecols=(1, 2), unpack=True)
         energy.append(ei)
         weight.append(wi)
+    energy = np.vstack(energy)
+    weight = np.vstack(weight)
     return (ele_num, kpt_num, eig_num), (kpts, kptw), (energy, weight)
 
 

@@ -173,9 +173,14 @@ def formation(inputlist=None, infolevel=1):
     # Read InputList
     if inputlist is None:
         ipt = InputList(filein)
-    else:
+    elif isinstance(inputlist, InputList):
         ipt = inputlist
+    elif isinstance(inputlist, str):
+        ipt = InputList(filename=inputlist)
+    else:
+        raise RuntimeError('Unrecognized input #1')
     ipt.set_default()
+    
     # print('Read input parameters:\n')
     print('{:-^55s}'.format(' INPUT LIST '))
     print(ipt)
@@ -279,7 +284,8 @@ def formation(inputlist=None, infolevel=1):
         eig = []
         ocp = []
         for fname in ipt.ddname:
-            *_, (*_, i_kptw), (i_eig, i_ocp) = read_eigval(fname)
+            fid = os.path.join(ipt.ddefect, fname, 'EIGENVAL')
+            *_, (*_, i_kptw), (i_eig, i_ocp) = read_eigval(fid)
             kptw.append(i_kptw)
             eig.append(i_eig)
             ocp.append(i_ocp)
@@ -287,9 +293,8 @@ def formation(inputlist=None, infolevel=1):
         if bftype <= 0:
             Evbf = []
             for i_kptw ,i_eig, i_ocp in zip(kptw, eig, ocp):
-                corr_bf = (Evbm < i_eig)*i_kptw*(1-i_ocp)*(Evbm-i_eig)
-                Evbf.append(-2*np.sum(corr_bf))
-                pass              
+                corr_bf = (Evbm > i_eig)*i_kptw*(1-i_ocp)*(Evbm-i_eig)
+                Evbf.append(-2*np.sum(corr_bf))           
         if bftype >= 0:
             if Ecbm is None:
                 dsp += ' ' * 25
@@ -300,6 +305,7 @@ def formation(inputlist=None, infolevel=1):
                     corr_bf = (i_eig > Ecbm)*i_kptw*i_ocp*(i_eig-Ecbm)
                     Ecbf.append(-2*np.sum(corr_bf))
         print(dsp)
+        
         
     # Potential alignment correction
     print('Find defect site(s) for potential alignment correction:')
@@ -325,20 +331,21 @@ def formation(inputlist=None, infolevel=1):
     print('')
 
     # Summary
-    print('{:=^60s}'.format(' SUMMARY '))
-    print(('{:^10s}' * 6).format('q', 'dE', 'Eq', 'Eic', 'Epa', 'E0'))
-    print('-' * 60)
-    dsp = '{:^+10d}' + '{:^10.2f}' * 5
+    tableHeader = ['q', 'dE', 'Eq', 'Eic', 'Evbf', 'Ecvf', 'Epa', 'E0']
+    print('{:=^80s}'.format(' SUMMARY '))
+    print(('{:^10s}' * 8).format(*tableHeader))
+    print('-' * 80)
+    dsp = '{:^+10d}' + '{:^10.2f}' * 7
     E0q = []
-    for q, Ed, pot in zip(ipt.valence, Edefect, pot2):
+    for q, Ed, dEv, dEc, pot in zip(ipt.valence, Edefect, Evbf, Ecbf, pot2):
         dE = Ed - Eperfect
         Eq = q * Evbm
         Eic = q ** 2 * Eic_q2
         Epa = q * (pot - pot1)
-        E0 = dE + Dcm + Eq + Epa + Eic
+        E0 = dE + Dcm + Eq + Epa + Eic + dEv + dEc
         E0q.append(E0)
-        print(dsp.format(q, dE, Eq, Eic, Epa, E0))
-    print('=' * 60)
+        print(dsp.format(q, dE, Eq, Eic, dEv, dEc, Epa, E0))
+    print('=' * 80)
     print('*Chemical potential change: {:.2f}'.format(Dcm))
     print('*Energy at VBM: {:.2f}'.format(Evbm))
     print('')
