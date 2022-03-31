@@ -2,7 +2,8 @@ import argparse
 from defect import formation
 from misc import filein, fileout, filecmpot
 from misc import __prog__, __description__, __version__, __ref__
-from dft import Cell, read_energy, read_ewald, read_volume, read_evbm, read_epsilon
+from dft import Cell, read_energy, read_ewald, read_volume, \
+                read_evbm, read_epsilon
 from fermi import scfermi, scfermi_fz, equ_defect
 from cpot import pminmax
 

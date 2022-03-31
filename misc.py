@@ -1,3 +1,4 @@
+from functools import wraps
 import sys
 
 
@@ -49,11 +50,15 @@ DOI:XXXXXX/XXXX/XXXX-XXXX
 
 def required(is_import, pname='required package'):
     def dectorate(func):
-        return func
-    if is_import:
-        return dectorate
-    else:
-        raise ImportError('Failed to import {}'.format(pname))
+        @wraps(func)
+        def function(*args, **kwargs):
+            if is_import:
+                return func(*args, **kwargs)
+            else:
+                disp_info = 'Failed to import {}'.format(pname)
+                raise ImportError(disp_info)
+        return function
+    return dectorate
 
 
 class Logger():
