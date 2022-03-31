@@ -5,7 +5,7 @@ from itertools import chain
 
 
 __all__ = ['Cell', 'read_energy', 'read_ewald', 'read_pot', 
-           'read_volume', 'read_evbm', 'read_dos']
+           'read_volume', 'read_epsilon', 'read_evbm', 'read_dos']
 
 
 class Cell():
@@ -352,6 +352,36 @@ def read_volume(outcar='OUTCAR'):
     volume = float(line.strip().split()[-1])
     return volume
 
+
+def read_epsilon(outcar='OUTCAR', isNumeric=False):
+    '''
+    Read the static dielectric properties from OUTCAR
+
+    Returns
+    -------
+    Category, tensor, average
+
+    '''
+    target = 'STATIC DIELECTRIC'
+    datalines = []
+    with open(outcar, 'r') as f:
+        line = f.readline()
+        while line:
+            if target in line:
+                values = []
+                if isNumeric:
+                    f.readline()
+                    for _ in range(3):
+                        iline = f.readline()
+                        value = iline.strip().split()
+                        values.append(list(map(float, value)))
+                else:
+                    for _ in range(6):
+                        values.append(f.readline().strip())
+                datalines.append((line.strip(), values))
+            line = f.readline()
+    return datalines
+    
 
 def read_evbm(eigenval='EIGENVAL', pvalue=0.1):
     '''

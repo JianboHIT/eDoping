@@ -2,7 +2,7 @@ import argparse
 from defect import formation
 from misc import filein, fileout
 from misc import __prog__, __description__, __version__, __ref__
-from dft import Cell, read_energy, read_ewald, read_volume, read_evbm
+from dft import Cell, read_energy, read_ewald, read_volume, read_evbm, read_epsilon
 from fermi import scfermi, scfermi_fz, equ_defect
 
 
@@ -28,8 +28,8 @@ def get_argparse():
     parser_volume = sub_parser.add_parser('volume', help='Read volume from OUTCAR')
     parser_volume.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename(default: OUTCAR)')
 
-    # parser_epsilon = sub_parser.add_parser('epsilon', help='Read epsilon from OUTCAR')
-    # parser_ewald.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename')
+    parser_epsilon = sub_parser.add_parser('epsilon', help='Read epsilon from OUTCAR')
+    parser_epsilon.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename(default: OUTCAR)')
 
     parser_evbm = sub_parser.add_parser('evbm', help='Read VBM from EIGENVAL')
     parser_evbm.add_argument('-f', '--filename', default='EIGENVAL', help='Assign filename(default: EIGENVAL)')
@@ -116,6 +116,22 @@ def cmd(arg=None):
             print('{:.4f}'.format(value))
         else:
             print('Final volume of cell: {:.4f}'.format(value))
+    elif args.task == 'epsilon':
+        # read_epsilon(outcar='OUTCAR', isNumeric=False)
+        pf = '{:12.4f}'
+        if is_quiet:
+            out = read_epsilon(outcar=args.filename, isNumeric=True)
+            for _, values in out:
+                for value in values:
+                    for ivalue in value:
+                        print(pf.format(ivalue), end='')
+                    print()
+        else:
+            out = read_epsilon(outcar=args.filename)
+            for title, values in out:
+                print(title)
+                for value in values:
+                    print(value)
     elif args.task == 'evbm':
         vb, cb, gp = read_evbm(eigenval=args.filename, pvalue=args.ratio)
         pf = '{:.4f}'
