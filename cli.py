@@ -3,7 +3,7 @@ from defect import formation
 from misc import filein, fileout, filecmpot
 from misc import __prog__, __description__, __version__, __ref__
 from dft import Cell, read_energy, read_ewald, read_volume, \
-                read_evbm, read_epsilon
+                read_evbm, read_evbm_from_ne, read_epsilon
 from fermi import scfermi, scfermi_fz, equ_defect
 from cpot import pminmax
 
@@ -35,7 +35,9 @@ def get_argparse():
 
     parser_evbm = sub_parser.add_parser('evbm', help='Read VBM from EIGENVAL')
     parser_evbm.add_argument('-f', '--filename', default='EIGENVAL', help='Assign filename(default: EIGENVAL)')
-    parser_evbm.add_argument('-r', '--ratio', type=float, default=0.1, help='Threshold of filling ratio')
+    parser_evbm.add_argument('-r', '--ratio', type=float, help='Threshold of filling ratio')
+    parser_evbm.add_argument('--ne', type=int, help='The number of electrons(default from the file)')
+    parser_evbm.add_argument('--amend', type=int, default=0, help='Additional amendment on nelect')
 
     parser_boxhyd = sub_parser.add_parser('boxhyd', help='Place a single hydrogen atom in the box')
     parser_boxhyd.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Reference structure(default: POSCAR)')
@@ -139,7 +141,12 @@ def cmd(arg=None):
                 for value in values:
                     print(value)
     elif args.task == 'evbm':
-        vb, cb, gp = read_evbm(eigenval=args.filename, pvalue=args.ratio)
+        if args.ratio is not None:
+            vb, cb, gp = read_evbm(eigenval=args.filename, pvalue=args.ratio)
+        else:
+            vb, cb, gp = read_evbm_from_ne(eigenval=args.filename,
+                                           Ne=args.ne,
+                                           dNe=args.amend)
         pf = '{:.4f}'
         pfd = '{:<8.4f} (band #{:<3d}) [{:>9.4f}{:>9.4f}{:>9.4f} ]'
         if is_quiet:
@@ -150,7 +157,7 @@ def cmd(arg=None):
             print(('GAP: ' + pf).format(gp))
         else:
             print(('VBM: ' + pf).format(vb[0]))
-            print(('VBM: ' + pf).format(cb[0]))
+            print(('CBM: ' + pf).format(cb[0]))
             print(('GAP: ' + pf).format(gp))
     elif args.task == 'boxhyd':
         pos = Cell(poscar=args.input)

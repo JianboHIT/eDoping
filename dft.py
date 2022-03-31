@@ -4,8 +4,9 @@ from collections import OrderedDict
 from itertools import chain
 
 
-__all__ = ['Cell', 'read_energy', 'read_ewald', 'read_pot', 
-           'read_volume', 'read_epsilon', 'read_eigval', 'read_evbm', 'read_dos']
+__all__ = ['Cell', 'read_energy', 'read_ewald', 'read_pot', 'read_volume',
+           'read_epsilon', 'read_eigval', 'read_evbm', 'read_evbm_from_ne', 
+           'read_dos']
 
 
 class Cell():
@@ -463,6 +464,47 @@ def read_evbm(eigenval='EIGENVAL', pvalue=0.1):
     k_vbm = kpts[idxv]
     return (e_vbm, i-1, k_vbm[:3]), (e_cbm, i, k_cbm[:3]), e_cbm-e_vbm
 
+
+def read_evbm_from_ne(eigenval='EIGENVAL', Ne=None, dNe=0):
+    '''
+    Read VBM & CBM energy from the number of electrons.
+
+    Parameters
+    ----------
+    eigenval : str, optional
+        Filename of EIGENVAL. The default is 'EIGENVAL'.
+    Ne : TYPE, optional
+        The number of electron. If None(default), read from EIGENVAL file.
+    dNe : int, optional
+        Additional adjustments of Ne.
+
+    Returns
+    -------
+    (e_vbm, index, k_vbm), (e_cbm, index, k_cbm), Egap
+
+    '''
+    with open(eigenval, 'r') as f:
+        data = f.readlines()
+    e_num, kpt_num, eig_num = map(int, data[5].rstrip().split())
+    
+    if Ne is None:
+        idxv = int((e_num + dNe)/2)  # start from 1
+    else:
+        idxv = int((Ne + dNe)/2)   # start from 1
+    idxv, idxc = idxv-1, idxv      # start from 0
+    
+    e_vbms = np.loadtxt(StringIO(''.join(data[8+idxv::eig_num+2])))
+    e_cbms = np.loadtxt(StringIO(''.join(data[8+idxc::eig_num+2])))
+    idxvk = np.argmax(e_vbms, axis=0)[1]
+    idxck = np.argmin(e_cbms, axis=0)[1]
+    
+    k_vbm = np.loadtxt(StringIO(data[7+idxvk*(eig_num+2)]))
+    k_cbm = np.loadtxt(StringIO(data[7+idxck*(eig_num+2)]))
+    
+    e_vbm = e_vbms[idxvk,1]
+    e_cbm = e_cbms[idxck,1]
+    return (e_vbm, idxv+1, k_vbm[:3]), (e_cbm, idxc+1, k_cbm[:3]), e_cbm-e_vbm
+    
 
 def read_dos(doscar='DOSCAR', efermi=0):
     '''
