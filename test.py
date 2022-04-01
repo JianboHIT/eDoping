@@ -27,7 +27,7 @@ def test(taskid, argv=None):
                  '14': 'read vbm, cbm, gap',
                  '15': 'read inputlist',
                  '16': 'compare two POSCARs'}
-        print('\nPyDefect - Test & Debug\n')
+        print('\nEDOPING - Test & Debug\n')
         for item in infos.items():
             print('  - {:s}  {:s}'.format(*item))
         print('')

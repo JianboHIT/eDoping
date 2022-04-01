@@ -9,10 +9,12 @@ from cpot import pminmax
 
 
 def get_argparse():
-    parser = argparse.ArgumentParser(prog=__prog__,
+    footnote = 'If you use {} in your research, '.format(__prog__.lower())
+    footnote += 'please consider citing the following work:{}'.format(__ref__)
+    parser = argparse.ArgumentParser(prog=__prog__.lower(),
                                      description='{} - v{}'.format(__description__, __version__),
-                                     epilog='If you have used {}, please cite the following article:{}'.format(__prog__, __ref__),
-                                     formatter_class=argparse.RawDescriptionHelpFormatter,)
+                                     formatter_class=argparse.RawDescriptionHelpFormatter, 
+                                     epilog=footnote)
     parser.add_argument('-v', '--verbosity', action='count', default=0, help='increase output verbosity')
     parser.add_argument('-q', '--quiet', action='store_true', help='only show key output')
     sub_parser = parser.add_subparsers(title='Tips', metavar='Subcommand', help='Description', dest='task')

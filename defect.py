@@ -1,7 +1,7 @@
 import sys, os, time
 import numpy as np
 from misc import Logger, filein, filetrans, filedata
-from misc import __author__, __version__, __date__
+from misc import __prog__, __author__, __version__, __date__
 from dft import Cell, read_energy, read_volume
 from dft import read_eigval, read_evbm, read_pot
 
@@ -41,7 +41,7 @@ class InputList():
         Parameters
         ----------
         filename : str, optional
-            Filename of *.in file. The default is 'PYDEFECT.in'.
+            Filename of *.in file. The default is 'EDOPING.in'.
 
         '''
         with open(filename, 'r') as f:
@@ -163,9 +163,8 @@ def formation(inputlist=None, infolevel=1):
 
     # Information, version, author
     t = time.localtime(time.time())
-    infos = ['Point Defect Formation Energy Calculation - PyDefect',
-             'Author: {} (v{}, {})'.format(
-                 __author__, __version__, __date__),
+    infos = ['Point Defect Formation Energy Calculation - {}'.format(__prog__),
+             'Author: {} (v{}, {})'.format(__author__, __version__, __date__),
              'Run at {}'.format(time.strftime("%Y-%m-%d %A %X", t))]
     print(*infos, sep='\n')
     print('')

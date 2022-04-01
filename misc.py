@@ -7,15 +7,16 @@ __all__ = ['filein', 'fileout', 'filedata', 'filetrans', 'filecmpot', 'filedebug
            '__changelog__', '__info__', '__link__', '__ref__',
            'required', 'Logger']
 
+__prog__ = 'EDOPING'
 
-filein = 'PYDEFECT.in'
-fileout = 'PYDEFECT.log'
-filedata = 'PYDEFECT.dat'
-filetrans = 'PYDEFECT.trans'
-filecmpot = 'PYDEFECT.cmpot'
-filedebug = 'PYDEFECT.debug'
+filein = '{}.in'.format(__prog__)
+fileout = '{}.log'.format(__prog__)
+filedata = '{}.dat'.format(__prog__)
+filetrans = '{}.trans'.format(__prog__)
+filecmpot = '{}.cmpot'.format(__prog__)
+filedebug = '{}.debug'.format(__prog__)
 
-__prog__ = 'PYDEFECT'
+
 __author__ = 'Jianbo ZHU'
 __version__ = '1.4'
 __date__ = '2022-03-16'
