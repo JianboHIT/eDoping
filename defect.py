@@ -6,7 +6,8 @@ from dft import Cell, read_energy, read_volume
 from dft import read_eigval, read_evbm, read_pot
 
 
-__all__ = ['InputList', 'formation', 'read_formation', 'read_H0']
+__all__ = ['InputList', 'formation', 'read_formation', 'read_H0',
+           'cal_trans', 'write_bsenergy', ]
 
 
 class InputList():
@@ -351,31 +352,23 @@ def formation(inputlist=None, infolevel=1):
 
     # calculation
     print('Transtion Energy Level:')
-    miu = np.linspace(ipt.emin, ipt.emax, ipt.npts).reshape((-1, 1))
-    E0q = np.array(E0q)
-    q = np.array(ipt.valence)
-    Eform = q * miu + E0q
-    Efmin = Eform.min(axis=-1).reshape((-1, 1))
-    idx = np.unique(np.argmin(Eform, axis=-1))
-    tq = [ipt.valence[i] for i in idx]
-    eq = [E0q[i] for i in idx]
+    result, bsdata = cal_trans(q=ipt.valence,
+                               H0=E0q,
+                               Emin=ipt.emin,
+                               Emax=ipt.emax,
+                               Npt=ipt.npts,
+                               outbsline=True)
     header = ('Valence', 'E_trans/eV', 'E_defect/eV')
-    dsp = '  {:^12s}  {:^12.2f}  {:^12.2f}'
-    dsp2 = '{:+d}/{:+d}'
     print('  {:^12s}  {:^12s}  {:^12s}'.format(*header))
-    print(dsp.format('(Begin)', miu[0, 0], Efmin[0, 0]))
-    for i in reversed(range(1, len(tq))):
-        qstr = dsp2.format(tq[i - 1], tq[i])
-        E_t = -(eq[i] - eq[i - 1]) / (tq[i] - tq[i - 1])
-        E_d = (tq[i] * eq[i - 1] - tq[i - 1] * eq[i]) / (tq[i] - tq[i - 1])
-        print(dsp.format(qstr, E_t, E_d))
-    print(dsp.format('(End)', miu[-1, 0], Efmin[-1, 0]))
+    dsp = '  {:^12s}  {:^12.2f}  {:^12.2f}'
+    for line in result:
+        print(dsp.format(*line))
     print('')
-    dsp = 'Ef, Eformation' + ', q_{:+d}' * len(ipt.valence)
-    header = dsp.format(*ipt.valence)
-    header += '; {:>12.4f}    1'.format(Volume)  # default gx = 1
-    np.savetxt(filedata, np.hstack([miu, Efmin, Eform]),
-               fmt='%.4f', header=header)
+    
+    # write base energy data to file.(gx = 1)
+    # write_bsenergy(data, q, filename=filedata, volume=1, gx=1)
+    write_bsenergy(bsdata, ipt.valence, filedata, Volume, 1)
+
     print('Calculate defect formation energy and write data. (DONE)')
     sys.stdout.stop()
 
@@ -468,4 +461,82 @@ def read_H0(filename=filetrans):
         data = data[:, :3]
 
     return data, volume
+
+
+def cal_trans(q, H0, Emin=-1, Emax=2, Npt=1001, outbsline=False):
+    '''
+    Calculate transition levels of charged defect.
+
+    Parameters
+    ----------
+    q : int list
+        Charge list.
+    H0 : float list
+        Formation energy where Ef is equal to 0.
+    Emin : float, optional
+        Lower bound of energy window. The default is -1.
+    Emax : float, optional
+        Upper bound of energy window. The default is 2.
+    Npt : int, optional
+        Number of sample points. The default is 1001.
+    outbsline: bool , optional
+        Whether output base energy data. The default is False.
+
+    Returns
+    -------
+    result : list
+        [(Valence_str, E_trans, E_defect),...], \
+        [miu, Efmin, qfmin, Eform] (optional)
+    '''
+    q, H0 = np.array(q), np.array(H0)
+    miu = np.linspace(Emin, Emax, Npt).reshape((-1,1))
+    Eform = q*miu + H0
+    Efmin = Eform.min(axis=-1, keepdims=True)
+    q_idx = np.argmin(Eform, axis=-1).reshape((-1,1))
+    qfmin = q[q_idx]
+    bsdata = np.hstack([miu, Efmin, qfmin, Eform])
+
+    idx = np.unique(q_idx)
+    tq = [q[i] for i in idx]
+    eq = [H0[i] for i in idx]
+    
+    result = [('(Begin)', Emin, Efmin[0, 0])]
+    dsp2 = '{:+d}/{:+d}'
+    for i in reversed(range(1, len(idx))):
+        qstr = dsp2.format(tq[i - 1], tq[i])
+        E_t = -(eq[i] - eq[i - 1]) / (tq[i] - tq[i - 1])
+        E_d = (tq[i] * eq[i - 1] - tq[i - 1] * eq[i]) / (tq[i] - tq[i - 1])
+        result.append((qstr, E_t, E_d))
+    result.append(('(End)', Emax, Efmin[-1, 0]))
+    
+    if outbsline:
+        return result, bsdata
+    else:
+        return result
+    
+
+def write_bsenergy(data, q, filename=filedata, volume=1, gx=1):
+    '''
+    Write base-energy data to file.
+
+    Parameters
+    ----------
+    data : TYPE
+        DESCRIPTION.
+    q : int list
+        Charge list.
+    volume : float, optional
+        Volume of supercell in A^3. The default is 1.
+    gx : TYPE, optional
+        Degerate factor. The default is 1.
+
+    Returns
+    -------
+    None.
+
+    '''
+    dsp = 'Ef, Eformation, q, ' + ', q_{:+d}' * len(q)
+    header = dsp.format(*q)
+    header += '; {:>12.4f}    {}'.format(volume, gx)
+    np.savetxt(filename, data, fmt='%.4f', header=header)
 
