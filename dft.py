@@ -37,22 +37,40 @@ class Cell():
         with open(poscar, 'r') as f:
             lines = f.readlines()
         scale = float(lines[1].rstrip())
-        self.basis = [[float(i)*scale for i in line.strip().split()] 
-                       for line in lines[2:5]]
+        basis = [[float(i) for i in line.strip().split()] 
+                  for line in lines[2:5]]
         atom_type = lines[5].strip().split()
         atom_num = [int(i) for i in lines[6].strip().split()]
         sites = [[float(i) for i in line.strip().split()[:3]]
                  for line in lines[8:8+sum(atom_num)]]
+        
+        if scale < 0:
+            # volume mode
+            # scale factor is refined for later use
+            scale = (-1)*np.cbrt(scale/np.linalg.det(basis))
+            basis = scale * basis
+        else:
+            basis = scale * np.array(basis)
+            
+        postype = lines[7].strip()[0]
+        if postype in 'sS':
+            # selective dynamics mode
+            err_info = 'POSCAR with selective dynamics mode is not supported'
+            raise NotImplementedError(err_info)
+        elif postype in 'cCkK':
+            # the cartesian mode, convert to direct mode
+            # basis has been scaled above
+            sites = scale * np.array(sites) * np.linalg.inv(basis)
+        else:
+            # direct, fractional coordinates. Do nothing
+            pass
+        
+        self.basis = basis
         self.atom_type = atom_type
         self.atom_num = atom_num
         self.sites = sites
         self.uniquepos()
-        
-        postype = lines[7].strip()
-        if postype[0] in 'dD':
-            pass  # todo: Direct
-        elif postype[0] in 'cCkK':
-            pass  # todo: cooridite
+
 
     def uniquepos(self):
         '''
