@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+
 import argparse
-from defect import formation
-from misc import filein, fileout, filecmpot
+from defect import formation, read_H0, cal_trans, write_bsenergy
+from misc import filein, fileout, filecmpot, filetrans, filedata
 from misc import __prog__, __description__, __version__, __ref__
 from dft import Cell, read_energy, read_ewald, read_volume, \
                 read_evbm, read_evbm_from_ne, read_epsilon
@@ -9,8 +11,9 @@ from cpot import pminmax
 
 
 def get_argparse():
-    footnote = 'If you use {} in your research, '.format(__prog__.lower())
-    footnote += 'please consider citing the following work:{}'.format(__ref__)
+    footnote = '**** Citation of {} ****\n'.format(__prog__)
+    footnote += 'If you have used {}, '.format(__prog__)
+    footnote += 'please cite the following article:{}'.format(__ref__)
     parser = argparse.ArgumentParser(prog=__prog__.lower(),
                                      description='{} - v{}'.format(__description__, __version__),
                                      formatter_class=argparse.RawDescriptionHelpFormatter, 
@@ -67,6 +70,14 @@ def get_argparse():
     parser_chempot.add_argument('-f', '--filename', default=filecmpot, help='Assign filename(default: {})'.format(filecmpot))
     parser_chempot.add_argument('--cond', metavar='WEIGHT', type=float, nargs='+', help='Customized conditions')
 
+    parser_trlevel = sub_parser.add_parser('trlevel', help='Calculate transition levels')
+    parser_trlevel.add_argument('-f', '--filename', default=filetrans, help='Assign filename(default: {})'.format(filetrans))
+    parser_trlevel.add_argument('--emin', type=float, default=-1, help='The upper bound of Fermi level(default: -1)')
+    parser_trlevel.add_argument('--emax', type=float, default= 2, help='The lower bound of Fermi level(default: 2)')
+    parser_trlevel.add_argument('-n', '--npoints', type=int, default=1001, help='The number of points(default: 1001)')
+    parser_trlevel.add_argument('--fenergy', action='store_true', help='To calculate formation energy')
+    parser_trlevel.add_argument('-o', '--output', metavar='FILENAME', default=filedata, help='Output filename(default: {})'.format(filedata))
+
     parser_scfermi = sub_parser.add_parser('scfermi', help='Calculate sc-fermi level')
     parser_scfermi.add_argument('-t', '--temperature', type=float, default=1000, help='Temperature')
     parser_scfermi.add_argument('filename', metavar='FILENAME', nargs='+', help='Defect formation energy file')
@@ -87,8 +98,8 @@ def get_argparse():
     parser_equi.add_argument('-t', '--temperature', type=float, default=1000, help='Temperature')
     parser_equi.add_argument('filename', metavar='FILENAME', nargs='+', help='Defect formation energy file')
     parser_equi.add_argument('--fermi', type=float, nargs='+', default=[0,], help='Fermi level')
-    parser_equi.add_argument('--emin', type=float, default=0, help='The upper bound of Fermi level')
-    parser_equi.add_argument('--emax', type=float, default=1, help='The lower bound of Fermi level')
+    parser_equi.add_argument('--emin', type=float, default=0, help='The upper bound of Fermi level(default: 0)')
+    parser_equi.add_argument('--emax', type=float, default=1, help='The lower bound of Fermi level(default: 1)')
     parser_equi.add_argument('-n', '--npoints', type=int, default=0, help='The number of points')
     parser_equi.add_argument('-r', '--ratio', action='store_true', help='only show key output')
     
@@ -227,6 +238,23 @@ def cmd(arg=None):
                     print(dsp3.format(rst[3]))
                 else:
                     print()
+    elif args.task == 'trlevel':
+        data, volume = read_H0(args.filename)
+        q, H0 = data[:,0].astype('int32'), data[:,1]
+        result, bsdata = cal_trans(q, H0, args.emin, args.emax, 
+                                   Npt=args.npoints, outbsline=True)
+        if not is_quiet:
+            header = ('Valence', 'E_trans/eV', 'E_defect/eV')
+            print('  {:^12s}  {:^12s}  {:^12s}'.format(*header))  
+        dsp = '  {:^12s}  {:^12.2f}  {:^12.2f}'
+        for line in result:
+            print(dsp.format(*line))
+        print()
+        
+        if args.fenergy:
+            write_bsenergy(bsdata, q, args.output, volume, 1)
+            if not is_quiet and is_detail:
+                print('Save formation eneryg data to {}.'.format(args.output))
         
     elif args.task == 'scfermi':
         # scfermi(t, *filenames, doscar='DOSCAR', Evbm=0, detail=False)

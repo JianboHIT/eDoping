@@ -2,8 +2,8 @@ import sys, os, time
 import numpy as np
 from misc import Logger, filein, filetrans, filedata
 from misc import __prog__, __author__, __version__, __date__
-from dft import Cell, read_energy, read_volume
-from dft import read_eigval, read_evbm, read_pot
+from dft import Cell, read_energy, read_volume, \
+                read_eigval, read_evbm, read_pot
 
 
 __all__ = ['InputList', 'formation', 'read_formation', 'read_H0',
@@ -535,7 +535,7 @@ def write_bsenergy(data, q, filename=filedata, volume=1, gx=1):
     None.
 
     '''
-    dsp = 'Ef, Eformation, q, ' + ', q_{:+d}' * len(q)
+    dsp = 'Ef, Eformation, q ' + ', q_{:+d}' * len(q)
     header = dsp.format(*q)
     header += '; {:>12.4f}    {}'.format(volume, gx)
     np.savetxt(filename, data, fmt='%.4f', header=header)
