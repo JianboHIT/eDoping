@@ -1,6 +1,7 @@
 from misc import required, filecmpot
 import numpy as np
 from io import StringIO
+from collections import Iterable
 
 
 try:
@@ -11,7 +12,7 @@ else:
     is_import_lnp = True
 
 
-def read_cmpot(filename=filecmpot):
+def read_cmpot(filename=filecmpot, eq_idx=0):
     with open(filename, 'r') as f:
         lines = f.readlines()
         
@@ -33,13 +34,33 @@ def read_cmpot(filename=filecmpot):
     else:
         header = header[:Nelmt]
     
-    st_eq_idx = np.all(data, axis=-1)
-    st_eq_coefs = coefs[st_eq_idx, :]
-    st_eq_energy = energy[st_eq_idx, :]
+    # st_eq_idx = np.all(data, axis=-1)
+    # st_eq_coefs = coefs[st_eq_idx, :]
+    # st_eq_energy = energy[st_eq_idx, :]
+    # 
+    # st_ub_idx = np.logical_not(st_eq_idx)
+    # st_ub_coefs = coefs[st_ub_idx, :]
+    # st_ub_energy = energy[st_ub_idx, :]
     
-    st_ub_idx = np.logical_not(st_eq_idx)
-    st_ub_coefs = coefs[st_ub_idx, :]
-    st_ub_energy = energy[st_ub_idx, :]
+    if not isinstance(eq_idx, Iterable):
+        eq_idx = [eq_idx, ]
+    
+    st_eq_coefs  = []
+    st_eq_energy = []
+    st_ub_coefs  = []
+    st_ub_energy = []
+    for i, (c, e) in enumerate(zip(coefs, energy)):
+        if i in eq_idx:
+            st_eq_coefs.append(c)
+            st_eq_energy.append(e)
+        else:
+            st_ub_coefs.append(c)
+            st_ub_energy.append(e)
+
+    st_eq_coefs  = np.vstack(st_eq_coefs)
+    st_eq_energy = np.vstack(st_eq_energy) 
+    st_ub_coefs  = np.vstack(st_ub_coefs)
+    st_ub_energy = np.vstack(st_ub_energy)
     
     return header, (st_ub_coefs, st_ub_energy, st_eq_coefs, st_eq_energy)
 
@@ -65,6 +86,7 @@ def pminmax(filename, objcoefs=None):
     labels, constraints = read_cmpot(filename)
     A_ub, b_ub, A_eq, b_eq = constraints
     bounds = (None, None)
+    # print(A_ub, b_ub, A_eq, b_eq, bounds)
     
     if objcoefs is None:
         names = labels

@@ -139,7 +139,7 @@ def scfermi(t, *filenames, doscar='DOSCAR', Evbm=0, detail=False):
     dosE, dosV = np.array(read_dos(doscar, efermi=Evbm))   # energy and dos_value
     Nele = trapezoid((dosE<=0)*dosV, dosE)
     np.savetxt('data.dat', np.c_[dosE, (dosE<=0)*dosV], fmt='%.4f')
-    print(Evbm, Nele)
+    # print(Evbm, Nele)
 
     defect = []
     volume = []
