@@ -1,1 +1,22 @@
-/__pycache__
+# My Ignore
+/note*
+/test/
+/doc/
+/example/
+/new/
+/public/
+/src0/
+/src2.0/
+/tmp/
+
+# VS code
+/.vscode
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+*.egg-info/
