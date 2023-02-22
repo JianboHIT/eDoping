@@ -1,9 +1,9 @@
 import sys, os, time
 import numpy as np
-from misc import Logger, filein, filetrans, filedata
-from misc import __prog__, __author__, __version__, __date__
-from dft import Cell, read_energy, read_volume, \
-                read_eigval, read_evbm, read_pot
+from .misc import Logger, filein, filetrans, filedata
+from .misc import __prog__, __author__, __version__, __date__
+from .dft import Cell, read_energy, read_volume, \
+                 read_eigval, read_evbm, read_pot
 
 
 __all__ = ['InputList', 'formation', 'read_formation', 'read_H0',

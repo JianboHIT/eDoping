@@ -1,8 +1,6 @@
-from misc import required, filecmpot
 import numpy as np
 from io import StringIO
 from collections import Iterable
-
 
 try:
     from scipy.optimize import linprog
@@ -11,6 +9,7 @@ except:
 else:
     is_import_lnp = True
 
+from .misc import required, filecmpot
 
 def read_cmpot(filename=filecmpot, eq_idx=0):
     with open(filename, 'r') as f:

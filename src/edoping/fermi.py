@@ -1,8 +1,4 @@
-from misc import required
-from defect import read_formation, read_H0
-from dft import read_dos
 import numpy as np
-
 
 try:
     from scipy.interpolate import interp1d
@@ -15,6 +11,10 @@ except:
     is_import_scipy = False
 else:
     is_import_scipy = True
+
+from .misc import required
+from .defect import read_formation, read_H0
+from .dft import read_dos
 
 
 def fd(x):

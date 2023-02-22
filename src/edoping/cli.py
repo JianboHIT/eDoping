@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 import argparse
-from defect import formation, read_H0, cal_trans, write_bsenergy
-from misc import filein, fileout, filecmpot, filetrans, filedata
-from misc import __prog__, __description__, __version__, __ref__
-from dft import Cell, read_energy, read_ewald, read_volume, \
-                read_evbm, read_evbm_from_ne, read_epsilon
-from fermi import scfermi, scfermi_fz, equ_defect
-from cpot import pminmax
+from .defect import formation, read_H0, cal_trans, write_bsenergy
+from .misc import filein, fileout, filecmpot, filetrans, filedata
+from .misc import __prog__, __description__, __version__, __ref__
+from .dft import Cell, read_energy, read_ewald, read_volume, \
+                 read_evbm, read_evbm_from_ne, read_epsilon
+from .fermi import scfermi, scfermi_fz, equ_defect
+from .cpot import pminmax
 
 
 def get_argparse():
