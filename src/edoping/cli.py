@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 import argparse
-from .defect import formation, read_H0, cal_trans, write_bsenergy
+from .defect import formation, read_H0, cal_trans, cal_rdf, write_bsenergy
 from .misc import filein, fileout, filecmpot, filetrans, filedata
 from .misc import __prog__, __description__, __version__, __ref__
-from .dft import Cell, read_energy, read_ewald, read_volume, \
+from .dft import Cell, _Cell, read_energy, read_ewald, read_volume, \
                  read_evbm, read_evbm_from_ne, read_epsilon
 from .fermi import scfermi, scfermi_fz, equ_defect
 from .cpot import pminmax
@@ -61,6 +61,13 @@ def get_argparse():
     parser_replace.add_argument('new', metavar='Y', help='Name of present atom')
     parser_replace.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Input filename(default: POSCAR)')
     parser_replace.add_argument('-o', '--output', metavar='FILENAME', default='POSCAR', help='Output filename(default: POSCAR)')
+    
+    parser_groupby = sub_parser.add_parser('groupby', help='Group atoms by RDF')
+    parser_groupby.add_argument('-f', '--filename', default='POSCAR', help='Assign filename(default: POSCAR)')
+    parser_groupby.add_argument('atom', metavar='ATOM', help='The name of element to groupby')
+    parser_groupby.add_argument('--head', type=int, default=30, help='The number of atoms in the nearest neighbor(default: 30)')
+    parser_groupby.add_argument('--pad', type=int, default=2, help='Number of values padded to the cell sides(default: 2)')
+    parser_groupby.add_argument('--digits', type=int, default=1, help='Given precision in decimal digits(default: 1)')
     
     parser_diff = sub_parser.add_parser('diff', help='Compare two POSCAR')
     parser_diff.add_argument('filename1', help='Filename of the first POSCAR')
@@ -204,6 +211,28 @@ def cmd(arg=None):
         dsp = 'Replace {} by {}, and new POSCAR is saved to {}'
         if not is_quiet:
             print(dsp.format(args.old, args.new, args.output))
+    elif args.task == 'groupby':
+        pos = _Cell(poscar=args.filename)
+        Natom = len(pos.sites[args.atom])
+        kwargs = {
+            'atom_idx': [(args.atom, idx+1) for idx in range(Natom)],
+            'nhead': args.head,
+            'npad': args.pad,
+            'ndigits': args.digits,
+        }
+        dists = cal_rdf(pos, **kwargs)
+        infos = list(dists.keys())
+        for i, k in enumerate(infos):
+            print('Group #{}: {}'.format(i+1, ', '.join(dists[k])))
+        print()
+        headers = ['Group #{}'.format(i+1) for i in range(len(infos))]
+        print('===={}'.format('='.join(['='*18 for _ in headers])))
+        print('No.|{}'.format('|'.join(['{:^18s}'.format(header) for header in headers])))
+        print('---+{}'.format('+'.join(['-'*18 for _ in headers])))
+        for i, dts in enumerate(zip(*infos)):
+            contents = ['{}'.format(dt) for dt in dts]
+            print('{:^3d}|{}'.format(i, '|'.join(['{:^18s}'.format(cont) for cont in contents])))
+        print('===={}'.format('='.join(['='*18 for _ in headers])))
     elif args.task == 'diff':
         c1 = Cell(poscar=args.filename1)
         c2 = Cell(poscar=args.filename2)
