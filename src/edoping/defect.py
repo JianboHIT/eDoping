@@ -1,5 +1,6 @@
 import sys, os, time
 import numpy as np
+from collections import defaultdict
 from .misc import Logger, filein, filetrans, filedata
 from .misc import __prog__, __author__, __version__, __date__
 from .dft import Cell, read_energy, read_volume, \
@@ -513,7 +514,40 @@ def cal_trans(q, H0, Emin=-1, Emax=2, Npt=1001, outbsline=False):
         return result, bsdata
     else:
         return result
+
+def cal_rdf(cell, atom_idx=(), nhead=30, npad=2, ndigits=1):
+    basis = np.array(cell.basis)
+    sites = cell.sites
+    origin = [sites[atom][idx-1] for atom, idx in atom_idx]
+    origin = np.array(origin).reshape((-1, 1, 3))
     
+    # produce super cell 
+    # npad = 2
+    c1, c2, c3 = np.mgrid[-npad:npad+1, -npad:npad+1, -npad:npad+1]
+    cc = np.c_[c1.flatten(), c2.flatten(), c3.flatten()]    # shape: (-1, 3)
+    
+    # claculate distances
+    dists_ = [defaultdict(list) for _ in range(len(atom_idx))]
+    for elt, site in sites.items():
+        pp = np.reshape(np.array(site), (-1, 1, 1, 3))
+        pp = (pp + cc - origin) @ basis             # shape: (Nspec, Norg, Nsup, 3)
+        pp = np.linalg.norm(pp, ord=2, axis=-1)     # shape: (Nspec, Norg, Nsup)
+        for idx, (dd, pos) in enumerate(zip(pp, site), start=1):
+            for d, dist in zip(dd, dists_):
+                for d_i in d:
+                    dist[(round(d_i, ndigits), elt)].append((idx, pos))
+
+    # nhead = 30
+    fillvalue = (0, 'X', 0)         # if site is less than nhead, use fillvalue
+    dists = defaultdict(list)
+    for (atom, idx), dist in zip(atom_idx, dists_):
+        dt = []
+        keys = iter(sorted(dist))   # get a generator of sorted keys
+        for _ in range(nhead+1):
+            key = next(keys, fillvalue)
+            dt.append(key+(len(dist[key]), ))   # key: (loc, elt, Ncount)
+        dists[tuple(dt)].append(f'{atom}{idx}') # value: label of centre atoms 
+    return dists
 
 def write_bsenergy(data, q, filename=filedata, volume=1, gx=1):
     '''
