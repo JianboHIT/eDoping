@@ -61,7 +61,7 @@ class Cell():
         elif postype in 'cCkK':
             # the cartesian mode, convert to direct mode
             # basis has been scaled above
-            sites = scale * np.array(sites) * np.linalg.inv(basis)
+            sites = np.array(sites) @ np.linalg.inv(basis)
         else:
             # direct, fractional coordinates. Do nothing
             pass
