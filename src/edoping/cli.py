@@ -11,7 +11,8 @@ from .fermi import scfermi, scfermi_fz, equ_defect
 from .cpot import pminmax
 
 
-def get_argparse():
+def cmd(arg=None):
+# def get_argparse():
     footnote = '**** Citation of {} ****\n'.format(__prog__)
     footnote += 'If you have used {}, '.format(__prog__)
     footnote += 'please cite the following article:{}'.format(__ref__)
@@ -112,11 +113,11 @@ def get_argparse():
     # parser_equi.add_argument('-n', '--npoints', type=int, default=0, help='The number of points')
     # parser_equi.add_argument('-r', '--ratio', action='store_true', help='only show key output')
     
-    return parser
+#     return parser
 
 
-def cmd(arg=None):
-    parser = get_argparse()
+# def cmd(arg=None):
+#     parser = get_argparse()
     args = parser.parse_args(arg)
 
     if args.verbosity > 4:
