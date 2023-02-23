@@ -386,7 +386,7 @@ class _Cell():
 
     def write(self, poscar='POSCAR.new', ptype='vasp'):
         '''
-        Write into POSCAR.
+        Write into POSCAR (only support fractional coordinates).
         '''
         basis = self.basis
         sites = self.sites
@@ -409,19 +409,45 @@ class _Cell():
         with open(poscar, 'w') as f:
             f.writelines(lines)
     
-    def pop(self, atom, idx=1, clean=True):
+    def pop(self, atom, idx=1):
         '''
-        Remove atom
+        Remove atom_idx
+
+        Parameters
+        ----------
+        atom : str
+            Type of atom
+        idx : int, optional
+            The index of pop atom (index start from 1), by default 1
+
+        Returns
+        -------
+        ndarray in shape (3,)
+            The postion of pop atom
         '''
         if atom in self.sites:
             pos = self.sites[atom].pop(idx-1)
-            if clean and (len(self.sites[atom]) == 0):
+            if len(self.sites[atom]) == 0:
                 del self.sites[atom]
         else:
             raise RuntimeError(f'Failed to locate {atom}')
         return pos
     
     def insert(self, atom, pos, idx=1, tohead=True):
+        '''
+        Insert a new atom at specified postion
+
+        Parameters
+        ----------
+        atom : str
+            Type of atom
+        pos : ndarray with shape (3,)
+            The position of new atom will be inserted
+        idx : int, optional
+            The index of order to be inserted (start from 1), by default 1
+        tohead : bool, optional
+            Whether to put the species first if it is new, by default True
+        '''
         if atom in self.sites:
             self.sites[atom].insert(idx-1, pos)
         else:
@@ -430,6 +456,19 @@ class _Cell():
                 self.sites.move_to_end(atom, last=False)
 
     def get_volume(self, force=False):
+        '''
+        Calculate volume of cell
+
+        Parameters
+        ----------
+        force : bool, optional
+            Whether to force recomputation, defaults to cached values.
+
+        Returns
+        -------
+        float
+            Volume of cell
+        '''
         volume = self._volume
         if force or (volume is None):
             basis = np.array(self.basis)
@@ -438,6 +477,19 @@ class _Cell():
         return volume
     
     def get_natom(self, force=False):
+        '''
+        Get the total number of atoms in the cell
+
+        Parameters
+        ----------
+        force : bool, optional
+            Whether to force recomputation, defaults to cached values.
+
+        Returns
+        -------
+        float
+            Total number of atoms
+        '''
         natom = self._natom
         if force or (natom is None):
             natom = sum(len(site) for site in self.sites.values())
