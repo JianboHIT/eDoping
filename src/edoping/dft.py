@@ -329,8 +329,6 @@ class _Cell():
     def __init__(self, poscar=None, ptype='vasp'):
         self.basis = np.identity(3)
         self.sites = OrderedDict()
-        self._volume = None     # cache
-        self._natom = None      # cache
         
         if poscar:
             self.read(poscar=poscar, ptype=ptype)
@@ -455,46 +453,19 @@ class _Cell():
             if tohead:
                 self.sites.move_to_end(atom, last=False)
 
-    def get_volume(self, force=False):
+    def get_volume(self):
         '''
         Calculate volume of cell
-
-        Parameters
-        ----------
-        force : bool, optional
-            Whether to force recomputation, defaults to cached values.
-
-        Returns
-        -------
-        float
-            Volume of cell
         '''
-        volume = self._volume
-        if force or (volume is None):
-            basis = np.array(self.basis)
-            volume = np.linalg.det(basis)
-            self._volume = volume
+        basis = np.array(self.basis)
+        volume = np.linalg.det(basis)
         return volume
     
-    def get_natom(self, force=False):
+    def get_natom(self):
         '''
         Get the total number of atoms in the cell
-
-        Parameters
-        ----------
-        force : bool, optional
-            Whether to force recomputation, defaults to cached values.
-
-        Returns
-        -------
-        float
-            Total number of atoms
         '''
-        natom = self._natom
-        if force or (natom is None):
-            natom = sum(len(site) for site in self.sites.values())
-            self._natom = natom
-        return natom
+        return sum(len(site) for site in self.sites.values())
 
     def diff(self, other, ndigits=1, return_same=False):
         '''
