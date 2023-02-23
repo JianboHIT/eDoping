@@ -67,6 +67,7 @@ def get_argparse():
     parser_diff.add_argument('filename2', help='Filename of the second POSCAR')
     
     parser_chempot = sub_parser.add_parser('chempot', help='Calculate chemical potential')
+    parser_chempot.add_argument('-n', '--norm', action='store_true', help='Enable coefficients normalization (if energy/atom is given)')
     parser_chempot.add_argument('-f', '--filename', default=filecmpot, help='Assign filename(default: {})'.format(filecmpot))
     parser_chempot.add_argument('--cond', metavar='WEIGHT', type=float, nargs='+', help='Customized conditions')
 
@@ -210,7 +211,9 @@ def cmd(arg=None):
     elif args.task == 'chempot':
         # pminmax(filename, objcoefs=None)
         # return (name, x0, status, msg),labels
-        results,labels = pminmax(args.filename, objcoefs=args.cond)
+        results,labels = pminmax(args.filename, 
+                                 objcoefs=args.cond,
+                                 normalize=args.norm)
         if is_quiet:
             for rst in results:
                 if is_detail:

@@ -11,7 +11,7 @@ else:
 
 from .misc import required, filecmpot
 
-def read_cmpot(filename=filecmpot, eq_idx=0):
+def read_cmpot(filename=filecmpot, eq_idx=0, normalize=False):
     with open(filename, 'r') as f:
         lines = f.readlines()
         
@@ -24,6 +24,9 @@ def read_cmpot(filename=filecmpot, eq_idx=0):
     data = np.loadtxt(StringIO(''.join(lines)))
     coefs = data[:,:-1]    # (n,Nelmt)
     energy = data[:,-1:]   # (n,1)
+    if normalize:
+        Natom = coefs.sum(axis=-1, keepdims=True)
+        energy *= Natom    # equal to ceefs /= Natom
     Nelmt = coefs.shape[-1]
     if header is None:
         header = [chr(idx+65) for idx in range(Nelmt)]   # A, B, C, ...
@@ -65,7 +68,7 @@ def read_cmpot(filename=filecmpot, eq_idx=0):
 
 
 @required(is_import_lnp, 'scipy')
-def pminmax(filename, objcoefs=None):
+def pminmax(filename, objcoefs=None, normalize=False):  
     '''
     Calculate chemical potential under poor and rich conditions.
 
@@ -75,6 +78,8 @@ def pminmax(filename, objcoefs=None):
         A file contains formation energy.
     objcoefs : float-list
         Customized coefficients of the linear objective function.
+    normalize : bool, optional
+        Whether to normalize coefficients or not, by default False
 
     Returns
     -------
@@ -82,7 +87,7 @@ def pminmax(filename, objcoefs=None):
         [(name, x0, status, msg),...], elmt_labels
 
     '''
-    labels, constraints = read_cmpot(filename)
+    labels, constraints = read_cmpot(filename, normalize=normalize)
     A_ub, b_ub, A_eq, b_eq = constraints
     bounds = (None, None)
     # print(A_ub, b_ub, A_eq, b_eq, bounds)
