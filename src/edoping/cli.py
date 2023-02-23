@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import re
 from .defect import formation, read_H0, cal_trans, cal_rdf, write_bsenergy
 from .misc import filein, fileout, filecmpot, filetrans, filedata
 from .misc import __prog__, __description__, __version__, __ref__
@@ -205,12 +206,32 @@ def cmd(arg=None):
             dsp='The new POSCAR is saved to {}'
             print(dsp.format(args.output))
     elif args.task == 'replace':
-        pos = Cell(poscar=args.input)
-        pos.replace(args.old, args.new)
-        pos.write(poscar=args.output)
+        poscar = _Cell(poscar=args.input)
+        old = re.match(r'([a-zA-Z]+)(\d*)', args.old)
+        if old:
+            atom, idx = old.groups()
+            atom_old = {
+                'atom': atom,
+                'idx': int(idx) if idx else 1
+            }
+        else:
+            raise ValueError('Invaild value: {}'.format(args.old))
+        loc = poscar.pop(**atom_old)
+        new = re.match(r'([a-zA-Z]+)', args.new)
+        if new:
+            atom_new = {
+                'atom': new.groups()[0],
+                'pos': loc
+            }
+        else:
+            raise ValueError('Invaild value: {}'.format(args.new))
+        poscar.insert(**atom_new)
+        poscar.write(poscar=args.output)
         dsp = 'Replace {} by {}, and new POSCAR is saved to {}'
         if not is_quiet:
-            print(dsp.format(args.old, args.new, args.output))
+            label_old = '{}{}'.format(atom_old['atom'], atom_old['idx'])
+            label_new = '{}'.format(atom_new['atom'])
+            print(dsp.format(label_old, label_new, args.output))
     elif args.task == 'groupby':
         pos = _Cell(poscar=args.filename)
         Natom = len(pos.sites[args.atom])
