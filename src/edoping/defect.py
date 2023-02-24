@@ -527,15 +527,15 @@ def cal_rdf(cell, atom_idx=(), nhead=30, npad=2, ndigits=1):
     cc = np.c_[c1.flatten(), c2.flatten(), c3.flatten()]    # shape: (-1, 3)
     
     # claculate distances
-    dists_ = [defaultdict(list) for _ in range(len(atom_idx))]
-    for elt, site in sites.items():
-        pp = np.reshape(np.array(site), (-1, 1, 1, 3))
-        pp = (pp + cc - origin) @ basis             # shape: (Nspec, Norg, Nsup, 3)
-        pp = np.linalg.norm(pp, ord=2, axis=-1)     # shape: (Nspec, Norg, Nsup)
-        for idx, (dd, pos) in enumerate(zip(pp, site), start=1):
-            for d, dist in zip(dd, dists_):
-                for d_i in d:
-                    dist[(round(d_i, ndigits), elt)].append((idx, pos))
+    dists_ = [defaultdict(list) for _ in range(len(atom_idx))]  # len: Norg
+    pp = sum(sites.values(), start=[])
+    pp = np.reshape(np.array(pp), (-1, 1, 1, 3))
+    pp = (pp + cc - origin) @ basis             # shape: (Natom, Norg, Nsup, 3)
+    pp = np.linalg.norm(pp, ord=2, axis=-1)     # shape: (Natom, Norg, Nsup)
+    for (elt, idx, pos), dd in zip(cell.all_pos(), pp):
+        for d, dist in zip(dd, dists_):
+            for d_i in d:
+                dist[(round(d_i, ndigits), elt)].append((idx, pos))
 
     # nhead = 30
     fillvalue = (0, 'X', 0)         # if site is less than nhead, use fillvalue

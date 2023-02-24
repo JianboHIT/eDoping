@@ -399,11 +399,10 @@ class _Cell():
         lines.append(''.join(elts)+'\n')
         lines.append(''.join(nums)+'\n')
         lines.append('Direct\n')
-        for elt, site in sites.items():
-            for idx, pos in enumerate(site, start=1):
-                f_abc = [f'{pos_i:22.15f}' for pos_i in pos]
-                label = f'{elt+str(idx)}'
-                lines.append(''.join(f_abc)+'    '+label+'\n')
+        for elt, idx, pos in self.all_pos():
+            f_abc = [f'{pos_i:22.15f}' for pos_i in pos]
+            label = f'{elt+str(idx)}'
+            lines.append('{}    {}\n'.format(''.join(f_abc), label))
         with open(poscar, 'w') as f:
             f.writelines(lines)
     
@@ -466,6 +465,30 @@ class _Cell():
         Get the total number of atoms in the cell
         '''
         return sum(len(site) for site in self.sites.values())
+    
+    def all_pos(self, atoms=None):
+        '''
+        Yield all (atom, idx, pos) combination
+
+        Parameters
+        ----------
+        atoms : tuple or None, optional
+            Specifies which atoms go into the iterator. If None (by default), all
+            atoms will go into iterator.
+
+        Yields
+        ------
+        tuple
+            (atom, idx, pos)
+        '''
+        if atoms:
+            for atom in atoms:
+                for idx, pos in enumerate(self.sites[atom], start=1):
+                    yield (atom, idx, pos)
+        else:
+            for atom, site in self.sites.items():
+                for idx, pos in enumerate(site, start=1):
+                    yield (atom, idx, pos)
 
     def diff(self, other, ndigits=1, return_same=False):
         '''
@@ -487,28 +510,25 @@ class _Cell():
             If return_same is False, only different part is returned. Otherwise,
             both same and different parts are returned.
         '''
-        # read basis and sites
+
         # cell and the other cell will share the self basis
         basis = np.array(self.basis)
-        sites1 = self.sites
-        sites2 = other.sites
         
         # get hashable pos --> loc: a rounded tuple of pos
         sites1_ = OrderedDict()
         sites2_ = OrderedDict()
-        for sites, sites_ in zip([sites1, sites2], [sites1_, sites2_]):
-            for elt, site in sites.items():
-                for idx, pos in enumerate(site, start=1):
-                    pos_ = (pos - np.floor(pos)) @ basis
-                    loc = tuple(round(pos_i, ndigits) for pos_i in pos_)
-                    if loc in sites_:
-                        # check overlap site within given precision
-                        label_1 = f'{elt}{idx}'
-                        label_2 = f'{sites_[loc][0]}{sites_[loc][1]}'
-                        err_close = '{} is too close {} in current cell'
-                        raise RuntimeError(err_close.format(label_1, label_2))
-                    else:
-                        sites_[loc] = [elt, idx, pos]
+        for cell, sites_ in zip([self, other], [sites1_, sites2_]):
+            for elt, idx, pos in cell.all_pos():
+                pos_ = (pos - np.floor(pos)) @ basis
+                loc = tuple(round(pos_i, ndigits) for pos_i in pos_)
+                if loc in sites_:
+                    # check overlap site within given precision
+                    label_1 = f'{elt}{idx}'
+                    label_2 = f'{sites_[loc][0]}{sites_[loc][1]}'
+                    err_close = '{} is too close {} in cell'
+                    raise RuntimeError(err_close.format(label_1, label_2))
+                else:
+                    sites_[loc] = [elt, idx, pos]
         
         # compare pos and find Vac
         only_1 = sites1_.keys() - sites2_.keys()
