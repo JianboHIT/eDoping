@@ -515,7 +515,29 @@ def cal_trans(q, H0, Emin=-1, Emax=2, Npt=1001, outbsline=False):
     else:
         return result
 
-def cal_rdf(cell, atom_idx=(), nhead=30, npad=2, ndigits=1):
+def cal_rdf(cell, atom_idx, nhead=30, npad=2, ndigits=1):
+    '''
+    Calculate radial distribution function (RDF) correlative
+
+    Parameters
+    ----------
+    cell : Cell
+        A Cell object
+    atom_idx : list
+        List of tuple in (atom, idx)
+    nhead : int, optional
+        The number of nearest neighbors to consider, by default 30
+    npad : int, optional
+        The number of padding unit-cell at one side, by default 2
+    ndigits : int, optional
+        The number of digits of decimal precision, by default 1
+
+    Returns
+    -------
+    dict:
+        key: a tuple in (loc, elt, Ncount)
+        value: label of given centre atoms
+    '''
     basis = np.array(cell.basis)
     sites = cell.sites
     origin = [sites[atom][idx-1] for atom, idx in atom_idx]
@@ -528,7 +550,7 @@ def cal_rdf(cell, atom_idx=(), nhead=30, npad=2, ndigits=1):
     
     # claculate distances
     dists_ = [defaultdict(list) for _ in range(len(atom_idx))]  # len: Norg
-    pp = np.vstack(sites.values())
+    pp = np.vstack(list(sites.values()))
     pp = np.reshape(np.array(pp), (-1, 1, 1, 3))
     pp = (pp + cc - origin) @ basis             # shape: (Natom, Norg, Nsup, 3)
     pp = np.linalg.norm(pp, ord=2, axis=-1)     # shape: (Natom, Norg, Nsup)
