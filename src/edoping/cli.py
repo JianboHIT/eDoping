@@ -2,7 +2,7 @@
 
 import argparse
 import re
-from .defect import formation, read_H0, cal_trans, cal_rdf, write_bsenergy
+from .defect import formation, read_H0, cal_trans, cal_rdf, diff_cell, write_bsenergy
 from .misc import filein, fileout, filecmpot, filetrans, filedata
 from .misc import __prog__, __description__, __version__, __ref__
 from .dft import Cell, _Cell, read_energy, read_ewald, read_volume, \
@@ -64,14 +64,20 @@ def cmd(arg=None):
     parser_replace.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Input filename(default: POSCAR)')
     parser_replace.add_argument('-o', '--output', metavar='FILENAME', default='POSCAR', help='Output filename(default: POSCAR)')
     
-    parser_groupby = sub_parser.add_parser('groupby', help='Group atoms by RDF')
+    parser_groupby = sub_parser.add_parser('groupby', help='Group atoms by radial distribution function')
     parser_groupby.add_argument('-f', '--filename', default='POSCAR', help='Assign filename(default: POSCAR)')
     parser_groupby.add_argument('atom', metavar='ATOM', help='The name of element to groupby')
     parser_groupby.add_argument('--head', type=int, default=30, help='The number of atoms in the nearest neighbor(default: 30)')
     parser_groupby.add_argument('--pad', type=int, default=2, help='Number of values padded to the cell sides(default: 2)')
     parser_groupby.add_argument('--digits', type=int, default=1, help='Given precision in decimal digits(default: 1)')
     
-    parser_diff = sub_parser.add_parser('diff', help='Compare two POSCAR')
+    parser_cmp = sub_parser.add_parser('cmp', help='Compare two POSCAR')
+    parser_cmp.add_argument('filename1', help='Filename of the first POSCAR')
+    parser_cmp.add_argument('filename2', help='Filename of the second POSCAR')
+    
+    parser_diff = sub_parser.add_parser('diff', help='Show difference between two POSCAR')
+    parser_diff.add_argument('-c', '--pred', type=float, default=0.2, help='The precision of distance(default: 0.2)')
+    parser_diff.add_argument('-b', '--preb', type=float, default=0.05, help='The precision of bounds(default: 0.05)')
     parser_diff.add_argument('filename1', help='Filename of the first POSCAR')
     parser_diff.add_argument('filename2', help='Filename of the second POSCAR')
     
@@ -255,10 +261,35 @@ def cmd(arg=None):
             contents = ['{}'.format(dt) for dt in dts]
             print('{:^3d}|{}'.format(i, '|'.join(['{:^18s}'.format(cont) for cont in contents])))
         print('===={}'.format('='.join(['='*18 for _ in headers])))
-    elif args.task == 'diff':
+    elif args.task == 'cmp':
         c1 = Cell(poscar=args.filename1)
         c2 = Cell(poscar=args.filename2)
         c1.diff(c2, showdetail=is_detail, showdiff=True)
+    elif args.task == 'diff':
+        c1 = _Cell(poscar=args.filename1)
+        c2 = _Cell(poscar=args.filename2)
+        diffs = diff_cell(c1, c2, 
+                          prec_dist=args.pred,
+                          prec_bound=args.preb)
+        outs = []
+        for idx, out in enumerate(diffs, start=1):
+            state, pos, elt1, idx1, elt2, idx2 = out
+            label1 = '{}{}'.format(elt1, idx1)
+            label2 = '{}{}'.format(elt2, idx2)
+            outs.append([state, idx, *pos, label1, label2])
+        
+        dsp_head = '{:^7s}{:^8}{:^8}{:^8}{:^12s}{:^12s}'
+        head = dsp_head.format('No.','f_a', 'f_b', 'f_c', 'previous', 'present')
+        dsp = '{:^3s}{:<4d}{:>8.4f}{:>8.4f}{:>8.4f}{:^12s}{:^12s}'
+        
+        if is_detail:
+            print(head)
+            for line in outs:
+                print(dsp.format(*line))
+            print('\nDifferent:')
+        print(head)
+        for line in filter(lambda x: x[0], outs):
+            print(dsp.format(*line))
     elif args.task == 'chempot':
         # pminmax(filename, objcoefs=None)
         # return (name, x0, status, msg),labels
