@@ -557,68 +557,6 @@ class _Cell():
                 for idx, pos in enumerate(site, start=1):
                     yield (atom, idx, pos)
 
-    def diff(self, other, ndigits=1, return_same=False):
-        '''
-        Compare to another Cell() object
-
-        Parameters
-        ----------
-        other : Cell
-            Another Cell() objcet, which nust has the same basis vectors.
-        ndigits : int, optional
-            Given precision in decimal digits, by default 1
-        return_same : bool, optional
-            If True, also return the same part. By default False, and only
-            return different site.
-
-        Returns
-        -------
-        list [, list]
-            If return_same is False, only different part is returned. Otherwise,
-            both same and different parts are returned.
-        '''
-
-        # cell and the other cell will share the self basis
-        basis = np.array(self.basis)
-        
-        # get hashable pos --> loc: a rounded tuple of pos
-        sites1_ = OrderedDict()
-        sites2_ = OrderedDict()
-        for cell, sites_ in zip([self, other], [sites1_, sites2_]):
-            for elt, idx, pos in cell.all_pos():
-                pos_ = (pos - np.floor(pos)) @ basis
-                loc = tuple(round(pos_i, ndigits) for pos_i in pos_)
-                if loc in sites_:
-                    # check overlap site within given precision
-                    label_1 = f'{elt}{idx}'
-                    label_2 = f'{sites_[loc][0]}{sites_[loc][1]}'
-                    err_close = '{} is too close {} in cell'
-                    raise RuntimeError(err_close.format(label_1, label_2))
-                else:
-                    sites_[loc] = [elt, idx, pos]
-        
-        # compare pos and find Vac
-        only_1 = sites1_.keys() - sites2_.keys()
-        only_2 = sites2_.keys() - sites1_.keys()
-        for idx, loc in enumerate(only_1, start=1):
-            sites2_[loc] = ['Vac', idx, sites1_[loc][2]]
-        for idx, loc in enumerate(only_2, start=1):
-            sites1_[loc] = ['Vac', idx, sites2_[loc][2]]
-        
-        # compare element type pos-to-pos
-        sames, replaces = [], []   # [(value_1, value_2), ...]
-        for key in sites1_.keys():
-            value_1 = sites1_[key]
-            value_2 = sites2_[key]
-            if value_1[0] == value_2[0]:
-                sames.append((value_1, value_2))
-            else:
-                replaces.append((value_1, value_2))
-        if return_same:
-            return replaces, sames
-        else:
-            return replaces
-
 
 def read_energy(outcar='OUTCAR'):
     '''
