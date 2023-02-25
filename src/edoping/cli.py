@@ -76,8 +76,7 @@ def cmd(arg=None):
     parser_cmp.add_argument('filename2', help='Filename of the second POSCAR')
     
     parser_diff = sub_parser.add_parser('diff', help='Show difference between two POSCAR')
-    parser_diff.add_argument('-c', '--pred', type=float, default=0.2, help='The precision of distance(default: 0.2)')
-    parser_diff.add_argument('-b', '--preb', type=float, default=0.05, help='The precision of bounds(default: 0.05)')
+    parser_diff.add_argument('-p', '--prec', type=float, default=0.2, help='The precision of distance(default: 0.2)')
     parser_diff.add_argument('filename1', help='Filename of the first POSCAR')
     parser_diff.add_argument('filename2', help='Filename of the second POSCAR')
     
@@ -268,9 +267,7 @@ def cmd(arg=None):
     elif args.task == 'diff':
         c1 = _Cell(poscar=args.filename1)
         c2 = _Cell(poscar=args.filename2)
-        diffs = diff_cell(c1, c2, 
-                          prec_dist=args.pred,
-                          prec_bound=args.preb)
+        diffs = diff_cell(c1, c2, prec=args.prec)
         outs = []
         for idx, out in enumerate(diffs, start=1):
             state, pos, elt1, idx1, elt2, idx2 = out
