@@ -549,7 +549,7 @@ def cal_rdf(cell, atom_idx=(), nhead=30, npad=2, ndigits=1):
         dists[tuple(dt)].append(f'{atom}{idx}') # value: label of centre atoms 
     return dists
 
-def diff_cell(cell_1, cell_2, prec_dist=0.2, prec_bound=0.05):
+def diff_cell(cell_1, cell_2, prec=0.2):
         '''
         Compare two Cell() object
 
@@ -559,10 +559,8 @@ def diff_cell(cell_1, cell_2, prec_dist=0.2, prec_bound=0.05):
             The first Cell() object
         cell_2 : Cell
             The other Cell() objcet, which nust has the same basis vectors.
-        prec_dist : float, optional
+        prec : float, optional
             The precision to determine if the positions coincide, by default 0.2
-        prec_bound : float, optional
-            The precision to determine the bound range, by default 0.05
 
         Returns
         -------
@@ -593,18 +591,21 @@ def diff_cell(cell_1, cell_2, prec_dist=0.2, prec_bound=0.05):
         # get all site positons, and move 1-bound to 0-bound
         elts1, idxs1, poss1 = zip(*cell_1.all_pos())
         pp1 = np.array(poss1).reshape((-1, 1, 3))   # shape: (N1, 1, 3)
-        pp1[np.abs(pp1-1) < prec_bound] = 0
         
         elts2, idxs2, poss2 = zip(*cell_2.all_pos())
         pp2 = np.array(poss2)                       # shape: (N2, 3)
-        pp2[np.abs(pp2-1) < prec_bound] = 0
         
-        dr = (pp2 - pp1) @ basis
-        dists = np.linalg.norm(dr, ord=2, axis=-1)  # shape: (N1, N2)
+        c1, c2, c3 = np.mgrid[-1:2,-1:2,-1:2]
+        cc = np.c_[c1.flatten(),c2.flatten(),c3.flatten()]
+        cc = np.reshape(cc, (-1, 1, 1, 3))          # shape: (27, 1, 1, 3)
+        
+        dr = (cc + pp2 - pp1) @ basis
+        dists = np.linalg.norm(dr, ord=2, axis=-1)  # shape: (27, N1, N2)
+        dmin = np.min(dists, axis=0)
         
         outs = []
         Vac_idx = 0
-        compare = (dists < prec_dist)               # shape: (N1, N2)
+        compare = (dmin < prec)                     # shape: (N1, N2)
         for elt1, idx1, pos1, cmp in zip(elts1, idxs1, poss1, compare):
             ix = np.where(cmp)[0]
             if len(ix):
