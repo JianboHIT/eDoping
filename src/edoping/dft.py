@@ -466,6 +466,73 @@ class _Cell():
         '''
         return sum(len(site) for site in self.sites.values())
     
+    def get_pos(self, numbers):
+        '''
+        Get (atom, idx, pos) combination from given numbers (start from 1)
+
+        Parameters
+        ----------
+        numbers : List[int]
+            List of global idx (start from 1)
+
+        Returns
+        -------
+        list
+            [(atom, idx, pos), ...]
+        '''
+        all_pos = list(self.all_pos())
+        return [all_pos[round(i)-1] for i in numbers]
+    
+    def get_dist(self, pos):
+        '''
+        Calculate distance between given positions and all sites in cell
+
+        Parameters
+        ----------
+        pos : List[pos]
+            List of positions to calculate distances
+
+        Returns
+        -------
+        list or ndarray
+            [(atom, idx, pos), ...] if enable nearest_site, otherwise return a ndarray of 
+            distances in shape (N_pos, N_cell_sites)
+        '''
+        
+        # get all site positons
+        poss = np.vstack(list(self.sites.values()))
+        pp1 = np.array(poss).reshape((-1, 1, 3))    # shape: (N1, 1, 3)
+        
+        pp2 = np.array(pos)                         # shape: (N2, 3)
+        
+        c1, c2, c3 = np.mgrid[-1:2,-1:2,-1:2]
+        cc = np.c_[c1.flatten(),c2.flatten(),c3.flatten()]
+        cc = np.reshape(cc, (-1, 1, 1, 3))          # shape: (27, 1, 1, 3)
+        
+        # find the nearest site
+        dr = (pp2 - pp1 + cc) @ np.array(self.basis)
+        dists = np.linalg.norm(dr, ord=2, axis=-1)  # shape: (27, N1, N2)
+        dmin = np.min(dists, axis=0)                # shape: (N1, N2)
+        return np.transpose(dmin)                   # shape: (N2, N1)
+    
+    def loc_pos(self, pos):
+        '''
+        Locate the nearest site in cell to corresponding given position
+
+        Parameters
+        ----------
+        pos : List[pos]
+            List of positions to be located at.
+
+        Returns
+        -------
+        list
+            [(atom, idx, pos), ...]
+        '''
+        dmin = self.get_dist(pos)
+        ix = np.argmin(dmin, axis=-1)
+        return self.get_pos(ix+1)
+    
     def all_pos(self, atoms=None):
         '''
         Yield all (atom, idx, pos) combination
