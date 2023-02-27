@@ -77,6 +77,7 @@ def cmd(arg=None):
     
     parser_diff = sub_parser.add_parser('diff', help='Show difference between two POSCAR')
     parser_diff.add_argument('-p', '--prec', type=float, default=0.2, help='The precision of distance(default: 0.2)')
+    parser_diff.add_argument('-d', '--distance', action='store_true', help='Calculate sum of distances between sites and detected defects')
     parser_diff.add_argument('filename1', help='Filename of the first POSCAR')
     parser_diff.add_argument('filename2', help='Filename of the second POSCAR')
     
@@ -268,25 +269,48 @@ def cmd(arg=None):
         c1 = _Cell(poscar=args.filename1)
         c2 = _Cell(poscar=args.filename2)
         diffs = diff_cell(c1, c2, prec=args.prec)
-        outs = []
+        defects, poss, outs, = [], [], []
         for idx, out in enumerate(diffs, start=1):
             state, pos, elt1, idx1, elt2, idx2 = out
             label1 = '{}{}'.format(elt1, idx1)
             label2 = '{}{}'.format(elt2, idx2)
-            outs.append([state, idx, *pos, label1, label2])
+            out = [state, idx, *pos, label1, label2]
+            if state:
+                defects.append(pos)
+            poss.append(pos)
+            outs.append(out)
         
+        if len(defects) == 0:
+            is_same = True
+            args.distance = False
+        else:
+            is_same = False
+
         dsp_head = '{:^7s}{:^8}{:^8}{:^8}{:^12s}{:^12s}'
         head = dsp_head.format('No.','f_a', 'f_b', 'f_c', 'previous', 'present')
         dsp = '{:^3s}{:<4d}{:>8.4f}{:>8.4f}{:>8.4f}{:^12s}{:^12s}'
         
-        if is_detail:
+        if args.distance:
+            head += '{:^12s}'.format('d_min')
+            dsp += '{:^12.2f}'
+            c1.sites = dict(X=poss)
+            dd = c1.get_dist(defects).sum(axis=0)   # shape: (N_defect, N_poss) -> (N_defect,)
+            for out, d in zip(outs, dd):
+                out.append(d)
+
+        if not is_quiet:
+            if is_detail:
+                print(head)
+                for out in outs:
+                    print(dsp.format(*out))
+                print('\nDifferent:')
             print(head)
-            for line in outs:
-                print(dsp.format(*line))
-            print('\nDifferent:')
-        print(head)
-        for line in filter(lambda x: x[0], outs):
-            print(dsp.format(*line))
+        if is_same:
+            dsp = 'No difference is found between {} and {} within the limit of error!'
+            print(dsp.format(args.filename1, args.filename2))
+        else:
+            for out in filter(lambda x: x[0], outs):
+                print(dsp.format(*out))
     elif args.task == 'chempot':
         # pminmax(filename, objcoefs=None)
         # return (name, x0, status, msg),labels
