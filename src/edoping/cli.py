@@ -12,7 +12,6 @@ from .cpot import pminmax
 
 
 def cmd(arg=None):
-# def get_argparse():
     footnote = '**** Citation of {} ****\n'.format(__prog__)
     footnote += 'If you have used {}, '.format(__prog__)
     footnote += 'please cite the following article:{}'.format(__ref__)
@@ -115,11 +114,6 @@ def cmd(arg=None):
     # parser_equi.add_argument('-n', '--npoints', type=int, default=0, help='The number of points')
     # parser_equi.add_argument('-r', '--ratio', action='store_true', help='only show key output')
     
-#     return parser
-
-
-# def cmd(arg=None):
-#     parser = get_argparse()
     args = parser.parse_args(arg)
 
     if args.verbosity > 4:
@@ -185,13 +179,10 @@ def cmd(arg=None):
             print(('CBM: ' + pf).format(cb[0]))
             print(('GAP: ' + pf).format(gp))
     elif args.task == 'boxhyd':
-        pos = Cell(poscar=args.input)
-        poshyd = Cell()
+        pos = _Cell(poscar=args.input)
+        poshyd = _Cell()
         poshyd.basis = pos.basis
-        poshyd.atom_type = ['H']
-        poshyd.atom_num = [1]
-        poshyd.sites = [[0,0,0]]
-        poshyd.uniquepos()
+        poshyd.sites['H'] = [[0,0,0]]
         poshyd.write(args.output)
         if not is_quiet:
             dsp='The new POSCAR is saved to {}'
