@@ -779,30 +779,19 @@ def read_dos(doscar='DOSCAR', efermi=0):
     with open(doscar, 'r') as f:
         data = f.readlines()
 
-    # Auto detect DOSCAR of tdos.dat
+    # detect DOSCAR
     num_i = [len(line.strip().split()) for line in data[:6]]
-    ck = [num_i[0] == 4, num_i[2] == 1, num_i[3] == 1]
-    isDOSCAR = True if all(ck) else False
-
-    if isDOSCAR:
+    if doscar == 'DOSCAR' or all([num_i[0] == 4, num_i[2] == 1, num_i[3] == 1]):
+        # treat as DOSCAR file
         NEDOS = int(data[5].strip().split()[2])
-        data_select = data[6:6+NEDOS]
-    else:
-        data_select = data
+        data = data[6:6+NEDOS]
 
-    energy, dos = _read_dos(data_select, efermi)
-    return energy, dos
-
-
-def _read_dos(data, fermi=0):
-    '''
-    Read dos from text list
-    '''
     energy = []
     dos = []
     for line in data:
         if not line.startswith('#'):
             data = [float(item) for item in line.strip().split()]
-            energy.append(data[0]-fermi)
+            energy.append(data[0]-efermi)
             dos.append(data[1])
+
     return energy, dos
