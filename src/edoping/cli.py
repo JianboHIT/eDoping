@@ -71,10 +71,6 @@ def cmd(arg=None):
     parser_groupby.add_argument('--pad', type=int, default=2, help='Number of values padded to the cell sides(default: 2)')
     parser_groupby.add_argument('--digits', type=int, default=1, help='Given precision in decimal digits(default: 1)')
     
-    parser_cmp = sub_parser.add_parser('cmp', help='Compare two POSCAR')
-    parser_cmp.add_argument('filename1', help='Filename of the first POSCAR')
-    parser_cmp.add_argument('filename2', help='Filename of the second POSCAR')
-    
     parser_diff = sub_parser.add_parser('diff', help='Show difference between two POSCAR')
     parser_diff.add_argument('-p', '--prec', type=float, default=0.2, help='The precision of distance(default: 0.2)')
     parser_diff.add_argument('-d', '--distance', action='store_true', help='Calculate sum of distances between sites and detected defects')
@@ -261,10 +257,6 @@ def cmd(arg=None):
             contents = ['{}'.format(dt) for dt in dts]
             print('{:^3d}|{}'.format(i, '|'.join(['{:^18s}'.format(cont) for cont in contents])))
         print('===={}'.format('='.join(['='*18 for _ in headers])))
-    elif args.task == 'cmp':
-        c1 = Cell(poscar=args.filename1)
-        c2 = Cell(poscar=args.filename2)
-        c1.diff(c2, showdetail=is_detail, showdiff=True)
     elif args.task == 'diff':
         c1 = _Cell(poscar=args.filename1)
         c2 = _Cell(poscar=args.filename2)
