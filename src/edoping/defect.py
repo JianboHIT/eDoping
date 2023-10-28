@@ -646,6 +646,41 @@ def diff_cell(cell_1, cell_2, prec=0.2):
             outs.append(['i', pos2, 'Vac', Vac_idx, elt2, idx2])
         return outs
 
+def move_pos(pos, basis, dr=(0,0,0), cartesian=False):
+    '''
+    Move atom positions based on the given offset.
+    
+    Parameters
+    ----------
+    pos : ndarray of shape (..., 3)
+        Fractional coordinates of the atoms to be moved.
+    basis : ndarray of shape (3, 3)
+        Basis vectors.
+    dr : ndarray of shape (3,), optional
+        Offset to move the atom positions by. Defined in the Cartesian 
+        coordinate system if `cartesian` is True, otherwise in fractional 
+        coordinates. Default is (0, 0, 0).
+    cartesian : bool, optional
+        If True, the offset `dr` is defined in the Cartesian coordinate system.
+        Otherwise, it's defined in the fractional coordinate system.
+        Default is False.
+        
+    Returns
+    -------
+    ndarray of shape (..., 3)
+        New atom positions after the move, with the same shape as `pos`.
+    
+    Attention
+    ---------
+    The `pos` parameter is always treated as being in the fractional
+    coordinate system, regardless of the value of the `cartesian` parameter.
+    Only the `dr` offset is affected by the `cartesian` parameter.
+    '''
+    if cartesian:
+        return np.array(pos) + np.array(dr) @ np.linalg.inv(basis)
+    else:
+        return np.array(pos) + np.array(dr)
+
 def write_bsenergy(data, q, filename=filedata, volume=1, gx=1):
     '''
     Write base-energy data to file.
