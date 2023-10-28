@@ -2,7 +2,7 @@
 
 import argparse
 import re
-from .defect import formation, read_H0, cal_trans, cal_rdf, diff_cell, write_bsenergy
+from .defect import formation, read_H0, cal_trans, cal_rdf, diff_cell, move_pos, write_bsenergy
 from .misc import filein, fileout, filecmpot, filetrans, filedata
 from .misc import __prog__, __description__, __version__, __ref__
 from .dft import Cell, _Cell, read_energy, read_ewald, read_volume, \
@@ -54,6 +54,7 @@ def cmd(arg=None):
     parser_move.add_argument('x', type=float, default=0, help='Displacement along x-axis direction')
     parser_move.add_argument('y', type=float, default=0, help='Displacement along y-axis direction')
     parser_move.add_argument('z', type=float, default=0, help='Displacement along z-axis direction')
+    parser_move.add_argument('-c', '--cartesian', action='store_true', help='Displacement is given in Cartesian system')
     parser_move.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Input filename(default: POSCAR)')
     parser_move.add_argument('-o', '--output', metavar='FILENAME', default='POSCAR', help='Output filename(default: POSCAR)')
 
@@ -188,15 +189,19 @@ def cmd(arg=None):
             dsp='The new POSCAR is saved to {}'
             print(dsp.format(args.output))
     elif args.task == 'move':
-        pos = Cell(poscar=args.input)
-        idx = args.index - 1   # convert common 1-start to pythonic 0-start
+        pos = _Cell(poscar=args.input)
+        index = args.index - 1   # convert common 1-start to pythonic 0-start
+        atom, idx, site = list(pos.all_pos())[index]
         dr = [args.x, args.y, args.z]
-        pos.move(idx, dr)
+        site2 = move_pos(site, pos.basis, dr, cartesian=args.cartesian)
+        pos.sites[atom][idx-1] = site2
         pos.write(poscar=args.output)
         if not is_quiet:
             if is_detail:
-                dsp1 = 'Move {} with displacement of ({:.2f}, {:.2f}, {:.2f})'
-                print(dsp1.format(pos.labels[idx], *dr))
+                dsp1 = 'Displacement: [{:.2f}, {:.2f}, {:.2f}]'
+                dsp2 = ' {}{}: ({:.4f}, {:.4f}, {:.4f}) --> ({:.4f}, {:.4f}, {:.4f})'
+                print(dsp1.format(*dr))
+                print(dsp2.format(atom, idx, *site, *site2))
             dsp='The new POSCAR is saved to {}'
             print(dsp.format(args.output))
     elif args.task == 'replace':
