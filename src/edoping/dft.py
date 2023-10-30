@@ -429,7 +429,17 @@ class _Cell():
         else:
             raise RuntimeError(f'Failed to locate {atom}')
         return pos
-    
+
+    def index(self, atom, idx=1):
+        '''
+        Get global index (1-start) from atom & idx (1-start)
+        '''
+        for index_, (atom_, idx_, *_) in enumerate(self.all_pos(), start=1):
+            if (atom == atom_) and (idx == idx_):
+                return index_
+        else:
+            return -1
+
     def insert(self, atom, pos, idx=1, tohead=True):
         '''
         Insert a new atom at specified postion
@@ -494,16 +504,19 @@ class _Cell():
 
         Returns
         -------
-        list or ndarray
-            [(atom, idx, pos), ...] if enable nearest_site, otherwise return a ndarray of 
-            distances in shape (N_pos, N_cell_sites)
+        ndarray
+            A ndarray of distances in shape (N_pos, N_cell_sites)
         '''
         
         # get all site positons
         poss = np.vstack(list(self.sites.values()))
         pp1 = np.array(poss).reshape((-1, 1, 3))    # shape: (N1, 1, 3)
         
-        pp2 = np.array(pos)                         # shape: (N2, 3)
+        pp2 = np.atleast_2d(pos)                    # shape: (N2, 3)
+        if pp2.shape[-1] != 3:
+            raise ValueError('The shape of `pos` must is (..., 3)')
+        elif pp2.size == 0:
+            raise ValueError('An empty `pos` is given!')
         
         c1, c2, c3 = np.mgrid[-1:2,-1:2,-1:2]
         cc = np.c_[c1.flatten(),c2.flatten(),c3.flatten()]
