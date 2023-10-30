@@ -4,7 +4,7 @@ import argparse
 import re
 from .defect import formation, read_H0, cal_trans, cal_rdf, \
                     diff_cell, disp_diffs, move_pos, write_bsenergy
-from .misc import filein, fileout, filecmpot, filetrans, filedata, \
+from .misc import filein, filecmpot, filetrans, filedata, \
                   __prog__, __description__, __version__, __ref__
 from .dft import Cell, read_energy, read_ewald, read_volume, \
                  read_evbm, read_evbm_from_ne, read_epsilon
@@ -25,8 +25,7 @@ def cmd(arg=None):
     sub_parser = parser.add_subparsers(title='Tips', metavar='Subcommand', help='Description', dest='task')
 
     parser_cal = sub_parser.add_parser('cal', help='Calculate defect fromation energy')
-    parser_cal.add_argument('-i', '--input', metavar='FILENAME', default=filein, help='Assign input file name')
-    parser_cal.add_argument('-o', '--output', metavar='FILENAME', default=fileout, help='Assign output file name')
+    parser_cal.add_argument('-i', '--input', metavar='FILENAME', default=filein, help=f'Assign filename (default: {filein})')
 
     parser_energy = sub_parser.add_parser('energy', help='Read final energy from OUTCAR')
     parser_energy.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename(default: OUTCAR)')
