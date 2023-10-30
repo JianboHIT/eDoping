@@ -4,9 +4,9 @@ import argparse
 import re
 from .defect import formation, read_H0, cal_trans, cal_rdf, \
                     diff_cell, disp_diffs, move_pos, write_bsenergy
-from .misc import filein, fileout, filecmpot, filetrans, filedata
-from .misc import __prog__, __description__, __version__, __ref__
-from .dft import Cell, _Cell, read_energy, read_ewald, read_volume, \
+from .misc import filein, fileout, filecmpot, filetrans, filedata, \
+                  __prog__, __description__, __version__, __ref__
+from .dft import Cell, read_energy, read_ewald, read_volume, \
                  read_evbm, read_evbm_from_ne, read_epsilon
 from .fermi import scfermi, scfermi_fz, equ_defect
 from .cpot import pminmax
@@ -181,8 +181,8 @@ def cmd(arg=None):
             print(('CBM: ' + pf).format(cb[0]))
             print(('GAP: ' + pf).format(gp))
     elif args.task == 'boxhyd':
-        pos = _Cell(poscar=args.input)
-        poshyd = _Cell()
+        pos = Cell(poscar=args.input)
+        poshyd = Cell()
         poshyd.basis = pos.basis
         poshyd.sites['H'] = [[0,0,0]]
         poshyd.write(args.output)
@@ -190,7 +190,7 @@ def cmd(arg=None):
             dsp='The new POSCAR is saved to {}'
             print(dsp.format(args.output))
     elif args.task == 'move':
-        pos = _Cell(poscar=args.input)
+        pos = Cell(poscar=args.input)
         index = args.index - 1   # convert common 1-start to pythonic 0-start
         atom, idx, site = list(pos.all_pos())[index]
         dr = [args.x, args.y, args.z]
@@ -206,7 +206,7 @@ def cmd(arg=None):
             dsp='The new POSCAR is saved to {}'
             print(dsp.format(args.output))
     elif args.task == 'replace':
-        poscar = _Cell(poscar=args.input)
+        poscar = Cell(poscar=args.input)
         old = re.match(r'([a-zA-Z]+)(\d*)', args.old)
         if old:
             atom, idx = old.groups()
@@ -233,7 +233,7 @@ def cmd(arg=None):
             label_new = '{}'.format(atom_new['atom'])
             print(dsp.format(label_old, label_new, args.output))
     elif args.task == 'groupby':
-        pos = _Cell(poscar=args.filename)
+        pos = Cell(poscar=args.filename)
         Natom = len(pos.sites[args.atom])
         kwargs = {
             'atom_idx': [(args.atom, idx+1) for idx in range(Natom)],
@@ -255,8 +255,8 @@ def cmd(arg=None):
             print('{:^3d}|{}'.format(i, '|'.join(['{:^18s}'.format(cont) for cont in contents])))
         print('===={}'.format('='.join(['='*18 for _ in headers])))
     elif args.task == 'diff':
-        c1 = _Cell(poscar=args.filename1)
-        c2 = _Cell(poscar=args.filename2)
+        c1 = Cell(poscar=args.filename1)
+        c2 = Cell(poscar=args.filename2)
         diffs = diff_cell(c1, c2, prec=args.prec)
         disp_diffs(c1.basis, diffs,
                    full_list=is_detail,

@@ -3,7 +3,7 @@ import numpy as np
 from collections import defaultdict
 from .misc import Logger, filein, filetrans, filedata
 from .misc import __prog__, __author__, __version__, __date__
-from .dft import Cell, _Cell,read_energy, read_volume, \
+from .dft import Cell, read_energy, read_volume, \
                  read_eigval, read_evbm, read_pot
 
 
@@ -312,9 +312,9 @@ def formation(inputlist=None, infolevel=1):
     print('Find defect site(s) for potential alignment correction:')
     # print('Potential alignment correction:')
     # print('Reading POSCARs ...', end='        ')
-    pos1 = _Cell(os.path.join(ipt.dperfect, 'POSCAR'))
+    pos1 = Cell(os.path.join(ipt.dperfect, 'POSCAR'))
     idx = ipt.valence.index(0) if 0 in ipt.valence else 0
-    pos2 = _Cell(os.path.join(ipt.ddefect, ipt.ddname[idx], 'POSCAR'))
+    pos2 = Cell(os.path.join(ipt.ddefect, ipt.ddname[idx], 'POSCAR'))
     # idx1, idx2, dmax = pos1.diff(pos2, showdiff=True, out='far')
     diffs = diff_cell(pos1, pos2)
     dist = disp_diffs(pos1.basis, diffs, with_dist=True)
@@ -671,7 +671,7 @@ def disp_diffs(basis, diffs, full_list=False, with_dist=True):
         sites = [df[1] for df in diffs]
         defects = [df[1] for df in diffs_only]
         
-        cell = _Cell()
+        cell = Cell()
         cell.basis = basis
         cell.sites = dict(X=sites)
         dd = cell.get_dist(defects) # shape: (N_defect, N_sites)
