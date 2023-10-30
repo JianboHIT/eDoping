@@ -312,13 +312,21 @@ def formation(inputlist=None, infolevel=1):
     print('Find defect site(s) for potential alignment correction:')
     # print('Potential alignment correction:')
     # print('Reading POSCARs ...', end='        ')
-    pos1 = Cell(os.path.join(ipt.dperfect, 'POSCAR'))
+    pos1 = _Cell(os.path.join(ipt.dperfect, 'POSCAR'))
     idx = ipt.valence.index(0) if 0 in ipt.valence else 0
-    pos2 = Cell(os.path.join(ipt.ddefect, ipt.ddname[idx], 'POSCAR'))
-    idx1, idx2, dmax = pos1.diff(pos2, showdiff=True, out='far')
+    pos2 = _Cell(os.path.join(ipt.ddefect, ipt.ddname[idx], 'POSCAR'))
+    # idx1, idx2, dmax = pos1.diff(pos2, showdiff=True, out='far')
+    diffs = diff_cell(pos1, pos2)
+    dist = disp_diffs(pos1.basis, diffs, with_dist=True)
+    if dist is None:
+        raise RuntimeError('No point defect is found')
+    _, dsite, elt1, eidx1, elt2, eidx2 = diffs[np.argmax(dist)]
+    dmax = np.max(dist)
+    idx1 = pos1.index(elt1, eidx1) - 1  # global index, 0-start
+    idx2 = pos2.index(elt2, eidx2) - 1  # global index, 0-start
     print('\nFind the farthest site: ', end='')
-    dsp = '{:.4f} at {:s} ({:.4f} {:.4f} {:.4f})'
-    print(dsp.format(dmax, pos1.labels[idx1], *pos1.sites[idx1]))
+    dsp = '{:.4f} at {:s}{:d} ({:.4f} {:.4f} {:.4f})'
+    print(dsp.format(dmax, elt1, eidx1, *dsite))
 
     print('Read electrostatic potential from perfect cell: ', end='')
     pot1 = read_pot(os.path.join(ipt.dperfect, 'OUTCAR'))[idx1]
