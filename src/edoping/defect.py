@@ -3,7 +3,7 @@ import numpy as np
 from collections import defaultdict
 from .misc import Logger, filein, filetrans, filedata
 from .misc import __prog__, __author__, __version__, __date__
-from .dft import Cell, read_energy, read_volume, \
+from .dft import Cell, _Cell,read_energy, read_volume, \
                  read_eigval, read_evbm, read_pot
 
 
@@ -625,7 +625,7 @@ def diff_cell(cell_1, cell_2, prec=0.2):
         dists = np.linalg.norm(dr, ord=2, axis=-1)  # shape: (27, N1, N2)
         dmin = np.min(dists, axis=0)
         
-        outs = []
+        diffs = []
         Vac_idx = 0
         compare = (dmin < prec)                     # shape: (N1, N2)
         for elt1, idx1, pos1, cmp in zip(elts1, idxs1, poss1, compare):
@@ -634,17 +634,67 @@ def diff_cell(cell_1, cell_2, prec=0.2):
                 # at pubic site, can be same or substitution
                 elt2, idx2 = elts2[ix[0]], idxs2[ix[0]]
                 state = '' if elt1 == elt2 else 's'
-                outs.append([state, pos1, elt1, idx1, elt2, idx2])
+                diffs.append([state, pos1, elt1, idx1, elt2, idx2])
             else:
                 # only in cell_1
                 Vac_idx += 1
-                outs.append(['v', pos1, elt1, idx1, 'Vac', Vac_idx])
+                diffs.append(['v', pos1, elt1, idx1, 'Vac', Vac_idx])
         only_2 = np.where(~np.any(compare, axis=0))[0]
         for Vac_idx, index in enumerate(only_2, start=1):
             # only in cell_2
             elt2, idx2, pos2 = elts2[index], idxs2[index], poss2[index]
-            outs.append(['i', pos2, 'Vac', Vac_idx, elt2, idx2])
-        return outs
+            diffs.append(['i', pos2, 'Vac', Vac_idx, elt2, idx2])
+        return diffs
+
+def disp_diffs(basis, diffs, full_list=False, with_dist=True):
+    '''
+    Display diffs. `diffs` may produced by `diff_cell` function.
+    '''
+
+    diffs_only = [df for df in diffs if df[0]]
+    
+    if len(diffs_only):
+        be_same = False
+    else:
+        be_same = True
+        with_dist = False
+    
+    if with_dist:
+        sites = [df[1] for df in diffs]
+        defects = [df[1] for df in diffs_only]
+        
+        cell = _Cell()
+        cell.basis = basis
+        cell.sites = dict(X=sites)
+        dd = cell.get_dist(defects) # shape: (N_defect, N_sites)
+        dist = np.sum(dd, axis=0)   # shape: (N_sites,)
+        diffs = [df+[d,] for df, d in zip(diffs, dist)]
+    else:
+        dist = None
+    
+    dsp_head = '{:^7s}{:^8}{:^8}{:^8}{:^12s}{:^12s}'
+    head = dsp_head.format('No.','f_a', 'f_b', 'f_c', 'previous', 'present')
+    dsp = '{1:^3s}{0:<4d}{2[0]:>8.4f}{2[1]:>8.4f}{2[2]:>8.4f}{3:>6s}{4:<6d}{5:>6s}{6:<6d}'
+    
+    if full_list:
+        if with_dist:
+            print(head+'{:^12s}'.format('d_min'))
+            dsp_list = dsp + '{7:^12.2f}'
+        else:
+            print(head)
+            dsp_list = dsp
+
+        for idx, df in enumerate(diffs, start=1):
+            print(dsp_list.format(idx, *df))
+        print('\nDifferent:')
+    
+    print(head)
+    if be_same:
+        print('(No difference is found)')
+        return dist
+    for idx, df in enumerate(diffs_only, start=1):
+        print(dsp.format(idx, *df))
+    return dist
 
 def move_pos(pos, basis, dr=(0,0,0), cartesian=False):
     '''
