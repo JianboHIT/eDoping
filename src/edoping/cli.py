@@ -2,7 +2,8 @@
 
 import argparse
 import re
-from .defect import formation, read_H0, cal_trans, cal_rdf, diff_cell, move_pos, write_bsenergy
+from .defect import formation, read_H0, cal_trans, cal_rdf, \
+                    diff_cell, disp_diffs, move_pos, write_bsenergy
 from .misc import filein, fileout, filecmpot, filetrans, filedata
 from .misc import __prog__, __description__, __version__, __ref__
 from .dft import Cell, _Cell, read_energy, read_ewald, read_volume, \
@@ -257,48 +258,9 @@ def cmd(arg=None):
         c1 = _Cell(poscar=args.filename1)
         c2 = _Cell(poscar=args.filename2)
         diffs = diff_cell(c1, c2, prec=args.prec)
-        defects, poss, outs, = [], [], []
-        for idx, out in enumerate(diffs, start=1):
-            state, pos, elt1, idx1, elt2, idx2 = out
-            label1 = '{}{}'.format(elt1, idx1)
-            label2 = '{}{}'.format(elt2, idx2)
-            out = [state, idx, *pos, label1, label2]
-            if state:
-                defects.append(pos)
-            poss.append(pos)
-            outs.append(out)
-        
-        if len(defects) == 0:
-            is_same = True
-            args.distance = False
-        else:
-            is_same = False
-
-        dsp_head = '{:^7s}{:^8}{:^8}{:^8}{:^12s}{:^12s}'
-        head = dsp_head.format('No.','f_a', 'f_b', 'f_c', 'previous', 'present')
-        dsp = '{:^3s}{:<4d}{:>8.4f}{:>8.4f}{:>8.4f}{:^12s}{:^12s}'
-        
-        if args.distance:
-            head += '{:^12s}'.format('d_min')
-            dsp += '{:^12.2f}'
-            c1.sites = dict(X=poss)
-            dd = c1.get_dist(defects).sum(axis=0)   # shape: (N_defect, N_poss) -> (N_defect,)
-            for out, d in zip(outs, dd):
-                out.append(d)
-
-        if not is_quiet:
-            if is_detail:
-                print(head)
-                for out in outs:
-                    print(dsp.format(*out))
-                print('\nDifferent:')
-            print(head)
-        if is_same:
-            dsp = 'No difference is found between {} and {} within the limit of error!'
-            print(dsp.format(args.filename1, args.filename2))
-        else:
-            for out in filter(lambda x: x[0], outs):
-                print(dsp.format(*out))
+        disp_diffs(c1.basis, diffs,
+                   full_list=is_detail,
+                   with_dist=args.distance)
     elif args.task == 'chempot':
         # pminmax(filename, objcoefs=None)
         # return (name, x0, status, msg),labels
