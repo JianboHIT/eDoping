@@ -93,8 +93,13 @@ def pminmax(filename, objcoefs=None, normalize=False):
     # print(A_ub, b_ub, A_eq, b_eq, bounds)
     
     if objcoefs is None:
-        names = labels
-        objcoefs = np.identity(A_eq.shape[-1])
+        if A_eq.shape[0] == 1:
+            select = np.abs(A_eq[0]) > 1E-4
+            names = [label for s, label in zip(select, labels) if s]
+            objcoefs = np.identity(A_eq.shape[-1])[select, ...]
+        else:
+            names = labels
+            objcoefs = np.identity(A_eq.shape[-1])
     else:
         if len(objcoefs) == A_ub.shape[-1]:
             names = ['Cond']
