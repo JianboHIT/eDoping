@@ -14,9 +14,9 @@ from .cpot import pminmax
 
 
 def cmd(arg=None):
-    footnote = '**** Citation of {} ****\n'.format(__prog__)
-    footnote += 'If you have used {}, '.format(__prog__)
-    footnote += 'please cite the following article:{}'.format(__ref__)
+    footnote = f'>>>>>>>>>> Citation of {__prog__} <<<<<<<<<<\n'\
+               f'If you have used {__prog__}, '\
+               f'please cite the following article:{__ref__}'
     parser = argparse.ArgumentParser(prog=__prog__.lower(),
                                      description='{} - v{}'.format(__description__, __version__),
                                      formatter_class=argparse.RawDescriptionHelpFormatter, 
@@ -134,7 +134,9 @@ def cmd(arg=None):
     is_quiet = args.quiet
     is_detail = bool(args.verbosity)
 
-    if args.task == 'cal':
+    if args.task is None:
+        parser.print_help()
+    elif args.task == 'cal':
         formation(inputlist=args.input)
     elif args.task == 'energy':
         value = read_energy(outcar=args.filename)
