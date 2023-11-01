@@ -71,6 +71,7 @@ def cmd(arg=None):
     parser_groupby.add_argument('--head', type=int, default=30, help='The number of atoms in the nearest neighbor(default: 30)')
     parser_groupby.add_argument('--pad', type=int, default=2, help='Number of values padded to the cell sides(default: 2)')
     parser_groupby.add_argument('--digits', type=int, default=1, help='Given precision in decimal digits(default: 1)')
+    parser_groupby.add_argument('--grep', metavar='STRING', help='Display only lines containing the specified string')
     
     parser_diff = sub_parser.add_parser('diff', help='Show difference between two POSCAR')
     parser_diff.add_argument('-p', '--prec', type=float, default=0.2, help='The precision of distance(default: 0.2)')
@@ -263,7 +264,8 @@ def cmd(arg=None):
         print('---+{}'.format('+'.join(['-'*18 for _ in headers])))
         for i, dts in enumerate(zip(*infos)):
             contents = ['{}'.format(dt) for dt in dts]
-            print('{:^3d}|{}'.format(i, '|'.join(['{:^18s}'.format(cont) for cont in contents])))
+            line = '{:^3d}|{}'.format(i, '|'.join(['{:^18s}'.format(cont) for cont in contents]))
+            if args.grep and (args.grep in line): print(line)
         print('===={}'.format('='.join(['='*18 for _ in headers])))
     elif args.task == 'diff':
         c1 = Cell(poscar=args.filename1)
