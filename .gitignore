@@ -3,10 +3,7 @@
 /test/
 /doc/
 /example/
-/new/
 /public/
-/src0/
-/src2.0/
 /tmp/
 
 # VS code
@@ -14,9 +11,11 @@
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
-*$py.class
 
 # Distribution / packaging
-dist/
+/build/
+/dist/
 *.egg-info/
+
+# Sphinx documentation
+/docs/_build/
