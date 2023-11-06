@@ -1,0 +1,928 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>eDoping documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="#"><div class="brand">eDoping  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/logo.png" alt="Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/index.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/JianboHIT/eDoping" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="edoping">
+<h1>eDoping’s Documentation<a class="headerlink" href="#edoping" title="Link to this heading">¶</a></h1>
+<p>Download the PDF file: <a class="reference download internal" download="" href="_downloads/f6e98b87699f07e5211c0e9b6bfc971b/edoping.pdf"><code class="xref download docutils literal notranslate"><span class="pre">edoping.pdf</span></code></a></p>
+<section id="id1">
+<h2>Feature List<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Streamlined calculation of formation energies for charged point defects</p></li>
+<li><p>Entirely command-line based, requiring no programming or complex scripts</p></li>
+<li><p>Supports estimation of elemental chemical potentials in multi-component systems</p></li>
+<li><p>Access to competing phase structures and formation energies from OQMD</p></li>
+<li><p>Calculation of correction terms for defect formation energies</p></li>
+<li><p>Determination of the self-consistent Fermi energy</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2>Installation<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>The eDoping package is based on Python3, so ensure that it is correctly installed. The package can be downloaded from GitHub, or using git:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/JianboHIT/eDoping.git
+</pre></div>
+</div>
+<p>For users in mainland China, the source code can also be obtained from Gitee, similar to the above:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://gitee.com/joulehit/eDoping.git
+</pre></div>
+</div>
+<p>After downloading the source code, enter the folder (if it’s a compressed file, extract it first), and ensure a good network connection. We can automatically install the program and all dependent libraries (it actually only depends on numpy and scipy) using the <code class="docutils literal notranslate"><span class="pre">pip</span></code> (or <code class="docutils literal notranslate"><span class="pre">pip3</span></code>) tool:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+<p>After installation is complete, we can use the eDoping package with the <code class="docutils literal notranslate"><span class="pre">edp</span></code> command. The <code class="docutils literal notranslate"><span class="pre">-h</span></code> (or <code class="docutils literal notranslate"><span class="pre">--help</span></code>) option can print help information and also check if the installation was successful:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp -h
+usage: edoping [-h] [-v] [-q] Subcommand ...
+
+defect calculation - v0.1.4
+
+optional arguments:
+  -h, --help       show this help message and exit
+  -v, --verbosity  increase output verbosity
+  -q, --quiet      only show key output
+
+Tips:
+  Subcommand       Description
+    cal            Calculate defect fromation energy
+    energy         Read final energy from OUTCAR
+    ewald          Read Ewald from OUTCAR
+    volume         Read volume from OUTCAR
+    epsilon        Read epsilon from OUTCAR
+    evbm           Read VBM from EIGENVAL
+    boxhyd         Place a single hydrogen atom in the box
+    move           Move atomic position in cell
+    replace        Replace atoms X by Y
+    groupby        Group atoms by radial distribution function
+    diff           Show difference between two POSCAR
+    query          Fetch data from OQMD website
+    chempot        Calculate chemical potential
+    trlevel        Calculate transition levels
+    scfermi        Calculate sc-fermi level
+    fzfermi        Calculate fz-fermi level
+
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Citation of EDOPING &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+If you have used EDOPING, please cite the following article:
+Jingyu Li, Jianbo Zhu, Yongsheng Zhang, et al, ..., 2023
+DOI:XXXXXX/XXXX/XXXX-XXXX
+</pre></div>
+</div>
+<p>We can further check the help information of subcommands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp replace -h
+usage: edoping replace [-h] [-i FILENAME] [-o FILENAME] X Y
+
+positional arguments:
+  X                     Name of previous atom
+  Y                     Name of present atom
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i FILENAME, --input FILENAME
+                        Input filename(default: POSCAR)
+  -o FILENAME, --output FILENAME
+                        Output filename(default: POSCAR)
+</pre></div>
+</div>
+<p>At this point, we have successfully installed the eDoping package.</p>
+<p><strong>Optionally:</strong> Python, being an interpreted language, requires loading the entire environment or virtual environment every time it is run. This is very convenient for personal devices, but it becomes inconvenient for large public computing platforms. One solution is to package the program into a standalone executable, making it independent of the Python environment like regular programs. We considered this from the start of program development, carefully controlling dependencies on third-party libraries and implementing as much as possible using Python’s standard library. In the program source package, we included a standalone folder containing a compile_for_linux.sh script, which assists in creating standalone executables. Here, we need to prepare a clean Python virtual environment and install pyinstaller and other eDoping dependencies, then run the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>standalone
+$<span class="w"> </span>bash<span class="w"> </span>compile_for_linux.sh
+</pre></div>
+</div>
+<p>Once the script runs successfully, an executable program <code class="docutils literal notranslate"><span class="pre">edp</span></code> is created in standalone/dist, which can be moved to any desired location for convenient daily use.</p>
+</section>
+<section id="id3">
+<h2>Quick Start<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<p>Ensure the eDoping package is correctly installed (refer to the <a class="reference internal" href="#id2">Installation</a> section for details), and you can print help information using <code class="docutils literal notranslate"><span class="pre">edp</span> <span class="pre">-h</span></code>. Density functional calculations use <code class="docutils literal notranslate"><span class="pre">VASP</span></code> software as an example; theoretically, other computational software could be used, but current interfaces do not fully support them yet and require further improvement.</p>
+<section id="id4">
+<h3>Directory Structure<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<p>As an example of calculating defects in NbFeSb with Mn and Ni interstitials (see <code class="docutils literal notranslate"><span class="pre">examples/</span></code> for details), we recommend organizing files with the following directory structure (prefix numbers enable rapid tab completion):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>NbFeSb_Interstitials
+├── 1.perfect
+├── 2-1.defect-Mn_i
+│   ├── charge_+1
+│   ├── charge_+2
+│   ├── charge_+3
+│   ├── charge_-1
+│   ├── charge_-2
+│   ├── charge_-3
+│   ├── charge_0
+│   └── relax
+├── 2-2.defect-Ni_i
+│   ├── charge_+1
+│   ├── charge_+2
+│   ├── charge_+3
+│   ├── charge_-1
+│   ├── charge_-2
+│   ├── charge_-3
+│   ├── charge_0
+│   └── relax
+├── 3.phases
+│   ├── NbFeSb_with_Mn
+│   ├── NbFeSb_with_Ni
+│   ├── elemental_Fe
+│   ├── elemental_Mn
+│   ├── elemental_Nb
+│   ├── elemental_Ni
+│   └── elemental_Sb
+├── 4-1.corr-dielectric
+├── 4-2.corr-hydrogen
+├── EDOPING.Mn_i.in
+└── EDOPING.Ni_i.in
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3>Energy Calculation<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<p>This is the core time-consuming part of defect calculations. VASP software needs to be called to calculate the energy of the perfect supercell and defect supercells in all charge states (ensure all structures are reasonably relaxed to convergence), specifically the subfolders under <code class="docutils literal notranslate"><span class="pre">1.perfect</span></code> and <code class="docutils literal notranslate"><span class="pre">2-X.defect-XX</span></code> directories.</p>
+<p>To simulate defects with varying charge states, the total electron number of the system must be specified via the NELECT parameter in the INCAR file. To streamline this process, the <a class="reference internal" href="#cmdoption-arg-fixchg"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">fixchg</span></code></a> command can automatically generate charged defect calculation folders (e.g., <code class="docutils literal notranslate"><span class="pre">charge_+1</span></code>, <code class="docutils literal notranslate"><span class="pre">charge_-1</span></code>) from the neutral calculation directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>fixchg<span class="w"> </span>-i<span class="w"> </span>charge_0<span class="w"> </span>+1<span class="w"> </span>-1<span class="w"> </span>+2<span class="w"> </span>-2<span class="w"> </span>+3<span class="w"> </span>-3
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">charge_0</span></code> directory contains files required for self-consistent calculations of the neutral system. The command will duplicate this directory into <code class="docutils literal notranslate"><span class="pre">charge_+1</span></code>, <code class="docutils literal notranslate"><span class="pre">charge_-1</span></code>, etc., while adjusting the NELECT parameter in their INCAR files to set the system’s net charge to the specified value.</p>
+</section>
+<section id="id6">
+<h3>Chemical Potential Calculation<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<p>In defect formation energy calculations, the atomic chemical potential term is used to express the energy change due to the non-conservation of atom types and numbers between the defect supercell and the perfect supercell. The chemical potential of an atom consists of two parts, <span class="math notranslate nohighlight">\(\mu_i = \mu _i^\Theta + \Delta \mu _i\)</span>, where <span class="math notranslate nohighlight">\(\mu _i^\Theta\)</span> represents the average energy per atom in the elemental bulk, obtained through theoretical calculations or experimental methods; <span class="math notranslate nohighlight">\(\Delta \mu _i\)</span> is determined within a range by thermodynamic stability conditions. Strictly speaking, we need to calculate the formation energies of all potential competing phases, which are obtained by querying databases such as <a class="reference external" href="https://www.oqmd.org">OQMD</a>, <a class="reference external" href="https://next-gen.materialsproject.org">MaterialsProject</a>, <a class="reference external" href="https://aflowlib.org">AFLOW</a>, etc.</p>
+<p>Here, we provide a query command <a class="reference internal" href="#cmdoption-arg-query"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">query</span></code></a>, which can directly retrieve the formation energies of all competing phases from the OQMD database. For example, for NbFeSb with Mn atom defects, you can use the following command to obtain the formation energies of all competing phases with Ehull &lt; 0.01 eV/atom (executed in the <code class="docutils literal notranslate"><span class="pre">3.phases/NbFeSb_with_Mn</span></code> directory):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>query<span class="w"> </span>NbFeSb<span class="w"> </span>-x<span class="w"> </span>Mn<span class="w"> </span>--ehull<span class="w"> </span><span class="m">0</span>.01
+</pre></div>
+</div>
+<p>The results are stored in the <a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a> file. When the <code class="docutils literal notranslate"><span class="pre">--ehull</span></code> option is omitted, the command retrieves energy data for both stable and metastable competing phases. Additionally, structural files (in POSCAR format) for all competing phases can be downloaded via the <code class="docutils literal notranslate"><span class="pre">-s/--structure</span></code> option to enable more accurate energy calculations:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>query<span class="w"> </span>NbFeSb<span class="w"> </span>-x<span class="w"> </span>Mn<span class="w"> </span>--ehull<span class="w"> </span><span class="m">0</span>.01<span class="w"> </span>--structure
+</pre></div>
+</div>
+<p>Then, manually prepare the <a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a> file based on the calculation results. Using the <a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a> file, the elemental chemical potential can be determined according to the chemical environment using the <a class="reference internal" href="#cmdoption-arg-chempot"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">chempot</span></code></a> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>chempot<span class="w"> </span>-n
+</pre></div>
+</div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">-n</span></code> (or <code class="docutils literal notranslate"><span class="pre">--norm</span></code>) option indicates that the formation energy in the file is in units of eV/atom. If the formation energy reflects the total energy of the supercell for the respective composition, then this option is not needed. The <a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a> file will be automatically read, and the chemical potentials (<span class="math notranslate nohighlight">\(\Delta \mu _i\)</span>) under different environments will be printed on the screen.</p>
+</section>
+<section id="id7">
+<h3>Correction Terms<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<p>In point defect calculations, due to finite size limitations, the obtained formation energies often require corrections, represented by the term <span class="math notranslate nohighlight">\(E_{corr}\)</span> in the formula. Among various correction terms, image charge correction requires additional input of dielectric constants and Madelung constants. To apply this correction mechanism, you can follow these steps to calculate the dielectric constants and Madelung constants using VASP.</p>
+<p>In VASP, for the original primitive supercell of the perfect structure, you can use the following INCAR parameters to obtain the dielectric constants (refer to <code class="docutils literal notranslate"><span class="pre">4-1.corr-dielectric/INCAR</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Global</span> <span class="n">Parameters</span>
+<span class="n">ISTART</span> <span class="o">=</span>  <span class="mi">0</span>            <span class="p">(</span><span class="n">Read</span> <span class="n">existing</span> <span class="n">wavefunction</span><span class="p">;</span> <span class="k">if</span> <span class="n">there</span><span class="p">)</span>
+<span class="n">ISPIN</span>  <span class="o">=</span>  <span class="mi">1</span>            <span class="p">(</span><span class="n">Non</span><span class="o">-</span><span class="n">Spin</span> <span class="n">polarised</span> <span class="n">DFT</span><span class="p">)</span>
+<span class="n">LREAL</span>  <span class="o">=</span> <span class="o">.</span><span class="n">FALSE</span><span class="o">.</span>       <span class="p">(</span><span class="n">Projection</span> <span class="n">operators</span><span class="p">:</span> <span class="n">automatic</span><span class="p">)</span>
+<span class="n">ENCUT</span>  <span class="o">=</span>  <span class="mi">500</span>          <span class="p">(</span><span class="n">Cut</span><span class="o">-</span><span class="n">off</span> <span class="n">energy</span> <span class="k">for</span> <span class="n">plane</span> <span class="n">wave</span> <span class="n">basis</span> <span class="nb">set</span><span class="p">,</span> <span class="ow">in</span> <span class="n">eV</span><span class="p">)</span>
+<span class="n">PREC</span>   <span class="o">=</span>  <span class="n">Accurate</span>     <span class="p">(</span><span class="n">Precision</span> <span class="n">level</span><span class="p">)</span>
+<span class="n">LWAVE</span>  <span class="o">=</span> <span class="o">.</span><span class="n">FALSE</span><span class="o">.</span>       <span class="p">(</span><span class="n">Write</span> <span class="n">WAVECAR</span> <span class="ow">or</span> <span class="ow">not</span><span class="p">)</span>
+<span class="n">LCHARG</span> <span class="o">=</span> <span class="o">.</span><span class="n">FALSE</span><span class="o">.</span>       <span class="p">(</span><span class="n">Write</span> <span class="n">CHGCAR</span> <span class="ow">or</span> <span class="ow">not</span><span class="p">)</span>
+
+<span class="n">Static</span> <span class="n">Calculation</span>
+<span class="n">NSW</span>    <span class="o">=</span> <span class="mi">1</span>
+<span class="n">IBRION</span> <span class="o">=</span>  <span class="mi">8</span>
+<span class="n">ISMEAR</span> <span class="o">=</span>  <span class="mi">0</span>            <span class="p">(</span><span class="n">gaussian</span> <span class="n">smearing</span> <span class="n">method</span><span class="p">)</span>
+<span class="n">SIGMA</span>  <span class="o">=</span>  <span class="mf">0.01</span>         <span class="p">(</span><span class="n">please</span> <span class="n">check</span> <span class="n">the</span> <span class="n">width</span> <span class="n">of</span> <span class="n">the</span> <span class="n">smearing</span><span class="p">)</span>
+<span class="n">NELM</span>   <span class="o">=</span>  <span class="mi">60</span>           <span class="p">(</span><span class="n">Max</span> <span class="n">electronic</span> <span class="n">SCF</span> <span class="n">steps</span><span class="p">)</span>
+<span class="n">EDIFF</span>  <span class="o">=</span>  <span class="mf">1E-08</span>        <span class="p">(</span><span class="n">SCF</span> <span class="n">energy</span> <span class="n">convergence</span><span class="p">;</span> <span class="ow">in</span> <span class="n">eV</span><span class="p">)</span>
+
+<span class="n">Macroscopic</span> <span class="n">Dielectric</span> <span class="n">Tensor</span>
+<span class="n">LEPSILON</span> <span class="o">=</span> <span class="o">.</span><span class="n">TRUE</span><span class="o">.</span>
+<span class="n">LPEAD</span> <span class="o">=</span> <span class="o">.</span><span class="n">TRUE</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Upon calculation completion, the dielectric tensor data can be extracted from OUTCAR files using the <a class="reference internal" href="#cmdoption-arg-epsilon"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">epsilon</span></code></a> command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp epsilon -f 4-1.corr-dielectric/OUTCAR
+HEAD OF MICROSCOPIC STATIC DIELECTRIC TENSOR (INDEPENDENT PARTICLE, excluding Hartree and local field effects)
+------------------------------------------------------
+25.438394     0.000000    -0.000000
+0.000000    25.438394     0.000000
+-0.000000    -0.000000    25.438394
+------------------------------------------------------
+
+MACROSCOPIC STATIC DIELECTRIC TENSOR (including local field effects in DFT)
+------------------------------------------------------
+24.482055     0.000000    -0.000000
+0.000000    24.482055    -0.000000
+-0.000000     0.000000    24.482055
+------------------------------------------------------
+
+MACROSCOPIC STATIC DIELECTRIC TENSOR (including local field effects in DFT)
+------------------------------------------------------
+24.482055     0.000000    -0.000000
+0.000000    24.482055    -0.000000
+-0.000000     0.000000    24.482055
+------------------------------------------------------
+
+MACROSCOPIC STATIC DIELECTRIC TENSOR IONIC CONTRIBUTION
+------------------------------------------------------
+19.549608    -0.000000    -0.000000
+-0.000000    19.549608     0.000000
+-0.000000     0.000000    19.549608
+------------------------------------------------------
+</pre></div>
+</div>
+<p>From the displayed results, the ionic contribution to the dielectric constant is 19.55 (the last tensor), the electronic contribution is 24.48 (the second-to-last tensor), so the total dielectric constant is 43.93.</p>
+<p>To determine the Madelung constant, place a single hydrogen atom in a supercell-equivalent simulation box. After performing a VASP self-consistent field (SCF) calculation, the corresponding Madelung constant will be recorded in the OUTCAR file. The provided <a class="reference internal" href="#cmdoption-arg-boxhyd"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">boxhyd</span></code></a> command generates a single-hydrogen POSCAR file with identical dimensions to the supercell POSCAR (execute within the <code class="docutils literal notranslate"><span class="pre">4-2.corr-hydrogen</span></code> directory containing the original supercell POSCAR):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>boxhyd
+</pre></div>
+</div>
+<p>The POSCAR.H file will be generated upon execution. Perform a self-consistent field (SCF) calculation using this file, then extract the Madelung constant with the <a class="reference internal" href="#cmdoption-arg-ewald"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">ewald</span></code></a> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>ewald<span class="w"> </span>-f<span class="w"> </span><span class="m">4</span>-2.corr-hydrogen/OUTCAR
+Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</span><span class="w"> </span>Ewald:<span class="w"> </span><span class="m">1</span>.7152
+</pre></div>
+</div>
+<p>The Madelung constant for this supercell is 1.7152.</p>
+</section>
+<section id="id8">
+<h3>Post-processing<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<p>Prepare the <a class="reference internal" href="#edoping-in">EDOPING.in</a> file based on the previous information as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DPERFECT</span> <span class="o">=</span> <span class="mf">1.</span><span class="n">perfect</span>
+<span class="n">DDEFECT</span>  <span class="o">=</span> <span class="mi">2</span><span class="o">-</span><span class="mf">1.</span><span class="n">defect</span><span class="o">-</span><span class="n">Mn_i</span>
+<span class="n">CMPOT</span>    <span class="o">=</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">9.0147</span>
+<span class="n">VALENCE</span>  <span class="o">=</span> <span class="o">-</span><span class="mi">3</span> <span class="o">-</span><span class="mi">2</span> <span class="o">-</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span>
+<span class="c1"># PREFIX   = charge_</span>
+<span class="c1"># DDNAME   = auto</span>
+<span class="n">EVBM</span>     <span class="o">=</span> <span class="n">inf</span>
+<span class="n">ECBM</span>     <span class="o">=</span> <span class="n">inf</span>
+<span class="n">PENERGY</span>  <span class="o">=</span> <span class="n">inf</span>
+<span class="n">PVOLUME</span>  <span class="o">=</span> <span class="n">inf</span>
+<span class="n">EWALD</span>    <span class="o">=</span> <span class="mf">1.7152</span>
+<span class="n">EPSILON</span>  <span class="o">=</span> <span class="mf">44.03</span>
+<span class="n">BFTYPE</span>   <span class="o">=</span> <span class="mi">2</span>
+<span class="n">EMIN</span>     <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">EMAX</span>     <span class="o">=</span> <span class="mi">2</span>
+<span class="n">NPTS</span>     <span class="o">=</span> <span class="mi">3001</span>
+</pre></div>
+</div>
+<p>Then invoke the <a class="reference internal" href="#cmdoption-arg-cal"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">cal</span></code></a> command to perform the computation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>cal<span class="w"> </span>-i<span class="w"> </span>EDOPING.in
+</pre></div>
+</div>
+<p>Upon completion, the <a class="reference internal" href="#edoping-log">EDOPING.log</a> and <a class="reference internal" href="#edoping-dat">EDOPING.dat</a> files will be generated, which record the program’s execution log and the calculation results, respectively.</p>
+</section>
+</section>
+<section id="id9">
+<h2>Point Defect Formation Energy Calculation<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<p>Within the framework of first-principles calculations, all calculations here are centered around energy (also referred to as enthalpy) calculations. For a defect <span class="math notranslate nohighlight">\(D\)</span> with charge <span class="math notranslate nohighlight">\(q\)</span>, its formation energy is defined as:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\Delta H _{D} ^{q} (E _{F}) = E _{D} ^{q} - E _{perfect} - \sum _{i} {n _{i} \mu _{i}} + q E _{F} + E _{corr}\]</div>
+</div>
+<p>Here, <span class="math notranslate nohighlight">\(E_D^q\)</span> represents the energy of the supercell with defect <span class="math notranslate nohighlight">\(D\)</span> carrying charge <span class="math notranslate nohighlight">\(q\)</span>, <span class="math notranslate nohighlight">\(E_{perfect}\)</span> denotes the energy of the corresponding perfect supercell, <span class="math notranslate nohighlight">\(\mu_i\)</span> stands for the chemical potential of atoms lost (when <span class="math notranslate nohighlight">\(n_i &lt; 0\)</span>) or added (when <span class="math notranslate nohighlight">\(n_i &gt; 0\)</span>) during defect formation, <span class="math notranslate nohighlight">\(n_i\)</span> is the number of corresponding atoms, <span class="math notranslate nohighlight">\(E_F\)</span> is the Fermi level of the actual defect system, and <span class="math notranslate nohighlight">\(E_{corr}\)</span> includes energy corrections such as those from periodic boundary conditions and electrostatic potential changes. Generally, we cannot precisely determine the position of the system’s Fermi level, but we know it lies near the band gap. Therefore, we typically provide the <span class="math notranslate nohighlight">\(\Delta H_D^q\)</span> - <span class="math notranslate nohighlight">\(E_F\)</span> relationship curve, expressing the formation energy as a function of the Fermi level. Next, we will explain the calculation of each term and the final data processing steps in detail.</p>
+<section id="id10">
+<h3>Defect Supercell Construction and System Energy Calculation<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<p>The energy of the perfect supercell is relatively easy to obtain, so we’ll start with energy calculations for defect structures. We first consider the supercell structure construction for single-point defects, including vacancies, substitutions, and interstitials. For vacancy and interstitial defects, typically, we can directly manually modify the POSCAR file to obtain the defect structure, as we do not need to change the order of the atom position list during this process. For substitution defects, you can construct structures using the <a class="reference internal" href="#cmdoption-arg-replace"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">replace</span></code></a> command from a POSCAR file. You can also use crystallography visualization tools to help generate defect structures, such as the free VESTA software.</p>
+<p>When considering more complex defects, the number of possible supercell structure configurations can increase significantly. Utilizing structural symmetry can effectively reduce the required computational effort. For relatively simple cases, we can use structural visualization programs to observe and analyze, excluding symmetrically equivalent structures, but dealing with complex structures becomes difficult. Additionally, software and programs specifically for handling this aspect are quite limited. In our software, we have integrated a <a class="reference internal" href="#cmdoption-arg-groupby"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">groupby</span></code></a> command to assist in filtering non-equivalent structures. When we need to introduce an additional defect into a structure that already contains a defect, we abandon considering equivalence based on traditional symmetry, and instead analyze based on the neighboring environment, grouping atoms with similar surroundings to identify representative structures. Due to the local properties of point defects, neighbor analysis may provide a more direct and effective means to determine candidate composite defect configurations.</p>
+<p>Once the defect structures are constructed, we can use the <a class="reference internal" href="#cmdoption-arg-diff"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">diff</span></code></a> command to compare the differences between the original supercell and the current supercell to ensure that the constructed configuration is as desired.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#cmdoption-arg-replace"><code class="xref std std-option docutils literal notranslate"><span class="pre">replace</span></code></a> - Generate Atomic Substitution Structure</p></li>
+<li><p><a class="reference internal" href="#cmdoption-arg-groupby"><code class="xref std std-option docutils literal notranslate"><span class="pre">groupby</span></code></a> - Non-equivalent Atom Position Analysis</p></li>
+<li><p><a class="reference internal" href="#cmdoption-arg-diff"><code class="xref std std-option docutils literal notranslate"><span class="pre">diff</span></code></a> - Crystal Structure Comparison and Analysis</p></li>
+</ul>
+</div>
+<p>Following defect structure construction, structural relaxation of the supercell is required to achieve converged energy values. Furthermore, varying the electron count in each defect system (via the NELECT parameter in VASP’s INCAR file) is necessary to simulate different charge states, ultimately acquiring their corresponding energy values.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#cmdoption-arg-fixchg"><code class="xref std std-option docutils literal notranslate"><span class="pre">fixchg</span></code></a> - Prepare Calculation Files with Different Charge Numbers</p></li>
+</ul>
+</div>
+<p>For VASP software, if the structural optimization/self-consistent calculation ends successfully, we can use the <code class="docutils literal notranslate"><span class="pre">grep</span></code> command combined with <code class="docutils literal notranslate"><span class="pre">tail</span></code> to read the energy from the OUTCAR file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ grep &#39;energy  without entropy&#39; OUTCAR | tail -n 1
+  energy  without entropy=     -755.64631647  energy(sigma-&gt;0) =     -755.65114440
+</pre></div>
+</div>
+<p>In this example, the total energy of the system is -755.646 eV. The energy value can also be extracted from OUTCAR files using the <a class="reference internal" href="#cmdoption-arg-energy"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">energy</span></code></a> command.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#cmdoption-arg-energy"><code class="xref std std-option docutils literal notranslate"><span class="pre">energy</span></code></a> - Read System Energy Value from OUTCAR.</p></li>
+</ul>
+</div>
+</section>
+<section id="id11">
+<h3>Chemical Potential Calculation and Database Usage<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
+<p>After we complete the construction and calculations for defect structures, an important point should be noted: it is quite challenging to maintain atomic number conservation between defect structures and the corresponding perfect structures. To evaluate the formation energy of defects, we must eliminate the energy difference of the atoms themselves, which we refer to as the chemical potential here. A straightforward idea is that we can use calculations from corresponding elemental materials to evaluate the energy of a single atom. However, this proves to be a very rough estimate, accompanied by significant systematic errors. We can imagine that the energy of atoms in our target compound must be lower than that in the elemental state; otherwise, our target compound would decompose into elemental substances to lower the system’s energy. Here, the energy of atoms in the compound is generally called the chemical potential <span class="math notranslate nohighlight">\(\mu_i\)</span>, the energy of atoms in the element is called the standard chemical potential <span class="math notranslate nohighlight">\(\mu _i^\Theta\)</span>, so we have <span class="math notranslate nohighlight">\(\mu_i = \mu _i^\Theta + \Delta \mu _i\)</span>. Our goal here is to determine the magnitude of <span class="math notranslate nohighlight">\(\Delta \mu _i\)</span>. Unfortunately, there is currently no way to provide an exact value of <span class="math notranslate nohighlight">\(\Delta \mu _i\)</span>; instead, we can make a range estimation and further determine its value based on specific experimental conditions.</p>
+<p>According to our previous discussion, we can clearly know that there must be</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\Delta \mu _i &lt; 0\]</div>
+</div>
+<p>On the other hand, according to energy conservation, we know that the change in internal energy of all elements in the compound is the formation enthalpy of the compound <span class="math notranslate nohighlight">\(\Delta H _{comp}\)</span>, that is,</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\sum _i {c_i \cdot \Delta \mu _i} = \Delta H _{comp}\]</div>
+</div>
+<p>Here, assuming <span class="math notranslate nohighlight">\(c_1 + c_2 + \ldots + c_N = 1\)</span>, and <span class="math notranslate nohighlight">\(\Delta H _{comp}\)</span> is the formation enthalpy per average atom. We can thus determine the lower bound of <span class="math notranslate nohighlight">\(\Delta \mu _i\)</span>:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[c_i \cdot \Delta \mu _i &gt; \Delta H _{comp}\]</div>
+</div>
+<p>In experiments, <span class="math notranslate nohighlight">\(\mu _i\)</span> is referred to as “rich” when <span class="math notranslate nohighlight">\(\Delta \mu _i = 0\)</span>, and “poor” when <span class="math notranslate nohighlight">\(\Delta \mu _i = \Delta H _{comp} / c _i\)</span>.</p>
+<p>For binary compounds, it is easy to notice that when one element’s chemical potential is “rich”, the other element’s chemical potential will inevitably be “poor”. Therefore, we usually present the formation energy of defects under conditions where each of the two different elements is “rich”, reflecting the scenario where the chemical environment transitions from one extreme to the other, with real experimental conditions likely falling between these two extremes.</p>
+<p>As the number of elements increases to three, the concepts of “poor” and “rich” become more complex, since when one atom is “rich”, the states of the other two atoms are not easily determined. We have to conduct a detailed classification discussion to approximate the experimental environment as closely as possible.</p>
+<p>Nevertheless, this range is still too coarse. Currently, the most effective way to further narrow the range of chemical potentials is to consider the inclusion of competing phases. Based on our previous analysis, it is easy to understand that the sum of the chemical potentials of atoms in the target compound must be less than the formation enthalpy of competing phases; otherwise, more “stable” competing phases would form instead of our target phase in experiments. Thus, we can introduce a series of inequality constraints:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\sum _i {c _{j,i} \cdot \Delta \mu _{j,i}} \leq \Delta H _{comp,j}\]</div>
+</div>
+<p>Here, the subscript <span class="math notranslate nohighlight">\(j\)</span> stands for the <span class="math notranslate nohighlight">\(j\)</span>-th competing phase. Under this series of inequality constraints, the range of chemical potentials becomes more refined, and the shape of the feasible region becomes more complex.</p>
+<p>In our program design, we abandon discussions about the shape of the feasible region and instead focus directly on the range of chemical potentials for each element. Particularly for multi-component compounds, when the number of elements is N, the dimension of the feasible region is N-1. Trimming the feasible region with competing phases makes its shape extremely complex. At this point, we are not concerned with all the vertex cases but instead wish to directly know the range of chemical potentials for certain elements of interest. To this end, our program has been designed with the <a class="reference internal" href="#cmdoption-arg-chempot"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">chempot</span></code></a> command to directly obtain the chemical potential ranges for different elements.</p>
+<p>Manually handling a large number of competing phases is a labor-intensive and time-consuming task. Therefore, we provide the <a class="reference internal" href="#cmdoption-arg-query"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">query</span></code></a> command, which allows direct retrieval of all competing phase structure files from the database. Additionally, it enables the simultaneous extraction of formation enthalpies for competing phases from the database, facilitating verification of one’s own calculation results. On the other hand, within the framework of first-principles calculations, the energy values of the system depend on the pseudopotentials and calculation software, but the formation enthalpy of a material has relatively good stability. When high precision is not required or for initial explorations, the formation enthalpy of competing phases from the database can be used to determine the element’s chemical potential range, thereby accelerating our workflow.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#cmdoption-arg-chempot"><code class="xref std std-option docutils literal notranslate"><span class="pre">chempot</span></code></a> - Estimate Atomic Chemical Potentials Based on Compound and Competing Phase Formation Enthalpy</p></li>
+<li><p><a class="reference internal" href="#cmdoption-arg-query"><code class="xref std std-option docutils literal notranslate"><span class="pre">query</span></code></a> - Retrieve Competing Phase Structures and Formation Enthalpies from Database</p></li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Due to the nature of high-throughput calculations in the database, the precision of the formation enthalpies is very limited. Therefore, it is recommended for preliminary exploration only. We cannot guarantee the reliability of the data obtained from the database. Furthermore, this feature was developed primarily to facilitate communication and learning. If any infringement occurs, we will immediately disable this feature.</p>
+</div>
+</section>
+</section>
+<section id="id12">
+<h2>Command Line Usage Reference<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
+<p>You can view all supported commands using <code class="docutils literal notranslate"><span class="pre">edp</span> <span class="pre">-h</span></code>. The general format for using commands is:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span><span class="o">[</span>-v<span class="p">|</span><span class="w"> </span>-q<span class="o">]</span><span class="w"> </span>&lt;command&gt;<span class="w"> </span>--option1<span class="w"> </span>--option2<span class="w"> </span><span class="o">[</span>inputfile<span class="o">]</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">-v</span></code> option increases the verbosity of the screen output, while the <code class="docutils literal notranslate"><span class="pre">-q</span></code> option suppresses the output as much as possible. You can use the <code class="docutils literal notranslate"><span class="pre">-h</span></code> option with subcommands to see the supported operations, for example, to check the options supported by the <a class="reference internal" href="#cmdoption-arg-chempot"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">chempot</span></code></a> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>chempot<span class="w"> </span>-h
+</pre></div>
+</div>
+<p>Next, we will introduce the supported subcommands (listed in alphabetical order):</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-boxhyd">
+<span class="sig-name descname"><span class="pre">boxhyd</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-boxhyd" title="Link to this definition">¶</a></dt>
+<dd><p>Generate a same-sized POSCAR file containing only a single hydrogen atom.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-cal">
+<span class="sig-name descname"><span class="pre">cal</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-cal" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the variation of defect formation energy with the Fermi level based on the configuration file (specified by the <code class="docutils literal notranslate"><span class="pre">-i/--input</span></code> option, default is <a class="reference internal" href="#edoping-in">EDOPING.in</a>).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-chempot">
+<span class="sig-name descname"><span class="pre">chempot</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-chempot" title="Link to this definition">¶</a></dt>
+<dd><p>Solve the range of elemental chemical potentials</p>
+<p>Here we need to prepare an input file (default filename is <a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a>), where the first line starting with ‘#’ contains element names separated by spaces. Following this, list the elemental ratios of all compounds under consideration, along with their respective energy values. The first compound listed (i.e., the second line in the file) is recognized by the program as the target compound, our base phase material.</p>
+<p><strong>Important Note</strong>: When handling element ratios and energies, due to personal habits and differences in database format specifications, we need to be very careful about normalization issues:</p>
+<ul class="simple">
+<li><p>Element Ratio Format: (1) Number of each atom in the unit cell (2) Simplest atomic ratio (3) Normalized ratio</p></li>
+<li><p>Compound Enthalpy Representation: (A) Total enthalpy of the unit cell (B) Average enthalpy per atom</p></li>
+<li><p>Enthalpy Reference: (I) Absolute enthalpy, as given by the computation program (II) Formation enthalpy, i.e., the difference in enthalpy relative to its elemental state</p></li>
+</ul>
+<p>Internally, the program is handling expressions like the one below:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\frac{1}{C} \sum _{i} {c _{i} \cdot \mu _{i}} \le \mu\]</div>
+</div>
+<p>Here, <span class="math notranslate nohighlight">\(i\)</span> refers to different compounds, <span class="math notranslate nohighlight">\(c_i\)</span> is the element ratio from the input file, <span class="math notranslate nohighlight">\(\mu\)</span> is the compound enthalpy from the input file; if the <code class="docutils literal notranslate"><span class="pre">-n</span></code> (<code class="docutils literal notranslate"><span class="pre">--norm</span></code>) option is used, then <span class="math notranslate nohighlight">\(C = \sum _i c_i\)</span>, otherwise <span class="math notranslate nohighlight">\(C=1\)</span>. Simply put, to obtain correct results, you need to specify the <code class="docutils literal notranslate"><span class="pre">-n</span></code> (<code class="docutils literal notranslate"><span class="pre">--norm</span></code>) option for scenarios (1+B) and (2+B), but avoid it for scenarios (1+A) and (3+B). Due to lack of necessary information, we cannot handle scenarios (2+A) and (3+A), requiring the user to perform the necessary data processing.</p>
+<p>As for the reference of the enthalpy, the basic principle is: the reference for solving the chemical potentials is the initial reference given for compound enthalpy. If all provided values are (I) absolute enthalpy, then the given potentials are absolute chemical potentials; if all provided values are (II) formation enthalpy, then the given chemical potentials are differences from the respective elemental states.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-diff">
+<span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-diff" title="Link to this definition">¶</a></dt>
+<dd><p>Compare the added or removed atoms between two POSCAR files with the same lattice vectors, which can be used to check for point defects.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-energy">
+<span class="sig-name descname"><span class="pre">energy</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-energy" title="Link to this definition">¶</a></dt>
+<dd><p>Read the final step energy from the OUTCAR file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-epsilon">
+<span class="sig-name descname"><span class="pre">epsilon</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-epsilon" title="Link to this definition">¶</a></dt>
+<dd><p>Read and print the dielectric constants from the OUTCAR file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-ewald">
+<span class="sig-name descname"><span class="pre">ewald</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-ewald" title="Link to this definition">¶</a></dt>
+<dd><p>Read and print the Madelung constant from the OUTCAR file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-fixchg">
+<span class="sig-name descname"><span class="pre">fixchg</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-fixchg" title="Link to this definition">¶</a></dt>
+<dd><p>Automatically generate calculation folders for charged defects by specifying the neutral structure’s self-consistent calculation folder using the <code class="docutils literal notranslate"><span class="pre">-i/--inputdir</span></code> option (default is <code class="docutils literal notranslate"><span class="pre">charge_0</span></code>). The program calculates the total number of electrons from the POTCAR file and then automatically determines the number of electrons (NELECT parameter) based on the given system charge. It is recommended to prepare the neutral structure’s calculation folder first, run this command to generate the charged defect folders, and then submit them in batches.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-groupby">
+<span class="sig-name descname"><span class="pre">groupby</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-groupby" title="Link to this definition">¶</a></dt>
+<dd><p>Use the radial distribution function to group atoms in the POSCAR file, which can be used to identify non-equivalent positions for complex defects.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-query" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve competing phase information from a materials database (currently only supports <a class="reference external" href="https://www.oqmd.org">OQMD</a>).</p>
+<p>Ensure a stable network connection when using this command, and be mindful of database access frequency limits. It is not recommended to use this command repeatedly within a short period. Typically, you can first check the database website for better visualization results, and then use this command to retrieve the data.</p>
+<p>This command generates the input data file <a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a> used for estimating chemical potentials, with the simplified atomic ratios and the average formation enthalpy per atom of the compounds. Therefore, to correctly calculate the chemical potential <span class="math notranslate nohighlight">\(\Delta \mu_i\)</span>, you need to add the <code class="docutils literal notranslate"><span class="pre">-n</span></code> (<code class="docutils literal notranslate"><span class="pre">--norm</span></code>) option when using <a class="reference internal" href="#cmdoption-arg-chempot"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">chempot</span></code></a>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-replace">
+<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-replace" title="Link to this definition">¶</a></dt>
+<dd><p>Replace atoms in the POSCAR file.</p>
+</dd></dl>
+
+</section>
+<section id="id14">
+<h2>Input/Output Files<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
+<section id="edoping-in">
+<h3>EDOPING.in<a class="headerlink" href="#edoping-in" title="Link to this heading">¶</a></h3>
+<p>This is the input file for the <a class="reference internal" href="#cmdoption-arg-cal"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">cal</span></code></a> command, used to specify configurations for implementing defect calculations. It is recommended to use uppercase letters for keywords (case insensitivity is still experimental). Lines starting with <code class="docutils literal notranslate"><span class="pre">#</span></code> are comments and will be ignored by the program. Content after <code class="docutils literal notranslate"><span class="pre">#</span></code> within a line will also be ignored.</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-DPERFECT">
+<span class="sig-name descname"><span class="pre">DPERFECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-DPERFECT" title="Link to this definition">¶</a></dt>
+<dd><p>Directory path for the self-consistent calculation of the perfect substrate supercell.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-DDEFECT">
+<span class="sig-name descname"><span class="pre">DDEFECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-DDEFECT" title="Link to this definition">¶</a></dt>
+<dd><p>Top-level directory path for self-consistent calculations of defect supercells, containing subdirectories for different charge conditions.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-CMPOT">
+<span class="sig-name descname"><span class="pre">CMPOT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-CMPOT" title="Link to this definition">¶</a></dt>
+<dd><p>The chemical potential of added or removed atoms <span class="math notranslate nohighlight">\(\mu_i\)</span> (<span class="math notranslate nohighlight">\(= \mu _i^\Theta + \Delta \mu _i\)</span>), separated by spaces, is a sequence containing an even number of values, alternating to represent the chemical potential of removed and added atoms. For example, for Nb substituted by Ta (i.e., removing Nb atom and adding Ta atom), it is set to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CMPOT</span> <span class="o">=</span> <span class="n">mu_Nb</span> <span class="n">mu_Ta</span>
+</pre></div>
+</div>
+<p>Specifically, for interstitials and vacancies, it can be assumed that a zero-chemical-potential atom is simultaneously removed or added. For example, for Nb vacancy defects:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CMPOT</span> <span class="o">=</span> <span class="n">mu_Nb</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>For Nb interstitial defects:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CMPOT</span> <span class="o">=</span> <span class="mi">0</span> <span class="n">mu_Nb</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-VALENCE">
+<span class="sig-name descname"><span class="pre">VALENCE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-VALENCE" title="Link to this definition">¶</a></dt>
+<dd><p>The charge values of defect atoms, separated by spaces. Note that electrons themselves are negatively charged, which means in VASP’s INCAR file, increasing the NELECT value corresponds to a more negative charge value.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-DDNAME">
+<span class="sig-name descname"><span class="pre">DDNAME</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-DDNAME" title="Link to this definition">¶</a></dt>
+<dd><p>The subdirectory naming convention for self-consistent calculations of each charge state (<a class="reference internal" href="#cmdoption-arg-VALENCE"><code class="xref std std-option docutils literal notranslate"><span class="pre">VALENCE</span></code></a>) defaults to <code class="docutils literal notranslate"><span class="pre">auto</span></code>. This auto-generation combines <a class="reference internal" href="#cmdoption-arg-PREFIX"><code class="xref std std-option docutils literal notranslate"><span class="pre">PREFIX</span></code></a> with <a class="reference internal" href="#cmdoption-arg-VALENCE"><code class="xref std std-option docutils literal notranslate"><span class="pre">VALENCE</span></code></a> while preserving the +/- sign prefix. For instance, given <a class="reference internal" href="#cmdoption-arg-VALENCE"><code class="xref std std-option docutils literal notranslate"><span class="pre">VALENCE</span> <span class="pre">=</span> <span class="pre">-1</span> <span class="pre">0</span> <span class="pre">1</span></code></a> and <a class="reference internal" href="#cmdoption-arg-PREFIX"><code class="xref std std-option docutils literal notranslate"><span class="pre">PREFIX</span> <span class="pre">=</span> <span class="pre">charge_</span></code></a>, setting <a class="reference internal" href="#cmdoption-arg-DDNAME"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDNAME</span> <span class="pre">=</span> <span class="pre">auto</span></code></a> produces subdirectories equivalent to specifying <a class="reference internal" href="#cmdoption-arg-DDNAME"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDNAME</span> <span class="pre">=</span> <span class="pre">charge_-1</span> <span class="pre">charge_0</span> <span class="pre">charge_+1</span></code></a>. Alternatively, explicit subdirectory names can be defined with space separation (note: spaces within names are currently unsupported).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-PREFIX">
+<span class="sig-name descname"><span class="pre">PREFIX</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-PREFIX" title="Link to this definition">¶</a></dt>
+<dd><p>The prefix for subdirectories of self-consistent calculations with different charge values, default is <code class="docutils literal notranslate"><span class="pre">charge_</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-EVBM">
+<span class="sig-name descname"><span class="pre">EVBM</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EVBM" title="Link to this definition">¶</a></dt>
+<dd><p>Valence band maximum energy. Default is <code class="docutils literal notranslate"><span class="pre">inf</span></code>, and the program automatically reads it from the EIGENVAL file in the <a class="reference internal" href="#cmdoption-arg-DDEFECT"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDEFECT</span></code></a> directory.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-ECBM">
+<span class="sig-name descname"><span class="pre">ECBM</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-ECBM" title="Link to this definition">¶</a></dt>
+<dd><p>Conduction band minimum energy. Default is <code class="docutils literal notranslate"><span class="pre">inf</span></code>, and the program automatically reads it from the EIGENVAL file in the <a class="reference internal" href="#cmdoption-arg-DDEFECT"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDEFECT</span></code></a> directory.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-PENERGY">
+<span class="sig-name descname"><span class="pre">PENERGY</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-PENERGY" title="Link to this definition">¶</a></dt>
+<dd><p>Total energy of the perfect supercell. Default is <code class="docutils literal notranslate"><span class="pre">inf</span></code>, and the program automatically reads it from the OUTCAR file in the <a class="reference internal" href="#cmdoption-arg-DPERFECT"><code class="xref std std-option docutils literal notranslate"><span class="pre">DPERFECT</span></code></a> directory.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-PVOLUME">
+<span class="sig-name descname"><span class="pre">PVOLUME</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-PVOLUME" title="Link to this definition">¶</a></dt>
+<dd><p>Volume of the perfect supercell. Default is <code class="docutils literal notranslate"><span class="pre">inf</span></code>, and the program automatically reads it from the OUTCAR file in the <a class="reference internal" href="#cmdoption-arg-DPERFECT"><code class="xref std std-option docutils literal notranslate"><span class="pre">DPERFECT</span></code></a> directory.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-EWALD">
+<span class="sig-name descname"><span class="pre">EWALD</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EWALD" title="Link to this definition">¶</a></dt>
+<dd><p>Madelung constant. Default is <code class="docutils literal notranslate"><span class="pre">0</span></code>, indicating that the image charge correction term is disabled.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-EPSILON">
+<span class="sig-name descname"><span class="pre">EPSILON</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EPSILON" title="Link to this definition">¶</a></dt>
+<dd><p>Dielectric constant. Default is <code class="docutils literal notranslate"><span class="pre">inf</span></code>, indicating that the image charge correction term is disabled.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-ICCOEF">
+<span class="sig-name descname"><span class="pre">ICCOEF</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-ICCOEF" title="Link to this definition">¶</a></dt>
+<dd><p>The image charge correction term can be expressed as <span class="math notranslate nohighlight">\(E_{\text{IC}} = C_{\text{IC}} \cdot q^2\)</span>, where the coefficient <span class="math notranslate nohighlight">\(C_{\text{IC}}\)</span> is specified via ICCOEF. The default value <code class="docutils literal notranslate"><span class="pre">inf</span></code> indicates automatic calculation based on <a class="reference internal" href="#cmdoption-arg-EPSILON"><code class="xref std std-option docutils literal notranslate"><span class="pre">EPSILON</span></code></a> and <a class="reference internal" href="#cmdoption-arg-EWALD"><code class="xref std std-option docutils literal notranslate"><span class="pre">EWALD</span></code></a>, given by:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[C _{\text{IC}} = \left[ 1 - \frac{1}{3} \left( 1-\frac{1}{\varepsilon} \right) \right]
+          \frac{E _{wald}}{2 \varepsilon}\]</div>
+</div>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-PADIFF">
+<span class="sig-name descname"><span class="pre">PADIFF</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-PADIFF" title="Link to this definition">¶</a></dt>
+<dd><p>The potential alignment correction term can be formulated as <span class="math notranslate nohighlight">\(E_{\text{PA}} = q \cdot \Delta V\)</span>, where the potential difference <span class="math notranslate nohighlight">\(\Delta V\)</span> is specified through PADIFF (a list with length matching <a class="reference internal" href="#cmdoption-arg-VALENCE"><code class="xref std std-option docutils literal notranslate"><span class="pre">VALENCE</span></code></a>). The default <code class="docutils literal notranslate"><span class="pre">[inf,</span> <span class="pre">...]</span></code> triggers automatic extraction of the electrostatic potential difference at the farthest point from the defect in OUTCAR files.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-BFTYPE">
+<span class="sig-name descname"><span class="pre">BFTYPE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-BFTYPE" title="Link to this definition">¶</a></dt>
+<dd><p>The type of band filling correction mechanism. Default is <code class="docutils literal notranslate"><span class="pre">0</span></code>, indicating that the band filling correction term is disabled. <code class="docutils literal notranslate"><span class="pre">1</span></code> means correcting only the conduction band, <code class="docutils literal notranslate"><span class="pre">-1</span></code> means correcting only the valence band, and <code class="docutils literal notranslate"><span class="pre">2</span></code> means correcting both the conduction and valence bands.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-EMIN">
+<span class="sig-name descname"><span class="pre">EMIN</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EMIN" title="Link to this definition">¶</a></dt>
+<dd><p>Lower bound of the Fermi level (relative to <a class="reference internal" href="#cmdoption-arg-EVBM"><code class="xref std std-option docutils literal notranslate"><span class="pre">EVBM</span></code></a>), default is <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-EMAX">
+<span class="sig-name descname"><span class="pre">EMAX</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EMAX" title="Link to this definition">¶</a></dt>
+<dd><p>Upper bound of the Fermi level (relative to <a class="reference internal" href="#cmdoption-arg-EVBM"><code class="xref std std-option docutils literal notranslate"><span class="pre">EVBM</span></code></a>), default is <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-NPTS">
+<span class="sig-name descname"><span class="pre">NPTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-NPTS" title="Link to this definition">¶</a></dt>
+<dd><p>Number of sampling points for the Fermi level, default is <code class="docutils literal notranslate"><span class="pre">1001</span></code>.</p>
+</dd></dl>
+
+</section>
+<section id="edoping-log">
+<h3>EDOPING.log<a class="headerlink" href="#edoping-log" title="Link to this heading">¶</a></h3>
+<p>Execution log for the <a class="reference internal" href="#cmdoption-arg-cal"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">cal</span></code></a> command, same as the screen output.</p>
+</section>
+<section id="edoping-dat">
+<h3>EDOPING.dat<a class="headerlink" href="#edoping-dat" title="Link to this heading">¶</a></h3>
+<p>The <a class="reference internal" href="#cmdoption-arg-cal"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">cal</span></code></a> command result file contains the formation energies of defects with different charge values. It has <code class="docutils literal notranslate"><span class="pre">Nq</span> <span class="pre">+</span> <span class="pre">3</span></code> columns separated by spaces. The first column is the Fermi level (relative to <a class="reference internal" href="#cmdoption-arg-EVBM"><code class="xref std std-option docutils literal notranslate"><span class="pre">EVBM</span></code></a>), the second column is the defect formation energy, the third column is the corresponding charge value, and the subsequent columns are the defect formation energies for different charge values. The first row is a comment row containing column names, and the last two values represent the supercell volume and degeneracy factor. An example is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ef, Eformation, q , q_-3, q_-2, q_-1, q_+0, q_+1, q_+2, q_+3;    1689.3500    1</span>
+<span class="o">-</span><span class="mf">1.0000</span> <span class="o">-</span><span class="mf">1.6816</span> <span class="mf">3.0000</span> <span class="mf">5.8115</span> <span class="mf">4.3378</span> <span class="mf">2.8985</span> <span class="mf">1.4866</span> <span class="mf">0.0987</span> <span class="o">-</span><span class="mf">0.8285</span> <span class="o">-</span><span class="mf">1.6816</span>
+<span class="o">-</span><span class="mf">0.9990</span> <span class="o">-</span><span class="mf">1.6786</span> <span class="mf">3.0000</span> <span class="mf">5.8085</span> <span class="mf">4.3358</span> <span class="mf">2.8975</span> <span class="mf">1.4866</span> <span class="mf">0.0997</span> <span class="o">-</span><span class="mf">0.8265</span> <span class="o">-</span><span class="mf">1.6786</span>
+<span class="o">-</span><span class="mf">0.9980</span> <span class="o">-</span><span class="mf">1.6756</span> <span class="mf">3.0000</span> <span class="mf">5.8055</span> <span class="mf">4.3338</span> <span class="mf">2.8965</span> <span class="mf">1.4866</span> <span class="mf">0.1007</span> <span class="o">-</span><span class="mf">0.8245</span> <span class="o">-</span><span class="mf">1.6756</span>
+<span class="o">-</span><span class="mf">0.9970</span> <span class="o">-</span><span class="mf">1.6726</span> <span class="mf">3.0000</span> <span class="mf">5.8025</span> <span class="mf">4.3318</span> <span class="mf">2.8955</span> <span class="mf">1.4866</span> <span class="mf">0.1017</span> <span class="o">-</span><span class="mf">0.8225</span> <span class="o">-</span><span class="mf">1.6726</span>
+<span class="o">-</span><span class="mf">0.9960</span> <span class="o">-</span><span class="mf">1.6696</span> <span class="mf">3.0000</span> <span class="mf">5.7995</span> <span class="mf">4.3298</span> <span class="mf">2.8945</span> <span class="mf">1.4866</span> <span class="mf">0.1027</span> <span class="o">-</span><span class="mf">0.8205</span> <span class="o">-</span><span class="mf">1.6696</span>
+<span class="o">-</span><span class="mf">0.9950</span> <span class="o">-</span><span class="mf">1.6666</span> <span class="mf">3.0000</span> <span class="mf">5.7965</span> <span class="mf">4.3278</span> <span class="mf">2.8935</span> <span class="mf">1.4866</span> <span class="mf">0.1037</span> <span class="o">-</span><span class="mf">0.8185</span> <span class="o">-</span><span class="mf">1.6666</span>
+<span class="o">-</span><span class="mf">0.9940</span> <span class="o">-</span><span class="mf">1.6636</span> <span class="mf">3.0000</span> <span class="mf">5.7935</span> <span class="mf">4.3258</span> <span class="mf">2.8925</span> <span class="mf">1.4866</span> <span class="mf">0.1047</span> <span class="o">-</span><span class="mf">0.8165</span> <span class="o">-</span><span class="mf">1.6636</span>
+<span class="o">-</span><span class="mf">0.9930</span> <span class="o">-</span><span class="mf">1.6606</span> <span class="mf">3.0000</span> <span class="mf">5.7905</span> <span class="mf">4.3238</span> <span class="mf">2.8915</span> <span class="mf">1.4866</span> <span class="mf">0.1057</span> <span class="o">-</span><span class="mf">0.8145</span> <span class="o">-</span><span class="mf">1.6606</span>
+<span class="o">-</span><span class="mf">0.9920</span> <span class="o">-</span><span class="mf">1.6576</span> <span class="mf">3.0000</span> <span class="mf">5.7875</span> <span class="mf">4.3218</span> <span class="mf">2.8905</span> <span class="mf">1.4866</span> <span class="mf">0.1067</span> <span class="o">-</span><span class="mf">0.8125</span> <span class="o">-</span><span class="mf">1.6576</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+</section>
+<section id="edoping-cmpot">
+<h3>EDOPING.cmpot<a class="headerlink" href="#edoping-cmpot" title="Link to this heading">¶</a></h3>
+<p>The <a class="reference internal" href="#cmdoption-arg-chempot"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">chempot</span></code></a> command input file is used to specify the ratios and formation energies of compounds. Take the Mn-doped NbFeSb system as an example to explain the file format: the first line starts with <code class="docutils literal notranslate"><span class="pre">#</span></code> and contains the element names of the system. The second line is the ratio and formation energy of the target compound NbFeSb, followed by the elemental ratios and formation energies of all considered competing phases. For more details on the normalization of elemental ratios and formation energies, see the <a class="reference internal" href="#cmdoption-arg-chempot"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">chempot</span></code></a> command.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nb   Fe   Sb   Mn</span>
+ <span class="mi">1</span>  <span class="mi">1</span>  <span class="mi">1</span>  <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.350468735</span>
+ <span class="mi">0</span>  <span class="mi">1</span>  <span class="mi">0</span>  <span class="mi">0</span>  <span class="mf">0.0</span>
+ <span class="mi">0</span>  <span class="mi">0</span>  <span class="mi">1</span>  <span class="mi">0</span>  <span class="o">-</span><span class="mf">1.9464166666871563e-05</span>
+ <span class="mi">0</span>  <span class="mi">1</span>  <span class="mi">2</span>  <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.03650248166666733</span>
+ <span class="mi">3</span>  <span class="mi">0</span>  <span class="mi">1</span>  <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.28675903625</span>
+ <span class="mi">1</span>  <span class="mi">0</span>  <span class="mi">2</span>  <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.279502903333333</span>
+ <span class="mi">1</span>  <span class="mi">0</span>  <span class="mi">0</span>  <span class="mi">2</span>  <span class="o">-</span><span class="mf">0.1441571941954</span>
+ <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id15">
+<h2>How to Cite<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<p><strong>If this software and documentation have helped you in your work, please cite our article. This is very important to us. Thank you very much!</strong></p>
+<p>TODO…</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023-2025, Jingyu Li, Jianbo Zhu
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">eDoping’s Documentation</a><ul>
+<li><a class="reference internal" href="#id1">Feature List</a></li>
+<li><a class="reference internal" href="#id2">Installation</a></li>
+<li><a class="reference internal" href="#id3">Quick Start</a><ul>
+<li><a class="reference internal" href="#id4">Directory Structure</a></li>
+<li><a class="reference internal" href="#id5">Energy Calculation</a></li>
+<li><a class="reference internal" href="#id6">Chemical Potential Calculation</a></li>
+<li><a class="reference internal" href="#id7">Correction Terms</a></li>
+<li><a class="reference internal" href="#id8">Post-processing</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id9">Point Defect Formation Energy Calculation</a><ul>
+<li><a class="reference internal" href="#id10">Defect Supercell Construction and System Energy Calculation</a></li>
+<li><a class="reference internal" href="#id11">Chemical Potential Calculation and Database Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id12">Command Line Usage Reference</a></li>
+<li><a class="reference internal" href="#id14">Input/Output Files</a><ul>
+<li><a class="reference internal" href="#edoping-in">EDOPING.in</a></li>
+<li><a class="reference internal" href="#edoping-log">EDOPING.log</a></li>
+<li><a class="reference internal" href="#edoping-dat">EDOPING.dat</a></li>
+<li><a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id15">How to Cite</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>
