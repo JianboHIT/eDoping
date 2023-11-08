@@ -19,3 +19,7 @@ __pycache__/
 
 # Sphinx documentation
 /docs/_build/
+
+# PyInstaller
+/standalone/*
+!/standalone/compile_for_linux.sh
