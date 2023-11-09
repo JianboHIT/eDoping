@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # 
 # Usage: (1) bash compile_for_linux.sh
-#        (2) bash compile_for_linux.sh clear
+#        (2) bash compile_for_linux.sh onedir
+#        (3) bash compile_for_linux.sh clear
 # 
 # NOTE: For build process optimization, a fresh virtual
 #   environment is essential, one that includes solely
@@ -12,7 +13,7 @@
 
 
 if [ "$1" == "clear" ]; then
-  rm -rf build dist src edp edp.spec pkg_files 2>/dev/null
+  rm -rf build dist src edp.spec pkg_files 2>/dev/null
   exit 0
 fi
 
@@ -30,7 +31,57 @@ for fn in $(cat pkg_files | awk -F '[/.]' '{print $2}'); do
   done
 done
 
-cat > edp.spec << EOF
+if [ "$1" == "onedir" ]; then
+  cat > edp.spec << EOF
+# -*- mode: python ; coding: utf-8 -*-
+
+filestr='''
+src/xxx.py
+'''
+
+a = Analysis(
+    filestr.split(),
+    pathex=[],
+    binaries=[],
+    datas=[],
+    hiddenimports=[],
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[],
+    noarchive=False,
+)
+pyz = PYZ(a.pure)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    [],
+    exclude_binaries=True,
+    name='edp',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    console=True,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+)
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='edp',
+)
+EOF
+else
+  cat > edp.spec << EOF
 # -*- mode: python ; coding: utf-8 -*-
 
 filestr='''
@@ -72,11 +123,11 @@ exe = EXE(
     entitlements_file=None,
 )
 EOF
+fi
 
 sed -i '/^src/d' edp.spec
 sed -i '/^filestr/r pkg_files' edp.spec
 
 command -v pyinstaller >/dev/null 2>&1 \
   && pyinstaller edp.spec \
-  && mv dist/edp . \
   && echo "Built standalone EDOPONG [edp] program successfully!"
