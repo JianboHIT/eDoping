@@ -31,103 +31,15 @@ for fn in $(cat pkg_files | awk -F '[/.]' '{print $2}'); do
   done
 done
 
-if [ "$1" == "onedir" ]; then
-  cat > edp.spec << EOF
-# -*- mode: python ; coding: utf-8 -*-
-
-filestr='''
-src/xxx.py
-'''
-
-a = Analysis(
-    filestr.split(),
-    pathex=[],
-    binaries=[],
-    datas=[],
-    hiddenimports=[],
-    hookspath=[],
-    hooksconfig={},
-    runtime_hooks=[],
-    excludes=[],
-    noarchive=False,
-)
-pyz = PYZ(a.pure)
-
-exe = EXE(
-    pyz,
-    a.scripts,
-    [],
-    exclude_binaries=True,
-    name='edp',
-    debug=False,
-    bootloader_ignore_signals=False,
-    strip=False,
-    upx=True,
-    console=True,
-    disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
-)
-coll = COLLECT(
-    exe,
-    a.binaries,
-    a.datas,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    name='edp',
-)
-EOF
-else
-  cat > edp.spec << EOF
-# -*- mode: python ; coding: utf-8 -*-
-
-filestr='''
-src/xxx.py
-'''
-
-a = Analysis(
-    filestr.split(),
-    pathex=[],
-    binaries=[],
-    datas=[],
-    hiddenimports=[],
-    hookspath=[],
-    hooksconfig={},
-    runtime_hooks=[],
-    excludes=[],
-    noarchive=False,
-)
-pyz = PYZ(a.pure)
-
-exe = EXE(
-    pyz,
-    a.scripts,
-    a.binaries,
-    a.datas,
-    [],
-    name='edp',
-    debug=False,
-    bootloader_ignore_signals=False,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    runtime_tmpdir=None,
-    console=True,
-    disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
-)
-EOF
+if [ -z "$(command -v pyinstaller)" ]; then
+  echo "Error: pyinstaller not found. Aborting."
+  exit 1
 fi
 
-sed -i '/^src/d' edp.spec
-sed -i '/^filestr/r pkg_files' edp.spec
-
-command -v pyinstaller >/dev/null 2>&1 \
-  && pyinstaller edp.spec \
-  && echo "Built standalone EDOPONG [edp] program successfully!"
+if [ "$1" == "onedir" ]; then
+  pyinstaller -n edp $(cat pkg_files) \
+    && echo "Built standalone EDOPONG [edp] program dir successfully!"
+else
+  pyinstaller -Fn edp $(cat pkg_files) \
+    && echo "Built standalone EDOPONG [edp] program successfully!"
+fi
