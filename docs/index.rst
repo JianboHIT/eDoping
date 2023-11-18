@@ -94,6 +94,31 @@ edoping 程序包基于 python3 软件，确保它已经被正确安装。
      -o FILENAME, --output FILENAME
                            Output filename(default: POSCAR)
 
+至此，我们就已经成功地安装了 edoping 程序包。
+
+**可选地:** python 作为一种解释性编成语言，
+因此每次运行都需要完全地加载相应的环境或者虚拟环境。
+对于个人设备这是非常方便的，但是对于大型公共计算平台，
+这就尤为不便了。一个解决办法就是将程序打包成独立可执行程序，
+这样它就能和普通的程序一样不再依赖 python 环境。
+我们程序开发之初就有考虑到这个问题，
+因此严格控制对于第三方库的依赖，尽量以 python 的标准库来实现。
+我们在程序源码包中，包含了一个 standalone 的文件夹，
+其中包含一个 compile_for_linux.sh 脚本，
+可以帮助我们完成独立可执行程序的构建。
+这里，我们需要准备一个干净的 python 虚拟环境，
+并安装 pyinstaller 和其它的 edoping 依赖库,
+然后运行下面的命令:
+
+.. code-block:: bash
+
+   $ cd standalone
+   $ bash compile_for_linux.sh
+
+当脚本运行成功后，
+在 standalone/dist 中就得到了一个可执行程序 ``edp``,
+可以把它移动到任何需要的位置，方便日常工作。
+
 点缺陷形成能计算
 ----------------
 
