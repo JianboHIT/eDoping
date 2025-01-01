@@ -1,6 +1,6 @@
 import numpy as np
 from io import StringIO
-from collections import Iterable
+from collections.abc import Iterable
 
 try:
     from scipy.optimize import linprog
