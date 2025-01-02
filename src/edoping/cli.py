@@ -277,7 +277,11 @@ def cmd(arg=None):
     elif args.task == 'query':
         elmt_comp = re.findall(r'[A-z][a-z]*', args.compound)
         elmt_extra = re.findall(r'[A-z][a-z]*', args.extra)
-        elmt_all = sorted(set(elmt_comp + elmt_extra))
+        elmt_all = list(elmt_comp)
+        for elt in elmt_extra:
+            if elt not in elmt_all:
+                elmt_all.append(elt)
+        # elmt_all = sorted(set(elmt_comp + elmt_extra))
         if not is_quiet:
             print(f'Searching for phases with elements: {elmt_all}')
         phases = query_oqmd(elements=elmt_all,
@@ -301,7 +305,9 @@ def cmd(arg=None):
         target = get_comp(args.compound)
         outs.append(dsp.format(*[target.get(e, 0) for e in elmt_all], '_Not_found_'))
         target_found = False
-        
+
+        if is_detail:
+            print('   name             delta_e      OQMD_ids')
         with_struct = args.structure
         for phase in phases:
             comp = get_comp(phase['name'])
@@ -328,10 +334,11 @@ def cmd(arg=None):
             end_info = '. (DONE)' if target_found else '\n'
             print(f'Data saved to {args.output}{end_info}')
         if not target_found:
-            print('********************** WARNING **********************\n'
-                 f' Failed to fetch the entry of {args.compound},\n'
-                  ' and you will need to complete it by yourself.\n'
-                  '*****************************************************\n')
+            print('*************************** WARNING ***************************\n'
+                 f' Failed to fetch the entry of {args.compound} due to network\n'
+                  ' issues. Please try again later, use another network, or you\n'
+                  ' might prepare the file manually.\n'
+                  '***************************************************************\n')
     elif args.task == 'chempot':
         # pminmax(filename, objcoefs=None)
         # return (name, x0, status, msg),labels
