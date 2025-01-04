@@ -92,28 +92,35 @@ def pminmax(filename, objcoefs=None, normalize=False):
     bounds = (None, None)
     # print(A_ub, b_ub, A_eq, b_eq, bounds)
     
+    Nelmt = A_eq.shape[-1]
     if objcoefs is None:
-        if A_eq.shape[0] == 1:
-            select = np.abs(A_eq[0]) > 1E-4
-            names = [label for s, label in zip(select, labels) if s]
-            objcoefs = np.identity(A_eq.shape[-1])[select, ...]
-        else:
-            names = labels
-            objcoefs = np.identity(A_eq.shape[-1])
+        names = []
+        objcoefs = []
+        for idx, (weights, label) in enumerate(zip(A_eq.T, labels)):
+            if np.all(weights < 1E-4):
+                continue
+
+            # rich
+            objcoef = np.zeros(Nelmt)
+            objcoef[idx] = 1
+            names.append('{}-rich'.format(label))
+            objcoefs.append(objcoef)
+
+            # poor
+            objcoef = np.zeros(Nelmt)
+            objcoef[idx] = -1
+            names.append('{}-poor'.format(label))
+            objcoefs.append(objcoef)
     else:
-        if len(objcoefs) == A_ub.shape[-1]:
-            names = ['Cond']
-            objcoefs = [np.array(objcoefs),]
+        if len(objcoefs) == Nelmt:
+            names = ['  --', ]
+            objcoefs = np.atleast_2d(objcoefs)
         else:
-            raise RuntimeError('Encounter unmatched objective coefficients')
+            raise RuntimeError('The number of objective coefficients is not equal to species')
             
     results= []
     for name, copt in zip(names, objcoefs):
-        rst = linprog(copt, A_ub, b_ub, A_eq, b_eq, bounds) # poor condition
-        result = ('{}-poor'.format(name), rst.x, rst.status, rst.message)
-        results.append(result)
-        
-        rst = linprog(-copt, A_ub, b_ub, A_eq, b_eq, bounds) # rich conditon
-        result = ('{}-rich'.format(name), rst.x, rst.status, rst.message)
+        rst = linprog(-copt, A_ub, b_ub, A_eq, b_eq, bounds)
+        result = (name, rst.x, rst.status, rst.message)
         results.append(result)
     return results, labels
