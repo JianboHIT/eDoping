@@ -2,7 +2,7 @@ import sys, os, time
 import numpy as np
 from collections import defaultdict
 from .misc import Logger, filein, filetrans, filedata
-from .misc import __prog__, __author__, __version__, __date__
+from .misc import __prog__, __author__, __version__, __date__, __description__
 from .dft import Cell, read_energy, read_volume, \
                  read_eigval, read_evbm, read_pot
 
@@ -165,7 +165,7 @@ def formation(inputlist=None, infolevel=1):
 
     # Information, version, author
     t = time.localtime(time.time())
-    infos = ['Point Defect Formation Energy Calculation - {}'.format(__prog__),
+    infos = ['{} - {}'.format(__description__, __prog__),
              'Author: {} (v{}, {})'.format(__author__, __version__, __date__),
              'Run at {}'.format(time.strftime("%Y-%m-%d %A %X", t))]
     print(*infos, sep='\n')

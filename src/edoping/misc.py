@@ -4,8 +4,7 @@ import sys
 
 __all__ = ['filein', 'fileout', 'filedata', 'filetrans', 'filecmpot', 'filedebug',
            '__prog__', '__author__', '__version__', '__date__', '__description__',
-           '__info__', '__link__', '__ref__',
-           'required', 'Logger']
+           '__ref__', 'required', 'Logger']
 
 __prog__ = 'EDOPING'
 
@@ -17,24 +16,13 @@ filecmpot = '{}.cmpot'.format(__prog__)
 filedebug = '{}.debug'.format(__prog__)
 
 
-__author__ = 'Jianbo ZHU'
-__version__ = '0.1.4'
-__date__ = '2023-10-28'
-__description__ = 'defect calculation'
-
-__info__ = """
-Created on Wed Oct 20 12:52:06 2021
-
-@author: Jianbo Zhu
-@date: 2021/10/23
-"""
-
-__link__ = """
-GitHub for new relase
-"""
+__author__ = 'Jianbo ZHU, Jingyu LI, Yongsheng ZHANG, et al.'
+__version__ = '0.1.5'
+__date__ = '2025-01-04'
+__description__ = 'Point Defect Formation Energy Calculation'
 
 __ref__ = """
-Jingyu Li, Jianbo Zhu, Yongsheng Zhang, et al, ..., 2023
+Jianbo Zhu, Jingyu Li, Yongsheng Zhang, et al, ..., 2025
 DOI:XXXXXX/XXXX/XXXX-XXXX
 """
 
