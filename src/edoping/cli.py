@@ -349,6 +349,8 @@ def cmd(arg=None):
             for rst in results:
                 if is_detail:
                     print('{:^5d}'.format(rst[2]), end='')
+                if rst[1] is None:
+                    raise RuntimeError(f'No solution found\n  {rst[3]}')
                 for miu in rst[1]:
                     print('{:<10.4f}'.format(miu), end='')
                 print()
@@ -366,6 +368,8 @@ def cmd(arg=None):
             
             for rst in results:
                 print(dsp1.format(rst[2], rst[0]), end='')
+                if rst[1] is None:
+                    raise RuntimeError(f'No solution found\n  {rst[3]}')
                 for miu in rst[1]:
                     print(dsp2.format(miu), end='')
                 if is_detail:
