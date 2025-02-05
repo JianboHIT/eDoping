@@ -17,8 +17,8 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'edoping'
-copyright = '2023, Jingyu Li, Jianbo Zhu'
+project = 'eDoping'
+copyright = '2023-2025, Jingyu Li, Jianbo Zhu'
 author = 'Jingyu Li, Jianbo Zhu'
 
 # -- General configuration ---------------------------------------------------
@@ -39,6 +39,8 @@ templates_path = ['_templates']
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
+locale_dirs = ['locales/']
+gettext_compact = False
 language = 'zh_CN'
 
 # List of patterns, relative to source directory, that match files and
@@ -47,33 +49,68 @@ language = 'zh_CN'
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 
-# -- Options for HTML output -------------------------------------------------
+# # -- Options for HTML output -------------------------------------------------
+# # ===================================
+# # Welcome to eDoping's documentation!
+# # ===================================
+# # The theme to use for HTML and HTML Help pages.  See the documentation for
+# # a list of builtin themes.
+# #
+# html_theme = 'classic'
+# html_use_index = False
+# html_sidebars = {
+#     '**': ['localtoc.html', ],
+# }
+# html_theme_options = {
+#     'stickysidebar': True,
+# }
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-html_theme = 'classic'
-html_use_index = False
+
+# # Add any paths that contain custom static files (such as style sheets) here,
+# # relative to this directory. They are copied after the builtin static files,
+# # so a file named "default.css" will overwrite the builtin "default.css".
+# html_static_path = ['_static']
+
+
+# # -- Options for HTML output -------------------------------------------------
+# extensions.append("sphinx_rtd_theme")
+# html_logo = '_static/logo.png'
+# html_theme = 'sphinx_rtd_theme'
+# html_theme_options = {
+#     # 'style_nav_header_background': '#FFF2CC',
+#     # 'style_nav_header_background': '#DEEBF7',
+#     # 'style_nav_header_background': 'linear-gradient(90deg, #1E90FF, #FF6347)',
+#     # 'style_nav_header_background': 'linear-gradient(270deg, #FFF2CC, #DEEBF7)',
+#     'style_nav_header_background': 'linear-gradient(90deg, #E6EBF0, #DEEBF7)',
+#     # 'logo_only': True,
+# }
+
+# -- Options for HTML output -------------------------------------------------
+extensions.append("furo.sphinxext")
+html_theme = "furo"
+html_logo = "_static/logo.png"
 html_sidebars = {
-    '**': ['localtoc.html', ],
+    "**": [
+        "sidebar/scroll-start.html",
+        "sidebar/brand.html",
+        "sidebar/search.html",
+        "sidebar/navigation.html",
+        "sidebar/ethical-ads.html",
+        "sidebar/scroll-end.html",
+    ]
 }
 html_theme_options = {
-    'stickysidebar': True,
+    "sidebar_hide_name": True,
 }
 
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
-
-
-# -- Options for HTML output -------------------------------------------------
+# -- Options for LatexPDF output ---------------------------------------------
 
 latex_theme = 'howto'
 latex_elements = {
     'preamble': r'''
        \usepackage{indentfirst}
-       \setlength{\parindent}{2em}
+       \setlength{\parindent}{1em}
+       \setcounter{tocdepth}{3}
+       \setcounter{secnumdepth}{3}
     ''',
 }
