@@ -513,3 +513,22 @@ def read_dos(doscar='DOSCAR', efermi=0):
             dos.append(data[1])
 
     return energy, dos
+
+
+def read_zval(potcar='POTCAR'):
+    '''
+    Read ZVAL from POTCAR
+    
+    Returns
+    -------
+    z_dict: dict of {atom: zval}
+    '''
+    z_dict = OrderedDict()
+    with open(potcar, 'r') as f:
+        for line in f:
+            if 'TITEL' in line:
+                atom = line.split()[3].split('_')[0]
+            elif 'ZVAL' in line:
+                zval = float(line.split('ZVAL')[1].split()[1])
+                z_dict[atom] = zval
+    return z_dict
