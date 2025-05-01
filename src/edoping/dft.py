@@ -532,3 +532,22 @@ def read_zval(potcar='POTCAR'):
                 zval = float(line.split('ZVAL')[1].split()[1])
                 z_dict[atom] = zval
     return z_dict
+
+
+def fix_charge(incar='INCAR', charge=0, nelect=None):
+    '''
+    Modify NELECT to (nelect - charge) in INCAR file.
+    '''
+    chg = charge if nelect is None else (nelect - charge)
+    with open(incar, 'r') as f:
+        lines = f.readlines()
+
+    for idx, line in enumerate(lines):
+        if 'nelect' in line.lower():
+            lines[idx] = 'NELECT = {:g}\n'.format(chg)
+            break
+    else:
+        lines.append('NELECT = {:g}\n'.format(chg))
+
+    with open(incar, 'w') as f:
+        f.writelines(lines)

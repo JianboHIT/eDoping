@@ -7,7 +7,8 @@ from .defect import formation, read_H0, cal_trans, cal_rdf, \
 from .misc import filein, filecmpot, filetrans, filedata, \
                   __prog__, __description__, __version__, __ref__
 from .dft import Cell, read_energy, read_ewald, read_volume, \
-                 read_evbm, read_evbm_from_ne, read_epsilon, read_zval
+                 read_evbm, read_evbm_from_ne, read_epsilon, read_zval, \
+                 fix_charge
 from .fermi import scfermi, scfermi_fz, equ_defect
 from .query import query_oqmd, struct2vasp
 from .cpot import pminmax
@@ -46,10 +47,10 @@ def cmd(arg=None):
     parser_evbm.add_argument('--ne', type=int, help='The number of electrons(default from the file)')
     parser_evbm.add_argument('--amend', type=int, default=0, help='Additional amendment on nelect')
 
-    parser_nele = sub_parser.add_parser('nele', help='Evaluate the NELECT in cell')
-    parser_nele.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Input filename(default: POSCAR)')
-    parser_nele.add_argument('-f', '--filename', metavar='FILENAME', default='POTCAR', help="File for reading NELECT (default: POTCAR)")
-    parser_nele.add_argument('-n', '--nele', metavar="'N1 N2 ...'",help='Manually assign NELECT for each element')
+    parser_fixchg = sub_parser.add_parser('fixchg', help='Produce charge-fixed inputs')
+    parser_fixchg.add_argument('-i', '--inputdir', default='charge_0', help='Path to uncharged (q=0) reference files (default: charge_0)')
+    parser_fixchg.add_argument('--prefix', default='charge_', help='Prefix of charge-fixed output files (default: charge_)')
+    parser_fixchg.add_argument('charges', metavar='CHARGE', type=int, nargs='+', help='The target charge(s)')
 
     parser_boxhyd = sub_parser.add_parser('boxhyd', help='Place a single hydrogen atom in the box')
     parser_boxhyd.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Reference structure(default: POSCAR)')
@@ -197,34 +198,42 @@ def cmd(arg=None):
             print(('VBM: ' + pf).format(vb[0]))
             print(('CBM: ' + pf).format(cb[0]))
             print(('GAP: ' + pf).format(gp))
-    elif args.task == 'nele':
-        pos = Cell(poscar=args.input)
-        if args.nele is None:
-            z_dict = read_zval(potcar=args.filename)
-            epos = ' '.join(pos.sites.keys())
-            epot = ' '.join(z_dict.keys())
-            if epos != epot:
-                raise ValueError('Elements in {} and {} are not consistent:\n'
-                                 '    [{}] vs. [{}]'.format(args.input, args.filename, epos, epot))
-        else:
-            zval = [float(z) for z in args.nele.split()]
-            if len(zval) != len(pos.sites):
-                raise ValueError('Length of -z/--zval is not equal to number of elements in POSCAR')
-            z_dict = dict(zip(pos.sites, zval))
+    elif args.task == 'fixchg':
+        # Read ZVAL from POTCAR && Check consistency with POSCAR
+        if is_detail:
+            print('Parsing number of valence electrons from POTCAR and POSCAR in {}...'.format(args.inputdir))
+        z_dict = read_zval(potcar='{}/POTCAR'.format(args.inputdir))
+        pos = Cell(poscar='{}/POSCAR'.format(args.inputdir))
+        epos = ' '.join(pos.sites.keys())
+        epot = ' '.join(z_dict.keys())
+        if epos != epot:
+            raise ValueError('Elements in {0}/POSCAR and {0}/POTCAR are not consistent:\n'
+                                '    [{}] vs. [{}]'.format(args.inputdir, epos, epot))
 
+        # Calculate total valence electrons
         total = 0
         for atom, site in pos.sites.items():
             if atom not in z_dict:
-                raise ValueError('Cannot find infomation of {} in {}'.format(atom, args.filename))
+                raise ValueError('Cannot find infomation of {} in {}/POTCAR'.format(atom, args.inputdir))
             zi = z_dict[atom]
             num = len(site)
             total += num * zi
-            if not is_quiet:
+            if is_detail:
                 print('{:>4s}: {:3g}   ( {} )'.format(atom, zi, num))
         if is_quiet:
             print('{:g}'.format(total))
         else:
             print('Total valence electrons: {:g}'.format(total))
+
+        # Reset NELECT for each provided charge number
+        import shutil
+
+        for q in args.charges:
+            outdir = '{}{:+g}'.format(args.prefix, q)
+            shutil.copytree(args.inputdir, outdir)
+            fix_charge('{}/INCAR'.format(outdir), charge=q, nelect=total)
+            if not is_quiet:
+                print('Produce directory {} successfully.'.format(outdir))
     elif args.task == 'boxhyd':
         pos = Cell(poscar=args.input)
         poshyd = Cell()
