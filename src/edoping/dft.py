@@ -271,7 +271,7 @@ class Cell():
                     yield (atom, idx, pos)
 
 
-def read_energy(outcar='OUTCAR'):
+def read_energy(outcar='OUTCAR', average=False):
     '''
     Read final energy from OUTCAR.
 
@@ -282,6 +282,12 @@ def read_energy(outcar='OUTCAR'):
             if 'sigma' in line:
                 energy = float(line.rstrip().split()[-1])
                 break
+        if average:
+            for line in data:
+                if 'NIONS' in line:
+                    natom = int(line.strip().split()[-1])
+                    break
+            energy /= natom
     return energy
 
 

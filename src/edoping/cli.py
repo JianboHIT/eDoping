@@ -31,6 +31,7 @@ def cmd(arg=None):
 
     parser_energy = sub_parser.add_parser('energy', help='Read final energy from OUTCAR')
     parser_energy.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename(default: OUTCAR)')
+    parser_energy.add_argument('--ave', '--average', action='store_true', help='Calculate energy per atom')
 
     parser_ewald = sub_parser.add_parser('ewald', help='Read Ewald from OUTCAR')
     parser_ewald.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename(default: OUTCAR)')
@@ -146,11 +147,12 @@ def cmd(arg=None):
     elif args.task == 'cal':
         formation(inputlist=args.input)
     elif args.task == 'energy':
-        value = read_energy(outcar=args.filename)
+        value = read_energy(outcar=args.filename, average=args.ave)
+        unit = 'eV/atom' if args.ave else 'eV/cell'
         if is_quiet:
             print('{:.4f}'.format(value))
         else:
-            print('Final energy: {:.4f}'.format(value))
+            print('Final energy: {:.4f} {}'.format(value, unit))
     elif args.task == 'ewald':
         value = read_ewald(outcar=args.filename)
         if is_quiet:
