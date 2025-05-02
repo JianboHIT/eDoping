@@ -9,8 +9,6 @@ import numpy as np
 
 from .dft import Cell
 
-__all__ = ['fetch_url', 'query_oqmd', 'struct2vasp']
-
 
 def fetch_url(url, timeout=60):
     '''

@@ -2,10 +2,6 @@ from functools import wraps
 import sys
 
 
-__all__ = ['filein', 'fileout', 'filedata', 'filetrans', 'filecmpot', 'filedebug',
-           '__prog__', '__author__', '__version__', '__date__', '__description__',
-           '__ref__', 'required', 'Logger']
-
 __prog__ = 'EDOPING'
 
 filein = '{}.in'.format(__prog__)

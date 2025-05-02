@@ -1,13 +1,7 @@
 import numpy as np
 from io import StringIO
 from collections import OrderedDict
-from itertools import chain
 from .misc import __prog__
-
-
-__all__ = ['Cell', 'read_energy', 'read_ewald', 'read_pot', 'read_volume',
-           'read_epsilon', 'read_eigval', 'read_evbm', 'read_evbm_from_ne', 
-           'read_dos']
 
 
 class Cell():
