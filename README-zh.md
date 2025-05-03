@@ -1,6 +1,8 @@
 # eDpoing
 
-带电点缺陷的高通量计算程序包
+带电点缺陷的高通量计算程序包。
+
+软件手册：https://jianbohit.github.io/eDoping/
 
 ## 安装
 

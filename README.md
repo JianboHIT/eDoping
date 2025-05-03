@@ -2,6 +2,10 @@
 
 A high-throughput software package for evaluating point defects.
 
+**Online Documentation**
+- English: https://jianbohit.github.io/eDoping/en/
+- 简体中文: https://jianbohit.github.io/eDoping/
+
 ## Installiation
 
 The `eDoping` package is built on Python3, so please ensure that it is 
