@@ -1,0 +1,19 @@
+Global Parameters
+ISTART =  0            (Read existing wavefunction; if there)
+ISPIN  =  1            (Non-Spin polarised DFT)
+LREAL  = .FALSE.       (Projection operators: automatic)
+ENCUT  =  500          (Cut-off energy for plane wave basis set, in eV)
+PREC   =  Accurate     (Precision level)
+LWAVE  = .FALSE.       (Write WAVECAR or not)
+LCHARG = .FALSE.       (Write CHGCAR or not)
+ 
+Static Calculation
+NSW    = 0
+IBRION = -1
+ISMEAR =  0            (gaussian smearing method)
+SIGMA  =  0.05         (please check the width of the smearing)
+NELM   =  60           (Max electronic SCF steps)
+EDIFF  =  1E-06        (SCF energy convergence; in eV)
+
+Optionally - Parallel Acceleration
+NCORE  = 8             (square root of total cores)

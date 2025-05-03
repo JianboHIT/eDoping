@@ -1,0 +1,16 @@
+DPERFECT = 1.perfect
+DDEFECT  = 2-2.defect-Ni_i
+CMPOT    = 0 -5.7483
+VALENCE  = -3 -2 -1 0 1 2 3 
+# PREFIX   = charge_
+# DDNAME   = auto 
+EVBM     = inf
+ECBM     = inf
+PENERGY  = inf
+PVOLUME  = inf
+EWALD    = 1.7152 
+EPSILON  = 44.03
+BFTYPE   = 2 
+EMIN     = -1
+EMAX     = 2
+NPTS     = 3001

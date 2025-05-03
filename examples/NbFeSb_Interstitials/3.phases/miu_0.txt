@@ -1,0 +1,5 @@
+elemental_Fe Final energy: -7.7256 eV/atom
+elemental_Mn Final energy: -8.9885 eV/atom
+elemental_Nb Final energy: -10.2141 eV/atom
+elemental_Ni Final energy: -5.4072 eV/atom
+elemental_Sb Final energy: -4.1365 eV/atom
