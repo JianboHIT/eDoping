@@ -89,18 +89,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 extensions.append("furo.sphinxext")
 html_theme = "furo"
 html_logo = "_static/logo.png"
-html_sidebars = {
-    "**": [
-        "sidebar/scroll-start.html",
-        "sidebar/brand.html",
-        "sidebar/search.html",
-        "sidebar/navigation.html",
-        "sidebar/ethical-ads.html",
-        "sidebar/scroll-end.html",
-    ]
-}
 html_theme_options = {
     "sidebar_hide_name": True,
+    "source_edit_link": "https://github.com/JianboHIT/eDoping",
 }
 
 # -- Options for LatexPDF output ---------------------------------------------

@@ -583,7 +583,7 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
 
 .. option:: cal
 
-   根据配置文件（由 ``-i/--input`` 选项指定, 默认为 EDOPING.in）
+   根据配置文件（由 ``-i/--input`` 选项指定, 默认为 `EDOPING.in`_）
    计算缺陷形成能随费米能级的变化。
 
 .. option:: chempot
@@ -665,7 +665,7 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
    通常情况下，可以先到数据库官网进行查询，
    具有更好的可视化结果，然后再通过该命令进行数据获取。
    
-   通过该命令我们可以得到用于化学势估计的输入数据文件 EDOPING.cmpot,
+   通过该命令我们可以得到用于化学势估计的输入数据文件 `EDOPING.cmpot`_ ,
    其中给定的最简原子比和化合物平均每个原子的形成焓。因此，
    为了得到正确的化学势 :math:`\Delta \mu_i`，
    在使用 :option:`edp chempot <chempot>` 进行计算时需要添加
@@ -760,8 +760,25 @@ EDOPING.in
 
 .. option:: EPSILON
 
-   介电常数。默认值为 ``inf`` ，表示禁用介电常数修正项。
+   介电常数。默认值为 ``inf`` ，表示禁用镜像电荷修正项。
 
+.. option:: ICCOEF
+
+   镜像电荷修正项可以改写为 :math:`E _{\text{IC}} = C _{\text{IC}} \cdot q ^2`,
+   可以直接通过 ICCOEF 指定系数 :math:`C _{\text{IC}}` 。默认值为 ``inf`` ,
+   由 :option:`EPSILON` 和 :option:`EWALD` 自动计算，即：
+
+   .. math::
+
+       C _{\text{IC}} = \left[ 1 - \frac{1}{3} \left( 1-\frac{1}{\varepsilon} \right) \right]
+                 \frac{E _{\text{wald}}}{2 \varepsilon}
+
+.. option:: PADIFF
+
+   电势对齐修正项可以改写为 :math:`E _{\text{PA}} = q \cdot \Delta V`,
+   可以直接通过 PADIFF （和 :option:`VALENCE` 长度相等的列表）指定电势差
+   :math:`\Delta V` 。 默认值为 ``[inf, ...]``，自动读取 OUTCAR 文件中
+   距离缺陷最远位置处的电势差值。
 
 .. option:: BFTYPE
 

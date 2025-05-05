@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eDoping \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-04 03:09+0800\n"
+"POT-Creation-Date: 2025-05-05 18:42+0800\n"
 "PO-Revision-Date: 2025-05-03 20:05+0800\n"
 "Last-Translator: Jianbo Zhu <zhjb1996@163.com>\n"
 "Language: en\n"
@@ -23,7 +23,8 @@ msgstr "eDoping's Documentation"
 
 #: ../../index.rst:7
 msgid "PDF 文件下载链接：:download:`edoping.pdf <_build/latex/edoping.pdf>`"
-msgstr "Download the PDF file: :download:`edoping.pdf <_build/latex/en/edoping.pdf>`"
+msgstr ""
+"Download the PDF file: :download:`edoping.pdf <_build/latex/en/edoping.pdf>`"
 
 #: ../../index.rst:10
 msgid "主要功能"
@@ -55,7 +56,7 @@ msgstr "Calculation of correction terms for defect formation energies"
 
 #: ../../index.rst:17
 msgid "自洽费米能级的估计"
-msgstr "Self-consistent estimation of the Fermi level"
+msgstr "Determination of the self-consistent Fermi energy"
 
 #: ../../index.rst:20
 msgid "程序安装"
@@ -785,12 +786,12 @@ msgstr ""
 
 #: ../../index.rst:586
 msgid ""
-"根据配置文件（由 ``-i/--input`` 选项指定, 默认为 EDOPING.in） 计算缺陷形成能"
-"随费米能级的变化。"
+"根据配置文件（由 ``-i/--input`` 选项指定, 默认为 `EDOPING.in`_） 计算缺陷形成"
+"能随费米能级的变化。"
 msgstr ""
 "Calculate the variation of defect formation energy with the Fermi level "
 "based on the configuration file (specified by the ``-i/--input`` option, "
-"default is EDOPING.in)."
+"default is `EDOPING.in`_)."
 
 #: ../../index.rst:591
 msgid "求解元素化学势的范围"
@@ -943,16 +944,17 @@ msgstr ""
 
 #: ../../index.rst:668
 msgid ""
-"通过该命令我们可以得到用于化学势估计的输入数据文件 EDOPING.cmpot, 其中给定的"
-"最简原子比和化合物平均每个原子的形成焓。因此， 为了得到正确的化学势 :math:"
-"`\\Delta \\mu_i`， 在使用 :option:`edp chempot <chempot>` 进行计算时需要添加 "
-"``-n`` (``--norm``) 选项。"
+"通过该命令我们可以得到用于化学势估计的输入数据文件 `EDOPING.cmpot`_ , 其中给"
+"定的最简原子比和化合物平均每个原子的形成焓。因此， 为了得到正确的化学势 :"
+"math:`\\Delta \\mu_i`， 在使用 :option:`edp chempot <chempot>` 进行计算时需要"
+"添加 ``-n`` (``--norm``) 选项。"
 msgstr ""
-"This command generates the input data file EDOPING.cmpot used for estimating "
-"chemical potentials, with the simplified atomic ratios and the average "
-"formation enthalpy per atom of the compounds. Therefore, to correctly "
-"calculate the chemical potential :math:`\\Delta \\mu_i`, you need to add the "
-"``-n`` (``--norm``) option when using :option:`edp chempot <chempot>`."
+"This command generates the input data file `EDOPING.cmpot`_ used for "
+"estimating chemical potentials, with the simplified atomic ratios and the "
+"average formation enthalpy per atom of the compounds. Therefore, to "
+"correctly calculate the chemical potential :math:`\\Delta \\mu_i`, you need "
+"to add the ``-n`` (``--norm``) option when using :option:`edp chempot "
+"<chempot>`."
 
 #: ../../index.rst:676
 msgid "替换 POSCAR 文件中的原子。"
@@ -1093,12 +1095,47 @@ msgstr ""
 "correction term is disabled."
 
 #: ../../index.rst:763
-msgid "介电常数。默认值为 ``inf`` ，表示禁用介电常数修正项。"
+msgid "介电常数。默认值为 ``inf`` ，表示禁用镜像电荷修正项。"
 msgstr ""
-"Dielectric constant. Default is ``inf``, indicating that the dielectric "
-"constant correction term is disabled."
+"Dielectric constant. Default is ``inf``, indicating that the image charge "
+"correction term is disabled."
 
-#: ../../index.rst:768
+#: ../../index.rst:767
+msgid ""
+"镜像电荷修正项可以改写为 :math:`E _{\\text{IC}} = C _{\\text{IC}} \\cdot q "
+"^2`, 可以直接通过 ICCOEF 指定系数 :math:`C _{\\text{IC}}` 。默认值为 "
+"``inf`` , 由 :option:`EPSILON` 和 :option:`EWALD` 自动计算，即："
+msgstr ""
+"The image charge correction term can be expressed as :math:`E_{\\text{IC}} = "
+"C_{\\text{IC}} \\cdot q^2`, where the coefficient :math:`C_{\\text{IC}}` is "
+"specified via ICCOEF. The default value ``inf`` indicates automatic "
+"calculation based on :option:`EPSILON` and :option:`EWALD`, given by:"
+
+#: ../../index.rst:771
+msgid ""
+"C _{\\text{IC}} = \\left[ 1 - \\frac{1}{3} \\left( 1-\\frac{1}{\\varepsilon} "
+"\\right) \\right]\n"
+"          \\frac{E _{\\text{wald}}}{2 \\varepsilon}"
+msgstr ""
+"C _{\\text{IC}} = \\left[ 1 - \\frac{1}{3} \\left( 1-\\frac{1}{\\varepsilon} "
+"\\right) \\right]\n"
+"          \\frac{E _{wald}}{2 \\varepsilon}"
+
+#: ../../index.rst:778
+msgid ""
+"电势对齐修正项可以改写为 :math:`E _{\\text{PA}} = q \\cdot \\Delta V`, 可以直"
+"接通过 PADIFF （和 :option:`VALENCE` 长度相等的列表）指定电势差 :math:"
+"`\\Delta V` 。 默认值为 ``[inf, ...]``，自动读取 OUTCAR 文件中 距离缺陷最远位"
+"置处的电势差值。"
+msgstr ""
+"The potential alignment correction term can be formulated as :math:"
+"`E_{\\text{PA}} = q \\cdot \\Delta V`, where the potential difference :math:"
+"`\\Delta V` is specified through PADIFF (a list with length matching :option:"
+"`VALENCE`). The default ``[inf, ...]`` triggers automatic extraction of the "
+"electrostatic potential difference at the farthest point from the defect in "
+"OUTCAR files."
+
+#: ../../index.rst:785
 msgid ""
 "能带填充修正机制的类型。默认值为 ``0``，表示禁用能带填充修正项。 ``1`` 表示仅"
 "修正导带，``-1`` 表示仅修正价带，``2`` 表示同时修正导带和价带。"
@@ -1108,37 +1145,37 @@ msgstr ""
 "only the conduction band, ``-1`` means correcting only the valence band, and "
 "``2`` means correcting both the conduction and valence bands."
 
-#: ../../index.rst:773
+#: ../../index.rst:790
 msgid "费米能级的下边界（以 :option:`EVBM` 为基准），默认值为 ``-1`` 。"
 msgstr ""
 "Lower bound of the Fermi level (relative to :option:`EVBM`), default is "
 "``-1``."
 
-#: ../../index.rst:777
+#: ../../index.rst:794
 msgid "费米能级的上边界（以 :option:`EVBM` 为基准），默认值为 ``2`` 。"
 msgstr ""
 "Upper bound of the Fermi level (relative to :option:`EVBM`), default is "
 "``2``."
 
-#: ../../index.rst:781
+#: ../../index.rst:798
 msgid "费米能级采样点数，默认值为 ``1001`` 。"
 msgstr "Number of sampling points for the Fermi level, default is ``1001``."
 
-#: ../../index.rst:784
+#: ../../index.rst:801
 msgid "EDOPING.log"
 msgstr "EDOPING.log"
 
-#: ../../index.rst:786
+#: ../../index.rst:803
 msgid ":option:`edp cal <cal>` 命令的运行日志，和屏幕输出一样。"
 msgstr ""
 "Execution log for the :option:`edp cal <cal>` command, same as the screen "
 "output."
 
-#: ../../index.rst:789
+#: ../../index.rst:806
 msgid "EDOPING.dat"
 msgstr "EDOPING.dat"
 
-#: ../../index.rst:791
+#: ../../index.rst:808
 msgid ""
 ":option:`edp cal <cal>` 命令的计算结果文件，包含不同电荷值缺陷的形成能。 它包"
 "含 ``Nq + 3`` 列，以空格分隔，第一列是费米能级（以 :option:`EVBM` 为基准）， "
@@ -1155,11 +1192,11 @@ msgstr ""
 "comment row containing column names, and the last two values represent the "
 "supercell volume and degeneracy factor. An example is as follows:"
 
-#: ../../index.rst:811
+#: ../../index.rst:828
 msgid "EDOPING.cmpot"
 msgstr "EDOPING.cmpot"
 
-#: ../../index.rst:813
+#: ../../index.rst:830
 msgid ""
 ":option:`edp chempot <chempot>` 命令的输入文件，用于指定化合物的配比和形成"
 "能。 以下面的 Mn 掺杂 NbFeSb 体系为例解释文件格式： 第一行以 ``#`` 号开始，包"
@@ -1176,11 +1213,11 @@ msgstr ""
 "For more details on the normalization of elemental ratios and formation "
 "energies, see the :option:`edp chempot <chempot>` command."
 
-#: ../../index.rst:835
+#: ../../index.rst:852
 msgid "文章引用"
-msgstr "Article Citation"
+msgstr "How to Cite"
 
-#: ../../index.rst:837
+#: ../../index.rst:854
 msgid ""
 "**如果此软件以及文档给您的工作提供了帮助， 请引用我们的文章，这对我们很重要，"
 "非常感谢！**"
@@ -1188,7 +1225,7 @@ msgstr ""
 "**If this software and documentation have helped you in your work, please "
 "cite our article. This is very important to us. Thank you very much!**"
 
-#: ../../index.rst:840
+#: ../../index.rst:857
 msgid "TODO..."
 msgstr "TODO..."
 
