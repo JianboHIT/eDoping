@@ -1,11 +1,11 @@
 <!doctype html>
-<html class="no-js" lang="zh-CN" data-content_root="./">
+<html class="no-js" lang="zh-CN" data-content_root="">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="索引" href="genindex.html" /><link rel="search" title="搜索" href="search.html" />
 
-    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
         <title>eDoping 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
@@ -244,10 +244,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="edoping">
-<h1>eDoping 手册<a class="headerlink" href="#edoping" title="Link to this heading">¶</a></h1>
+<h1>eDoping 手册<a class="headerlink" href="#edoping" title="此标题的永久链接">¶</a></h1>
 <p>PDF 文件下载链接：<a class="reference download internal" download="" href="_downloads/bf10c319490612593d4b2c6fed0e40bb/edoping.pdf"><code class="xref download docutils literal notranslate"><span class="pre">edoping.pdf</span></code></a></p>
 <section id="id1">
-<h2>主要功能<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h2>主要功能<a class="headerlink" href="#id1" title="此标题的永久链接">¶</a></h2>
 <ul class="simple">
 <li><p>流程化带电点缺陷的形成能计算</p></li>
 <li><p>完全基于命令行，无需编程和复杂的脚本</p></li>
@@ -258,7 +258,7 @@
 </ul>
 </section>
 <section id="id2">
-<h2>程序安装<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<h2>程序安装<a class="headerlink" href="#id2" title="此标题的永久链接">¶</a></h2>
 <p>eDoping 程序包基于 python3 软件，确保它已经被正确安装。
 程序包从 Github 下载，或者利用 git :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/JianboHIT/eDoping.git
@@ -351,13 +351,13 @@ $<span class="w"> </span>bash<span class="w"> </span>compile_for_linux.sh
 可以把它移动到任何需要的位置，方便日常工作。</p>
 </section>
 <section id="id3">
-<h2>快速开始<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<h2>快速开始<a class="headerlink" href="#id3" title="此标题的永久链接">¶</a></h2>
 <p>确保已正确安装 eDoping 程序包（详细参考 <a class="reference internal" href="#id2">程序安装</a> 部分），
 可以通过 <code class="docutils literal notranslate"><span class="pre">edp</span> <span class="pre">-h</span></code> 打印帮助信息。
 密度泛函计算以 <code class="docutils literal notranslate"><span class="pre">VASP</span></code> 软件为例，理论上也可采用其它计算能量的软件，
 但是目前的接口并未完全支持，有待后续完善。</p>
 <section id="id4">
-<h3>文件结构<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<h3>文件结构<a class="headerlink" href="#id4" title="此标题的永久链接">¶</a></h3>
 <p>以计算 NbFeSb 带有 Mn 和 Ni 间隙的缺陷为例（详见 <code class="docutils literal notranslate"><span class="pre">examples/</span></code>），
 这里我们推荐按照如下目录形式组织文件（前置的编号方便 Tab 键快速补全）：</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>NbFeSb_Interstitials
@@ -396,7 +396,7 @@ $<span class="w"> </span>bash<span class="w"> </span>compile_for_linux.sh
 </div>
 </section>
 <section id="id5">
-<h3>能量计算<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<h3>能量计算<a class="headerlink" href="#id5" title="此标题的永久链接">¶</a></h3>
 <p>这是缺陷计算的核心耗时部分，需要调用VASP软件计算得到完美晶胞和所有价态下缺陷胞的能量
 （注意确保所有结构被合理驰豫至收敛），即 <code class="docutils literal notranslate"><span class="pre">1.perfect</span></code> 和 <code class="docutils literal notranslate"><span class="pre">2-X.defect-XX</span></code>
 目录下所有的子文件夹。</p>
@@ -411,7 +411,7 @@ $<span class="w"> </span>bash<span class="w"> </span>compile_for_linux.sh
 并修改其中 INCAR 文件中的 NELECT 参数使其净电荷等于给定值。</p>
 </section>
 <section id="id6">
-<h3>化学势计算<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<h3>化学势计算<a class="headerlink" href="#id6" title="此标题的永久链接">¶</a></h3>
 <p>在缺陷形成能计算中，
 原子化学势项用于表达缺陷晶胞与完美晶胞之间原子种类和数目不守恒导致的能量变化。
 一种原子的化学势由两部分构成，即
@@ -449,7 +449,7 @@ $<span class="w"> </span>bash<span class="w"> </span>compile_for_linux.sh
 （<span class="math notranslate nohighlight">\(\Delta \mu _i\)</span>）会打印在屏幕上。</p>
 </section>
 <section id="id7">
-<h3>修正项<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<h3>修正项<a class="headerlink" href="#id7" title="此标题的永久链接">¶</a></h3>
 <p>在点缺陷计算时，由于有限尺寸的限制通常需要对获得的形成能进行修正，即公式中的
 <span class="math notranslate nohighlight">\(E_{corr}\)</span> 项。各种修正项中，镜像电荷修正需要额外提供介电常数和马德龙常数。
 如果需要考虑该修正机制，可以通过下面的步骤通过 VASP 计算得到介电常数和马德龙常数。</p>
@@ -527,7 +527,7 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 <p>即该超胞的马德隆常数为 1.7152。</p>
 </section>
 <section id="id8">
-<h3>后处理<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<h3>后处理<a class="headerlink" href="#id8" title="此标题的永久链接">¶</a></h3>
 <p>根据前面的信息准备 <a class="reference internal" href="#edoping-in">EDOPING.in</a> 文件如下：</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DPERFECT</span> <span class="o">=</span> <span class="mf">1.</span><span class="n">perfect</span>
 <span class="n">DDEFECT</span>  <span class="o">=</span> <span class="mi">2</span><span class="o">-</span><span class="mf">1.</span><span class="n">defect</span><span class="o">-</span><span class="n">Mn_i</span>
@@ -556,7 +556,7 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 </section>
 </section>
 <section id="id9">
-<h2>点缺陷形成能计算<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<h2>点缺陷形成能计算<a class="headerlink" href="#id9" title="此标题的永久链接">¶</a></h2>
 <p>在第一性原理的计算框架下，这里所有的计算都围绕能量 (或者也被称为焓值) 计算进行。
 对于一个带电量为 <span class="math notranslate nohighlight">\(q\)</span> 的缺陷 <span class="math notranslate nohighlight">\(D\)</span> ，其形成能定义为：</p>
 <div class="math-wrapper docutils container">
@@ -577,7 +577,7 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 因此这里我们将形成能表示为费米能级的函数。
 接下来，我们将逐步解释其它每一项的计算，以及最终的数据处理过程。</p>
 <section id="id10">
-<h3>缺陷晶胞构建与体系能量计算<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<h3>缺陷晶胞构建与体系能量计算<a class="headerlink" href="#id10" title="此标题的永久链接">¶</a></h3>
 <p>完美晶胞的能量比较容易获得，因此我们这里将从缺陷结构的能量计算谈起。
 我们首先考虑单一点缺陷的晶胞结构构建，包括空位、置换和间隙。
 对于空位和间隙缺陷，通常我们可以直接手动修改 POSCAR 文件
@@ -633,7 +633,7 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 </div>
 </section>
 <section id="id11">
-<h3>化学势计算与数据库使用<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
+<h3>化学势计算与数据库使用<a class="headerlink" href="#id11" title="此标题的永久链接">¶</a></h3>
 <p>在我们完成缺陷结构的构建和相关的计算后，
 应该可以注意到一个重要的事情：
 缺陷结构和相应的完美结构很难保持原子数目的守恒。
@@ -671,15 +671,15 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 \[c_i \cdot \Delta \mu _i &gt; \Delta H _{comp}\]</div>
 </div>
 <p>在实验中，称 <span class="math notranslate nohighlight">\(\Delta \mu _i = 0\)</span> 时的 <span class="math notranslate nohighlight">\(\mu _i\)</span>
-为 &quot;rich&quot;, 称 <span class="math notranslate nohighlight">\(\Delta \mu _i = \Delta H _{comp} / c _i\)</span>
-时的 <span class="math notranslate nohighlight">\(\mu _i\)</span> 为 &quot;poor&quot;。</p>
-<p>对于二元化合物，我们不难注意到，当一种元子的化学势为 &quot;rich&quot; 时，
-另外一种原子的化学势必然为 &quot;poor&quot;。
-因此，我们通常会给出两种原子分别为 &quot;rich&quot; 的情况来计算缺陷形成能，
+为 “rich”, 称 <span class="math notranslate nohighlight">\(\Delta \mu _i = \Delta H _{comp} / c _i\)</span>
+时的 <span class="math notranslate nohighlight">\(\mu _i\)</span> 为 “poor”。</p>
+<p>对于二元化合物，我们不难注意到，当一种元子的化学势为 “rich” 时，
+另外一种原子的化学势必然为 “poor”。
+因此，我们通常会给出两种原子分别为 “rich” 的情况来计算缺陷形成能，
 反映了化学环境从一个极端到另外一个极端的情况，
 真实的实验情况必然介于这两个极限情况之间。</p>
-<p>随着元素种类增加到三种时, &quot;poor&quot; 和 &quot;rich&quot; 的概念就比较复杂了，
-因为当一种原子为 &quot;rich&quot; 时，另外两种原子的情况我们并不能确定，
+<p>随着元素种类增加到三种时, “poor” 和 “rich” 的概念就比较复杂了，
+因为当一种原子为 “rich” 时，另外两种原子的情况我们并不能确定，
 我们不得不进行细致的分类讨论，从而尽可能的接近实验环境。</p>
 <p>尽管如此，这个范围依然太粗糙了。
 目前，最有效的进一步缩小化学势范围的办法就是考虑加入竞争相的考虑。
@@ -732,7 +732,7 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 </section>
 </section>
 <section id="id12">
-<h2>命令行使用参考<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
+<h2>命令行使用参考<a class="headerlink" href="#id12" title="此标题的永久链接">¶</a></h2>
 <p>我们可以通过 <code class="docutils literal notranslate"><span class="pre">edp</span> <span class="pre">-h</span></code> 来查看所有支持的命令，
 一般命令的使用格式为：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span><span class="o">[</span>-v<span class="p">|</span><span class="w"> </span>-q<span class="o">]</span><span class="w"> </span>&lt;command&gt;<span class="w"> </span>--option1<span class="w"> </span>--option2<span class="w"> </span><span class="o">[</span>inputfile<span class="o">]</span>
@@ -748,23 +748,23 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 <p>接下来我们将介绍支持的子命令 (以字母表顺序排序):</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-boxhyd">
-<span class="sig-name descname"><span class="pre">boxhyd</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-boxhyd" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">boxhyd</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-boxhyd" title="永久链接至目标">¶</a></dt>
 <dd><p>产生仅包含单氢原子的同尺寸 POSCAR 文件。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-cal">
-<span class="sig-name descname"><span class="pre">cal</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-cal" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">cal</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-cal" title="永久链接至目标">¶</a></dt>
 <dd><p>根据配置文件（由 <code class="docutils literal notranslate"><span class="pre">-i/--input</span></code> 选项指定, 默认为 <a class="reference internal" href="#edoping-in">EDOPING.in</a>）
 计算缺陷形成能随费米能级的变化。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-chempot">
-<span class="sig-name descname"><span class="pre">chempot</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-chempot" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">chempot</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-chempot" title="永久链接至目标">¶</a></dt>
 <dd><p>求解元素化学势的范围</p>
 <p>这里我们需要准备一个输入文件 (默认文件名为 <a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a>),
-第一行需要以 '#' 号开始, 然后依次是每种元素的名称，
+第一行需要以 ‘#’ 号开始, 然后依次是每种元素的名称，
 以空格分隔。接下来是所有考虑的化合物的元素配比，
 以及相应的能量值。
 这里，第一个出现的化合物 (也就是文件的第二行)
@@ -801,31 +801,31 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-diff">
-<span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-diff" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-diff" title="永久链接至目标">¶</a></dt>
 <dd><p>对比两个具有相同基矢 POSCAR 的原子增减情况，可以用于检查点缺陷。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-energy">
-<span class="sig-name descname"><span class="pre">energy</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-energy" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">energy</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-energy" title="永久链接至目标">¶</a></dt>
 <dd><p>从 OUTCAR 文件读取最后一步的能量。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-epsilon">
-<span class="sig-name descname"><span class="pre">epsilon</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-epsilon" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">epsilon</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-epsilon" title="永久链接至目标">¶</a></dt>
 <dd><p>从 OUTCAR 文件读取并打印各项介电常数。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-ewald">
-<span class="sig-name descname"><span class="pre">ewald</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-ewald" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ewald</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-ewald" title="永久链接至目标">¶</a></dt>
 <dd><p>从 OUTCAR 文件读取并打印马德龙常数。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-fixchg">
-<span class="sig-name descname"><span class="pre">fixchg</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-fixchg" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">fixchg</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-fixchg" title="永久链接至目标">¶</a></dt>
 <dd><p>自动生成带电缺陷的计算文件夹，通过 <code class="docutils literal notranslate"><span class="pre">-i/--inputdir</span></code>
 选项指定不带电结构自洽计算的文件夹（默认为 <code class="docutils literal notranslate"><span class="pre">charge_0</span></code>）。这里实际上会从
 POTCAR 文件计算体系的净电子数，然后根据给定的体系电荷量自动计算体系的电子数
@@ -835,13 +835,13 @@ POTCAR 文件计算体系的净电子数，然后根据给定的体系电荷量�
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-groupby">
-<span class="sig-name descname"><span class="pre">groupby</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-groupby" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">groupby</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-groupby" title="永久链接至目标">¶</a></dt>
 <dd><p>利用径向分布函数对 POSCAR 中的原子进行分组，可以用于寻找不等价位置的复合缺陷。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-query">
-<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-query" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-query" title="永久链接至目标">¶</a></dt>
 <dd><p>从材料数据库 (目前只支持 <a class="reference external" href="https://www.oqmd.org">OQMD</a>) 获取竞争相的信息</p>
 <p>使用时确保网络畅通，且受制于数据库的访问频率限制，
 不建议在短时间内反复多次使用。
@@ -856,33 +856,33 @@ POTCAR 文件计算体系的净电子数，然后根据给定的体系电荷量�
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-replace">
-<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-replace" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-replace" title="永久链接至目标">¶</a></dt>
 <dd><p>替换 POSCAR 文件中的原子。</p>
 </dd></dl>
 
 </section>
 <section id="id14">
-<h2>输入/输出文件<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h2>
+<h2>输入/输出文件<a class="headerlink" href="#id14" title="此标题的永久链接">¶</a></h2>
 <section id="edoping-in">
-<h3>EDOPING.in<a class="headerlink" href="#edoping-in" title="Link to this heading">¶</a></h3>
+<h3>EDOPING.in<a class="headerlink" href="#edoping-in" title="此标题的永久链接">¶</a></h3>
 <p>这是 <a class="reference internal" href="#cmdoption-arg-cal"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">cal</span></code></a> 命令的输入文件，用于指定点实施缺陷计算的一些配置。
 关键字推荐使用大写字母（大小写不敏感特性还在实验中）。<code class="docutils literal notranslate"><span class="pre">#</span></code> 号开头的行是注释行，
 会被程序忽略。行内的 <code class="docutils literal notranslate"><span class="pre">#</span></code> 号之后的内容也会被忽略。</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-DPERFECT">
-<span class="sig-name descname"><span class="pre">DPERFECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-DPERFECT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DPERFECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-DPERFECT" title="永久链接至目标">¶</a></dt>
 <dd><p>完美基体超胞自洽计算的目录路径。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-DDEFECT">
-<span class="sig-name descname"><span class="pre">DDEFECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-DDEFECT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DDEFECT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-DDEFECT" title="永久链接至目标">¶</a></dt>
 <dd><p>缺陷超胞自洽计算的顶级目录路径，其中包含不同带电情况自洽计算的子目录。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-CMPOT">
-<span class="sig-name descname"><span class="pre">CMPOT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-CMPOT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">CMPOT</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-CMPOT" title="永久链接至目标">¶</a></dt>
 <dd><p>增减原子的化学势 <span class="math notranslate nohighlight">\(\mu_i\)</span> （ <span class="math notranslate nohighlight">\(= \mu _i^\Theta + \Delta \mu _i\)</span> ），
 以空格分隔，是一个包含偶数个值的序列，交替表示移除的加入的原子的化学势。
 比如对于 Nb 被 Ta 取代（即移除 Nb 原子，加入 Ta 原子），则设置为：</p>
@@ -902,14 +902,14 @@ POTCAR 文件计算体系的净电子数，然后根据给定的体系电荷量�
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-VALENCE">
-<span class="sig-name descname"><span class="pre">VALENCE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-VALENCE" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">VALENCE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-VALENCE" title="永久链接至目标">¶</a></dt>
 <dd><p>缺陷原子的电荷值，以空格分隔。注意，电子本身带负电，这意味着在 VASP
 的 INCAR 文件中，增加 NELECT 值对应更负的电荷值。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-DDNAME">
-<span class="sig-name descname"><span class="pre">DDNAME</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-DDNAME" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DDNAME</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-DDNAME" title="永久链接至目标">¶</a></dt>
 <dd><p>每个电荷值（<a class="reference internal" href="#cmdoption-arg-VALENCE"><code class="xref std std-option docutils literal notranslate"><span class="pre">VALENCE</span></code></a>）自洽计算的子目录名称，默认值为 <code class="docutils literal notranslate"><span class="pre">auto</span></code> ，
 通过组合 <a class="reference internal" href="#cmdoption-arg-PREFIX"><code class="xref std std-option docutils literal notranslate"><span class="pre">PREFIX</span></code></a> 和 <a class="reference internal" href="#cmdoption-arg-VALENCE"><code class="xref std std-option docutils literal notranslate"><span class="pre">VALENCE</span></code></a> 自动生成，
 这里价态会保留前置的“+/-”号。比如，如果 <a class="reference internal" href="#cmdoption-arg-VALENCE"><code class="xref std std-option docutils literal notranslate"><span class="pre">VALENCE</span> <span class="pre">=</span> <span class="pre">-1</span> <span class="pre">0</span> <span class="pre">1</span></code></a> ，
@@ -920,53 +920,53 @@ POTCAR 文件计算体系的净电子数，然后根据给定的体系电荷量�
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-PREFIX">
-<span class="sig-name descname"><span class="pre">PREFIX</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-PREFIX" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">PREFIX</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-PREFIX" title="永久链接至目标">¶</a></dt>
 <dd><p>不同电荷值的自洽计算子目录的前缀，默认值为 <code class="docutils literal notranslate"><span class="pre">charge_</span></code> 。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-EVBM">
-<span class="sig-name descname"><span class="pre">EVBM</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EVBM" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">EVBM</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EVBM" title="永久链接至目标">¶</a></dt>
 <dd><p>价带顶能量。默认值为 <code class="docutils literal notranslate"><span class="pre">inf</span></code> ，程序自动从 <a class="reference internal" href="#cmdoption-arg-DDEFECT"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDEFECT</span></code></a> 目录下的
 EIGENVAL 文件读取。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-ECBM">
-<span class="sig-name descname"><span class="pre">ECBM</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-ECBM" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ECBM</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-ECBM" title="永久链接至目标">¶</a></dt>
 <dd><p>导带底能量。默认值为 <code class="docutils literal notranslate"><span class="pre">inf</span></code> ，程序自动从 <a class="reference internal" href="#cmdoption-arg-DDEFECT"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDEFECT</span></code></a> 目录下的
 EIGENVAL 文件读取。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-PENERGY">
-<span class="sig-name descname"><span class="pre">PENERGY</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-PENERGY" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">PENERGY</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-PENERGY" title="永久链接至目标">¶</a></dt>
 <dd><p>完美晶胞的总能量。默认值为 <code class="docutils literal notranslate"><span class="pre">inf</span></code> ，程序自动从 <a class="reference internal" href="#cmdoption-arg-DPERFECT"><code class="xref std std-option docutils literal notranslate"><span class="pre">DPERFECT</span></code></a> 目录下的
 OUTCAR 文件读取。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-PVOLUME">
-<span class="sig-name descname"><span class="pre">PVOLUME</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-PVOLUME" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">PVOLUME</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-PVOLUME" title="永久链接至目标">¶</a></dt>
 <dd><p>完美晶胞的体积。默认值为 <code class="docutils literal notranslate"><span class="pre">inf</span></code> ，程序自动从 <a class="reference internal" href="#cmdoption-arg-DPERFECT"><code class="xref std std-option docutils literal notranslate"><span class="pre">DPERFECT</span></code></a> 目录下的
 OUTCAR 文件读取。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-EWALD">
-<span class="sig-name descname"><span class="pre">EWALD</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EWALD" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">EWALD</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EWALD" title="永久链接至目标">¶</a></dt>
 <dd><p>马德龙常数。默认值为 <code class="docutils literal notranslate"><span class="pre">0</span></code> ，表示禁用镜像电荷修正项。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-EPSILON">
-<span class="sig-name descname"><span class="pre">EPSILON</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EPSILON" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">EPSILON</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EPSILON" title="永久链接至目标">¶</a></dt>
 <dd><p>介电常数。默认值为 <code class="docutils literal notranslate"><span class="pre">inf</span></code> ，表示禁用镜像电荷修正项。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-ICCOEF">
-<span class="sig-name descname"><span class="pre">ICCOEF</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-ICCOEF" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ICCOEF</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-ICCOEF" title="永久链接至目标">¶</a></dt>
 <dd><p>镜像电荷修正项可以改写为 <span class="math notranslate nohighlight">\(E _{\text{IC}} = C _{\text{IC}} \cdot q ^2\)</span>,
 可以直接通过 ICCOEF 指定系数 <span class="math notranslate nohighlight">\(C _{\text{IC}}\)</span> 。默认值为 <code class="docutils literal notranslate"><span class="pre">inf</span></code> ,
 由 <a class="reference internal" href="#cmdoption-arg-EPSILON"><code class="xref std std-option docutils literal notranslate"><span class="pre">EPSILON</span></code></a> 和 <a class="reference internal" href="#cmdoption-arg-EWALD"><code class="xref std std-option docutils literal notranslate"><span class="pre">EWALD</span></code></a> 自动计算，即：</p>
@@ -979,7 +979,7 @@ OUTCAR 文件读取。</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-PADIFF">
-<span class="sig-name descname"><span class="pre">PADIFF</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-PADIFF" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">PADIFF</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-PADIFF" title="永久链接至目标">¶</a></dt>
 <dd><p>电势对齐修正项可以改写为 <span class="math notranslate nohighlight">\(E _{\text{PA}} = q \cdot \Delta V\)</span>,
 可以直接通过 PADIFF （和 <a class="reference internal" href="#cmdoption-arg-VALENCE"><code class="xref std std-option docutils literal notranslate"><span class="pre">VALENCE</span></code></a> 长度相等的列表）指定电势差
 <span class="math notranslate nohighlight">\(\Delta V\)</span> 。 默认值为 <code class="docutils literal notranslate"><span class="pre">[inf,</span> <span class="pre">...]</span></code>，自动读取 OUTCAR 文件中
@@ -988,36 +988,36 @@ OUTCAR 文件读取。</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-BFTYPE">
-<span class="sig-name descname"><span class="pre">BFTYPE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-BFTYPE" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">BFTYPE</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-BFTYPE" title="永久链接至目标">¶</a></dt>
 <dd><p>能带填充修正机制的类型。默认值为 <code class="docutils literal notranslate"><span class="pre">0</span></code>，表示禁用能带填充修正项。
 <code class="docutils literal notranslate"><span class="pre">1</span></code> 表示仅修正导带，<code class="docutils literal notranslate"><span class="pre">-1</span></code> 表示仅修正价带，<code class="docutils literal notranslate"><span class="pre">2</span></code> 表示同时修正导带和价带。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-EMIN">
-<span class="sig-name descname"><span class="pre">EMIN</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EMIN" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">EMIN</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EMIN" title="永久链接至目标">¶</a></dt>
 <dd><p>费米能级的下边界（以 <a class="reference internal" href="#cmdoption-arg-EVBM"><code class="xref std std-option docutils literal notranslate"><span class="pre">EVBM</span></code></a> 为基准），默认值为 <code class="docutils literal notranslate"><span class="pre">-1</span></code> 。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-EMAX">
-<span class="sig-name descname"><span class="pre">EMAX</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EMAX" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">EMAX</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-EMAX" title="永久链接至目标">¶</a></dt>
 <dd><p>费米能级的上边界（以 <a class="reference internal" href="#cmdoption-arg-EVBM"><code class="xref std std-option docutils literal notranslate"><span class="pre">EVBM</span></code></a> 为基准），默认值为 <code class="docutils literal notranslate"><span class="pre">2</span></code> 。</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-NPTS">
-<span class="sig-name descname"><span class="pre">NPTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-NPTS" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">NPTS</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-NPTS" title="永久链接至目标">¶</a></dt>
 <dd><p>费米能级采样点数，默认值为 <code class="docutils literal notranslate"><span class="pre">1001</span></code> 。</p>
 </dd></dl>
 
 </section>
 <section id="edoping-log">
-<h3>EDOPING.log<a class="headerlink" href="#edoping-log" title="Link to this heading">¶</a></h3>
+<h3>EDOPING.log<a class="headerlink" href="#edoping-log" title="此标题的永久链接">¶</a></h3>
 <p><a class="reference internal" href="#cmdoption-arg-cal"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">cal</span></code></a> 命令的运行日志，和屏幕输出一样。</p>
 </section>
 <section id="edoping-dat">
-<h3>EDOPING.dat<a class="headerlink" href="#edoping-dat" title="Link to this heading">¶</a></h3>
+<h3>EDOPING.dat<a class="headerlink" href="#edoping-dat" title="此标题的永久链接">¶</a></h3>
 <p><a class="reference internal" href="#cmdoption-arg-cal"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">cal</span></code></a> 命令的计算结果文件，包含不同电荷值缺陷的形成能。
 它包含 <code class="docutils literal notranslate"><span class="pre">Nq</span> <span class="pre">+</span> <span class="pre">3</span></code> 列，以空格分隔，第一列是费米能级（以 <a class="reference internal" href="#cmdoption-arg-EVBM"><code class="xref std std-option docutils literal notranslate"><span class="pre">EVBM</span></code></a> 为基准），
 第二列是缺陷形成能，第三列是对应的电荷值，后面各列依次是不同电荷值的缺陷形成能。
@@ -1037,7 +1037,7 @@ OUTCAR 文件读取。</p>
 </div>
 </section>
 <section id="edoping-cmpot">
-<h3>EDOPING.cmpot<a class="headerlink" href="#edoping-cmpot" title="Link to this heading">¶</a></h3>
+<h3>EDOPING.cmpot<a class="headerlink" href="#edoping-cmpot" title="此标题的永久链接">¶</a></h3>
 <p><a class="reference internal" href="#cmdoption-arg-chempot"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">chempot</span></code></a> 命令的输入文件，用于指定化合物的配比和形成能。
 以下面的 Mn 掺杂 NbFeSb 体系为例解释文件格式：
 第一行以 <code class="docutils literal notranslate"><span class="pre">#</span></code> 号开始，包含体系的元素名称。
@@ -1059,10 +1059,10 @@ OUTCAR 文件读取。</p>
 </section>
 </section>
 <section id="id15">
-<h2>文章引用<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h2>
+<h2>文章引用<a class="headerlink" href="#id15" title="此标题的永久链接">¶</a></h2>
 <p><strong>如果此软件以及文档给您的工作提供了帮助，
 请引用我们的文章，这对我们很重要，非常感谢！</strong></p>
-<p>TODO...</p>
+<p>TODO…</p>
 </section>
 </section>
 
@@ -1139,9 +1139,9 @@ OUTCAR 文件读取。</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=7d86a446"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=babeb00e"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
     <script src="_static/translations.js?v=beaddf03"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
