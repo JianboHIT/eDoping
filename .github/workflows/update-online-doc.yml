@@ -1,0 +1,60 @@
+name: Update the Online Documentation
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-publish-docs:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install LaTeX (minimal)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+            xindy \
+            latexmk \
+            texlive-xetex \
+            texlive-latex-extra \
+            texlive-lang-chinese \
+            fonts-freefont-otf \
+            fonts-noto-cjk \
+            fontconfig
+        sudo fc-cache -fv
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.8'
+
+    - name: Install package dependencies
+      run: |
+        pip install -e .
+        pip install sphinx furo
+
+    - name: Build the Documentation
+      run: |
+        cd docs
+        make latexpdf
+        make html
+
+    - name: Build the English version
+      run: |
+        cd docs
+        sphinx-build -b latex -D language=en . _build/latex/en
+        cd _build/latex/en
+        make all-pdf
+        cd ../../..
+        sphinx-build -b html -D language=en . _build/html/en
+
+    - name: Deploy to GitHub Pages
+      if: success()
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/_build/html
