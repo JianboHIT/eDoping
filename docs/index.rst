@@ -20,7 +20,13 @@ eDoping 手册
 --------
 
 eDoping 程序包基于 python3 软件，确保它已经被正确安装。
-程序包从 Github 下载，或者利用 git :
+如果可以联网，最简单的方式就是通过 pip 安装 eDoping 程序包:
+
+.. code-block:: bash
+
+   $ pip install eDoping
+
+如果无法联网或者对源代码感兴趣，程序包从 Github 下载，或者利用 git :
 
 .. code-block:: bash
 
