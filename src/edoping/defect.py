@@ -561,7 +561,7 @@ def cal_rdf(cell, atom_idx, nhead=30, npad=2, ndigits=1):
     for (elt, idx, pos), dd in zip(cell.all_pos(), pp):
         for d, dist in zip(dd, dists_):
             for d_i in d:
-                dist[(round(d_i, ndigits), elt)].append((idx, pos))
+                dist[(round(float(d_i), ndigits), elt)].append((idx, pos))
 
     # nhead = 30
     fillvalue = (0, 'X', 0)         # if site is less than nhead, use fillvalue

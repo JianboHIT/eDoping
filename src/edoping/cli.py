@@ -301,16 +301,17 @@ def cmd(arg=None):
         infos = list(dists.keys())
         for i, k in enumerate(infos):
             print('Group #{}: {}'.format(i+1, ', '.join(dists[k])))
-        print()
-        headers = ['Group #{}'.format(i+1) for i in range(len(infos))]
-        print('===={}'.format('='.join(['='*18 for _ in headers])))
-        print('No.|{}'.format('|'.join(['{:^18s}'.format(header) for header in headers])))
-        print('---+{}'.format('+'.join(['-'*18 for _ in headers])))
-        for i, dts in enumerate(zip(*infos)):
-            contents = ['{}'.format(dt) for dt in dts]
-            line = '{:^3d}|{}'.format(i, '|'.join(['{:^18s}'.format(cont) for cont in contents]))
-            if args.grep and (args.grep in line): print(line)
-        print('===={}'.format('='.join(['='*18 for _ in headers])))
+        if not is_quiet:
+            print()
+            headers = ['Group #{}'.format(i+1) for i in range(len(infos))]
+            print('===={}'.format('='.join(['='*18 for _ in headers])))
+            print('No.|{}'.format('|'.join(['{:^18s}'.format(header) for header in headers])))
+            print('---+{}'.format('+'.join(['-'*18 for _ in headers])))
+            for i, dts in enumerate(zip(*infos)):
+                contents = ['{}'.format(dt) for dt in dts]
+                line = '{:^3d}|{}'.format(i, '|'.join(['{:^18s}'.format(cont) for cont in contents]))
+                if (not args.grep) or ("'{}'".format(args.grep) in line): print(line)
+            print('===={}'.format('='.join(['='*18 for _ in headers])))
     elif args.task == 'diff':
         c1 = Cell(poscar=args.filename1)
         c2 = Cell(poscar=args.filename2)
