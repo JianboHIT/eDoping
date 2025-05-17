@@ -20,6 +20,11 @@ __pycache__/
 # Sphinx documentation
 /docs/_build/
 
+# Translations
+*.po~
+*.mo
+*.pot
+
 # PyInstaller
 /standalone/*
 !/standalone/compile_for_linux.sh
