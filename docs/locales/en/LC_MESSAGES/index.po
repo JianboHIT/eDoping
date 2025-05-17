@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eDoping \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-05 18:42+0800\n"
-"PO-Revision-Date: 2025-05-03 20:05+0800\n"
+"POT-Creation-Date: 2025-05-17 16:50+0800\n"
+"PO-Revision-Date: 2025-05-17 16:50+0800\n"
 "Last-Translator: Jianbo Zhu <zhjb1996@163.com>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
@@ -881,24 +881,33 @@ msgstr ""
 "differences from the respective elemental states."
 
 #: ../../index.rst:633
-msgid "对比两个具有相同基矢 POSCAR 的原子增减情况，可以用于检查点缺陷。"
+msgid ""
+"对比两个具有相同基矢 POSCAR 的原子增减情况，可以用于检查点缺陷。 以含有 Mn 间"
+"隙的 NbFeSb 超胞为例，结果如下："
 msgstr ""
-"Compare the added or removed atoms between two POSCAR files with the same "
-"lattice vectors, which can be used to check for point defects."
+"Compares atom differences in two POSCAR files with the same lattice vectors "
+"to identify point defects. For example, check Mn interstitials in a NbFeSb "
+"supercell:"
 
-#: ../../index.rst:637
+#: ../../index.rst:643
+msgid "这里，``i`` 表示间隙型缺陷（``v`` 表示空位，``s`` 表示取代）。"
+msgstr ""
+"Here, ``i`` stands for interstitial defect (``v`` stands for vacancy, "
+"``s`` for substitution)."
+
+#: ../../index.rst:647
 msgid "从 OUTCAR 文件读取最后一步的能量。"
 msgstr "Read the final step energy from the OUTCAR file."
 
-#: ../../index.rst:641
+#: ../../index.rst:651
 msgid "从 OUTCAR 文件读取并打印各项介电常数。"
 msgstr "Read and print the dielectric constants from the OUTCAR file."
 
-#: ../../index.rst:645
+#: ../../index.rst:655
 msgid "从 OUTCAR 文件读取并打印马德龙常数。"
 msgstr "Read and print the Madelung constant from the OUTCAR file."
 
-#: ../../index.rst:649
+#: ../../index.rst:659
 msgid ""
 "自动生成带电缺陷的计算文件夹，通过 ``-i/--inputdir`` 选项指定不带电结构自洽计"
 "算的文件夹（默认为 ``charge_0``）。这里实际上会从 POTCAR 文件计算体系的净电子"
@@ -915,22 +924,46 @@ msgstr ""
 "calculation folder first, run this command to generate the charged defect "
 "folders, and then submit them in batches."
 
-#: ../../index.rst:657
+#: ../../index.rst:667
 msgid ""
 "利用径向分布函数对 POSCAR 中的原子进行分组，可以用于寻找不等价位置的复合缺"
-"陷。"
+"陷。 比如，我们想在含有 Mn 间隙缺陷的 NbFeSb 超胞中再引入一个 Fe 空位。 在超"
+"胞中通常有很多个 Fe 原子，逐个计算每个位点的情况是非常耗时的。 一个有效的简化"
+"策略就是，按照每个 Fe 原子的近邻环境对它们进行分组， 对于同一个组内的 Fe 原"
+"子，它们理应具有相似的缺陷行为。如下所示， POSCAR 是一个包含 Mn 间隙原子的 "
+"NbFeSb 超胞："
 msgstr ""
-"Use the radial distribution function to group atoms in the POSCAR file, "
-"which can be used to identify non-equivalent positions for complex defects."
+"Group atoms in a POSCAR using the radial distribution function to identify "
+"complex defects at inequivalent sites. For example, introducing an Fe "
+"vacancy into an NbFeSb supercell with an Mn interstitial defect can be "
+"time-consuming if you calculate each Fe site individually. A practical "
+"approach is to group Fe atoms by their local environments. Within the "
+"same group, Fe atoms should exhibit similar defect behavior. Assume the "
+"following POSCAR file is of a NbFeSb supercell containing an Mn interstitial:"
 
-#: ../../index.rst:661
+#: ../../index.rst:719
+msgid ""
+"可以看到，32 个 Fe 原子可以被分成 4 组。元组内的三项分别是距离、原子类别和数"
+"量。 比如， Fe1, Fe2, Fe9, Fe11, Fe17, Fe21 都属于组 #1， 它们在 12.6 "
+"Angstrom 范围内具有着完全相同近邻原子。 具体地，它们与最近的一个 Mn 原子距离 "
+"3.0 Angstrom，与第二近邻的 Mn 原子距离 8.9 Angstrom。为了更加清晰地聚焦于 Mn "
+"原子，可以使用 ``--grep Mn`` 选项只保留含有 Mn 原子的行："
+msgstr ""
+"You can see that the 32 Fe atoms are divided into 4 groups. Each cell contains "
+"three entries: distance, atom type, and count. For instance, Fe1, Fe2, Fe9, Fe11, "
+"Fe17, and Fe21 all belong to group #1, sharing identical neighboring atoms within "
+"12.6 angstroms. Specifically, they are 3.0 angstroms away from the nearest Mn atom "
+"and 8.9 angstroms from the second-nearest Mn atom. To focus on Mn atoms clearly, "
+"you can use the ``--grep Mn`` option to keep only lines with Mn atoms:"
+
+#: ../../index.rst:750
 msgid ""
 "从材料数据库 (目前只支持 `OQMD <https://www.oqmd.org>`_) 获取竞争相的信息"
 msgstr ""
 "Retrieve competing phase information from a materials database (currently "
 "only supports `OQMD <https://www.oqmd.org>`_)."
 
-#: ../../index.rst:663
+#: ../../index.rst:752
 msgid ""
 "使用时确保网络畅通，且受制于数据库的访问频率限制， 不建议在短时间内反复多次使"
 "用。 通常情况下，可以先到数据库官网进行查询， 具有更好的可视化结果，然后再通"
@@ -942,7 +975,7 @@ msgstr ""
 "database website for better visualization results, and then use this command "
 "to retrieve the data."
 
-#: ../../index.rst:668
+#: ../../index.rst:757
 msgid ""
 "通过该命令我们可以得到用于化学势估计的输入数据文件 `EDOPING.cmpot`_ , 其中给"
 "定的最简原子比和化合物平均每个原子的形成焓。因此， 为了得到正确的化学势 :"
@@ -956,19 +989,19 @@ msgstr ""
 "to add the ``-n`` (``--norm``) option when using :option:`edp chempot "
 "<chempot>`."
 
-#: ../../index.rst:676
+#: ../../index.rst:765
 msgid "替换 POSCAR 文件中的原子。"
 msgstr "Replace atoms in the POSCAR file."
 
-#: ../../index.rst:679
+#: ../../index.rst:768
 msgid "输入/输出文件"
 msgstr "Input/Output Files"
 
-#: ../../index.rst:682
+#: ../../index.rst:771
 msgid "EDOPING.in"
 msgstr "EDOPING.in"
 
-#: ../../index.rst:684
+#: ../../index.rst:773
 msgid ""
 "这是 :option:`edp cal <cal>` 命令的输入文件，用于指定点实施缺陷计算的一些配"
 "置。 关键字推荐使用大写字母（大小写不敏感特性还在实验中）。``#`` 号开头的行是"
@@ -981,19 +1014,19 @@ msgstr ""
 "ignored by the program. Content after ``#`` within a line will also be "
 "ignored."
 
-#: ../../index.rst:690
+#: ../../index.rst:779
 msgid "完美基体超胞自洽计算的目录路径。"
 msgstr ""
 "Directory path for the self-consistent calculation of the perfect substrate "
 "supercell."
 
-#: ../../index.rst:694
+#: ../../index.rst:783
 msgid "缺陷超胞自洽计算的顶级目录路径，其中包含不同带电情况自洽计算的子目录。"
 msgstr ""
 "Top-level directory path for self-consistent calculations of defect "
 "supercells, containing subdirectories for different charge conditions."
 
-#: ../../index.rst:698
+#: ../../index.rst:787
 msgid ""
 "增减原子的化学势 :math:`\\mu_i` （ :math:`= \\mu _i^\\Theta + \\Delta \\mu "
 "_i` ）， 以空格分隔，是一个包含偶数个值的序列，交替表示移除的加入的原子的化学"
@@ -1005,7 +1038,7 @@ msgstr ""
 "potential of removed and added atoms. For example, for Nb substituted by Ta "
 "(i.e., removing Nb atom and adding Ta atom), it is set to:"
 
-#: ../../index.rst:706
+#: ../../index.rst:795
 msgid ""
 "特别地，对于间隙和空位，可以认为同时地移除或者加入一个化学势为 0 的原子， 比"
 "如对于 Nb 空位缺陷："
@@ -1014,11 +1047,11 @@ msgstr ""
 "chemical-potential atom is simultaneously removed or added. For example, for "
 "Nb vacancy defects:"
 
-#: ../../index.rst:713
+#: ../../index.rst:802
 msgid "对于 Nb 间隙缺陷："
 msgstr "For Nb interstitial defects:"
 
-#: ../../index.rst:721
+#: ../../index.rst:810
 msgid ""
 "缺陷原子的电荷值，以空格分隔。注意，电子本身带负电，这意味着在 VASP 的 INCAR "
 "文件中，增加 NELECT 值对应更负的电荷值。"
@@ -1027,7 +1060,7 @@ msgstr ""
 "themselves are negatively charged, which means in VASP's INCAR file, "
 "increasing the NELECT value corresponds to a more negative charge value."
 
-#: ../../index.rst:726
+#: ../../index.rst:815
 msgid ""
 "每个电荷值（:option:`VALENCE`）自洽计算的子目录名称，默认值为 ``auto`` ， 通"
 "过组合 :option:`PREFIX` 和 :option:`VALENCE` 自动生成， 这里价态会保留前置"
@@ -1046,13 +1079,13 @@ msgstr ""
 "be defined with space separation (note: spaces within names are currently "
 "unsupported)."
 
-#: ../../index.rst:735
+#: ../../index.rst:824
 msgid "不同电荷值的自洽计算子目录的前缀，默认值为 ``charge_`` 。"
 msgstr ""
 "The prefix for subdirectories of self-consistent calculations with different "
 "charge values, default is ``charge_``."
 
-#: ../../index.rst:739
+#: ../../index.rst:828
 msgid ""
 "价带顶能量。默认值为 ``inf`` ，程序自动从 :option:`DDEFECT` 目录下的 "
 "EIGENVAL 文件读取。"
@@ -1061,7 +1094,7 @@ msgstr ""
 "automatically reads it from the EIGENVAL file in the :option:`DDEFECT` "
 "directory."
 
-#: ../../index.rst:744
+#: ../../index.rst:833
 msgid ""
 "导带底能量。默认值为 ``inf`` ，程序自动从 :option:`DDEFECT` 目录下的 "
 "EIGENVAL 文件读取。"
@@ -1070,7 +1103,7 @@ msgstr ""
 "automatically reads it from the EIGENVAL file in the :option:`DDEFECT` "
 "directory."
 
-#: ../../index.rst:749
+#: ../../index.rst:838
 msgid ""
 "完美晶胞的总能量。默认值为 ``inf`` ，程序自动从 :option:`DPERFECT` 目录下的 "
 "OUTCAR 文件读取。"
@@ -1079,7 +1112,7 @@ msgstr ""
 "automatically reads it from the OUTCAR file in the :option:`DPERFECT` "
 "directory."
 
-#: ../../index.rst:754
+#: ../../index.rst:843
 msgid ""
 "完美晶胞的体积。默认值为 ``inf`` ，程序自动从 :option:`DPERFECT` 目录下的 "
 "OUTCAR 文件读取。"
@@ -1088,19 +1121,19 @@ msgstr ""
 "automatically reads it from the OUTCAR file in the :option:`DPERFECT` "
 "directory."
 
-#: ../../index.rst:759
+#: ../../index.rst:848
 msgid "马德龙常数。默认值为 ``0`` ，表示禁用镜像电荷修正项。"
 msgstr ""
 "Madelung constant. Default is ``0``, indicating that the image charge "
 "correction term is disabled."
 
-#: ../../index.rst:763
+#: ../../index.rst:852
 msgid "介电常数。默认值为 ``inf`` ，表示禁用镜像电荷修正项。"
 msgstr ""
 "Dielectric constant. Default is ``inf``, indicating that the image charge "
 "correction term is disabled."
 
-#: ../../index.rst:767
+#: ../../index.rst:856
 msgid ""
 "镜像电荷修正项可以改写为 :math:`E _{\\text{IC}} = C _{\\text{IC}} \\cdot q "
 "^2`, 可以直接通过 ICCOEF 指定系数 :math:`C _{\\text{IC}}` 。默认值为 "
@@ -1111,7 +1144,7 @@ msgstr ""
 "specified via ICCOEF. The default value ``inf`` indicates automatic "
 "calculation based on :option:`EPSILON` and :option:`EWALD`, given by:"
 
-#: ../../index.rst:771
+#: ../../index.rst:860
 msgid ""
 "C _{\\text{IC}} = \\left[ 1 - \\frac{1}{3} \\left( 1-\\frac{1}{\\varepsilon} "
 "\\right) \\right]\n"
@@ -1121,7 +1154,7 @@ msgstr ""
 "\\right) \\right]\n"
 "          \\frac{E _{wald}}{2 \\varepsilon}"
 
-#: ../../index.rst:778
+#: ../../index.rst:867
 msgid ""
 "电势对齐修正项可以改写为 :math:`E _{\\text{PA}} = q \\cdot \\Delta V`, 可以直"
 "接通过 PADIFF （和 :option:`VALENCE` 长度相等的列表）指定电势差 :math:"
@@ -1135,7 +1168,7 @@ msgstr ""
 "electrostatic potential difference at the farthest point from the defect in "
 "OUTCAR files."
 
-#: ../../index.rst:785
+#: ../../index.rst:874
 msgid ""
 "能带填充修正机制的类型。默认值为 ``0``，表示禁用能带填充修正项。 ``1`` 表示仅"
 "修正导带，``-1`` 表示仅修正价带，``2`` 表示同时修正导带和价带。"
@@ -1145,37 +1178,37 @@ msgstr ""
 "only the conduction band, ``-1`` means correcting only the valence band, and "
 "``2`` means correcting both the conduction and valence bands."
 
-#: ../../index.rst:790
+#: ../../index.rst:879
 msgid "费米能级的下边界（以 :option:`EVBM` 为基准），默认值为 ``-1`` 。"
 msgstr ""
 "Lower bound of the Fermi level (relative to :option:`EVBM`), default is "
 "``-1``."
 
-#: ../../index.rst:794
+#: ../../index.rst:883
 msgid "费米能级的上边界（以 :option:`EVBM` 为基准），默认值为 ``2`` 。"
 msgstr ""
 "Upper bound of the Fermi level (relative to :option:`EVBM`), default is "
 "``2``."
 
-#: ../../index.rst:798
+#: ../../index.rst:887
 msgid "费米能级采样点数，默认值为 ``1001`` 。"
 msgstr "Number of sampling points for the Fermi level, default is ``1001``."
 
-#: ../../index.rst:801
+#: ../../index.rst:890
 msgid "EDOPING.log"
 msgstr "EDOPING.log"
 
-#: ../../index.rst:803
+#: ../../index.rst:892
 msgid ":option:`edp cal <cal>` 命令的运行日志，和屏幕输出一样。"
 msgstr ""
 "Execution log for the :option:`edp cal <cal>` command, same as the screen "
 "output."
 
-#: ../../index.rst:806
+#: ../../index.rst:895
 msgid "EDOPING.dat"
 msgstr "EDOPING.dat"
 
-#: ../../index.rst:808
+#: ../../index.rst:897
 msgid ""
 ":option:`edp cal <cal>` 命令的计算结果文件，包含不同电荷值缺陷的形成能。 它包"
 "含 ``Nq + 3`` 列，以空格分隔，第一列是费米能级（以 :option:`EVBM` 为基准）， "
@@ -1192,11 +1225,11 @@ msgstr ""
 "comment row containing column names, and the last two values represent the "
 "supercell volume and degeneracy factor. An example is as follows:"
 
-#: ../../index.rst:828
+#: ../../index.rst:917
 msgid "EDOPING.cmpot"
 msgstr "EDOPING.cmpot"
 
-#: ../../index.rst:830
+#: ../../index.rst:919
 msgid ""
 ":option:`edp chempot <chempot>` 命令的输入文件，用于指定化合物的配比和形成"
 "能。 以下面的 Mn 掺杂 NbFeSb 体系为例解释文件格式： 第一行以 ``#`` 号开始，包"
@@ -1213,11 +1246,11 @@ msgstr ""
 "For more details on the normalization of elemental ratios and formation "
 "energies, see the :option:`edp chempot <chempot>` command."
 
-#: ../../index.rst:852
+#: ../../index.rst:941
 msgid "文章引用"
 msgstr "How to Cite"
 
-#: ../../index.rst:854
+#: ../../index.rst:943
 msgid ""
 "**如果此软件以及文档给您的工作提供了帮助， 请引用我们的文章，这对我们很重要，"
 "非常感谢！**"
@@ -1225,9 +1258,6 @@ msgstr ""
 "**If this software and documentation have helped you in your work, please "
 "cite our article. This is very important to us. Thank you very much!**"
 
-#: ../../index.rst:857
+#: ../../index.rst:946
 msgid "TODO..."
 msgstr "TODO..."
-
-#~ msgid "这个例子中，体系的能量值为 -755.646 eV。"
-#~ msgstr "In this example, the energy value of the system is -755.646 eV."
