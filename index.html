@@ -6,7 +6,7 @@
 <link rel="index" title="索引" href="genindex.html" /><link rel="search" title="搜索" href="search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>eDoping 文档</title>
+        <title>eDoping 0.2.0 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">eDoping  文档</div></a>
+      <a href="#"><div class="brand">eDoping 0.2.0 文档</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -260,7 +260,11 @@
 <section id="id2">
 <h2>程序安装<a class="headerlink" href="#id2" title="此标题的永久链接">¶</a></h2>
 <p>eDoping 程序包基于 python3 软件，确保它已经被正确安装。
-程序包从 Github 下载，或者利用 git :</p>
+如果可以联网，最简单的方式就是通过 pip 安装 eDoping 程序包:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>eDoping
+</pre></div>
+</div>
+<p>如果无法联网或者对源代码感兴趣，程序包从 Github 下载，或者利用 git :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/JianboHIT/eDoping.git
 </pre></div>
 </div>
@@ -802,7 +806,15 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-diff">
 <span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-diff" title="永久链接至目标">¶</a></dt>
-<dd><p>对比两个具有相同基矢 POSCAR 的原子增减情况，可以用于检查点缺陷。</p>
+<dd><p>对比两个具有相同基矢 POSCAR 的原子增减情况，可以用于检查点缺陷。
+以含有 Mn 间隙的 NbFeSb 超胞为例，结果如下：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd examples/NbFeSb_Interstitials
+$ edp diff 1.perfect/POSCAR 2-1.defect-Mn_i/relax/POSCAR
+  No.    f_a     f_b     f_c     previous    present
+ i 1     0.1250  0.1250  0.1250   Vac1         Mn1
+</pre></div>
+</div>
+<p>这里，<code class="docutils literal notranslate"><span class="pre">i</span></code> 表示间隙型缺陷（<code class="docutils literal notranslate"><span class="pre">v</span></code> 表示空位，<code class="docutils literal notranslate"><span class="pre">s</span></code> 表示取代）。</p>
 </dd></dl>
 
 <dl class="std option">
@@ -836,7 +848,83 @@ POTCAR 文件计算体系的净电子数，然后根据给定的体系电荷量�
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-groupby">
 <span class="sig-name descname"><span class="pre">groupby</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-groupby" title="永久链接至目标">¶</a></dt>
-<dd><p>利用径向分布函数对 POSCAR 中的原子进行分组，可以用于寻找不等价位置的复合缺陷。</p>
+<dd><p>利用径向分布函数对 POSCAR 中的原子进行分组，可以用于寻找不等价位置的复合缺陷。
+比如，我们想在含有 Mn 间隙缺陷的 NbFeSb 超胞中再引入一个 Fe 空位。
+在超胞中通常有很多个 Fe 原子，逐个计算每个位点的情况是非常耗时的。
+一个有效的简化策略就是，按照每个 Fe 原子的近邻环境对它们进行分组，
+对于同一个组内的 Fe 原子，它们理应具有相似的缺陷行为。如下所示，
+POSCAR 是一个包含 Mn 间隙原子的 NbFeSb 超胞：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd examples/NbFeSb_Interstitials/2-1.defect-Mn_i/relax/
+$ edp groupby -f POSCAR Fe
+Group #1: Fe1, Fe2, Fe9, Fe11, Fe17, Fe21
+Group #2: Fe3, Fe4, Fe5, Fe6, Fe10, Fe12, Fe13, Fe15, Fe18, Fe19, Fe22, Fe23
+Group #3: Fe7, Fe8, Fe14, Fe16, Fe20, Fe24
+Group #4: Fe25, Fe26, Fe27, Fe28, Fe29, Fe30, Fe31, Fe32
+
+===============================================================================
+No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
+---+------------------+------------------+------------------+------------------
+ 0 |  (0.0, &#39;Fe&#39;, 1)  |  (0.0, &#39;Fe&#39;, 1)  |  (0.0, &#39;Fe&#39;, 1)  |  (0.0, &#39;Fe&#39;, 1)
+ 1 |  (2.6, &#39;Nb&#39;, 4)  |  (2.6, &#39;Nb&#39;, 4)  |  (2.6, &#39;Nb&#39;, 4)  |  (2.6, &#39;Nb&#39;, 4)
+ 2 |  (2.6, &#39;Sb&#39;, 4)  |  (2.6, &#39;Sb&#39;, 4)  |  (2.6, &#39;Sb&#39;, 4)  |  (2.6, &#39;Sb&#39;, 4)
+ 3 |  (3.0, &#39;Mn&#39;, 1)  | (4.2, &#39;Fe&#39;, 12)  | (4.2, &#39;Fe&#39;, 12)  | (4.2, &#39;Fe&#39;, 12)
+ 4 | (4.2, &#39;Fe&#39;, 12)  | (4.9, &#39;Nb&#39;, 12)  | (4.9, &#39;Nb&#39;, 12)  | (4.9, &#39;Nb&#39;, 12)
+ 5 | (4.9, &#39;Nb&#39;, 12)  | (4.9, &#39;Sb&#39;, 12)  | (4.9, &#39;Sb&#39;, 12)  | (4.9, &#39;Sb&#39;, 12)
+ 6 | (4.9, &#39;Sb&#39;, 12)  |  (6.0, &#39;Fe&#39;, 6)  |  (6.0, &#39;Fe&#39;, 6)  |  (5.2, &#39;Mn&#39;, 1)
+ 7 |  (6.0, &#39;Fe&#39;, 6)  | (6.5, &#39;Nb&#39;, 12)  | (6.5, &#39;Nb&#39;, 12)  |  (6.0, &#39;Fe&#39;, 6)
+ 8 | (6.5, &#39;Nb&#39;, 12)  | (6.5, &#39;Sb&#39;, 12)  | (6.5, &#39;Sb&#39;, 12)  | (6.5, &#39;Nb&#39;, 12)
+ 9 | (6.5, &#39;Sb&#39;, 12)  |  (6.7, &#39;Mn&#39;, 2)  | (7.3, &#39;Fe&#39;, 24)  | (6.5, &#39;Sb&#39;, 12)
+10 | (7.3, &#39;Fe&#39;, 24)  | (7.3, &#39;Fe&#39;, 24)  | (7.7, &#39;Nb&#39;, 16)  | (7.3, &#39;Fe&#39;, 24)
+11 | (7.7, &#39;Nb&#39;, 16)  | (7.7, &#39;Nb&#39;, 16)  | (7.7, &#39;Sb&#39;, 16)  | (7.7, &#39;Nb&#39;, 16)
+12 | (7.7, &#39;Sb&#39;, 16)  | (7.7, &#39;Sb&#39;, 16)  | (8.4, &#39;Fe&#39;, 12)  | (7.7, &#39;Sb&#39;, 16)
+13 | (8.4, &#39;Fe&#39;, 12)  | (8.4, &#39;Fe&#39;, 12)  | (8.8, &#39;Nb&#39;, 24)  | (8.4, &#39;Fe&#39;, 12)
+14 | (8.8, &#39;Nb&#39;, 24)  | (8.8, &#39;Nb&#39;, 24)  | (8.8, &#39;Sb&#39;, 24)  | (8.8, &#39;Nb&#39;, 24)
+15 | (8.8, &#39;Sb&#39;, 24)  | (8.8, &#39;Sb&#39;, 24)  |  (8.9, &#39;Mn&#39;, 4)  | (8.8, &#39;Sb&#39;, 24)
+16 |  (8.9, &#39;Mn&#39;, 1)  | (9.4, &#39;Fe&#39;, 24)  | (9.4, &#39;Fe&#39;, 24)  | (9.4, &#39;Fe&#39;, 24)
+17 | (9.4, &#39;Fe&#39;, 24)  | (9.8, &#39;Nb&#39;, 12)  | (9.8, &#39;Nb&#39;, 12)  | (9.8, &#39;Nb&#39;, 12)
+18 | (9.8, &#39;Nb&#39;, 12)  | (9.8, &#39;Sb&#39;, 12)  | (9.8, &#39;Sb&#39;, 12)  | (9.8, &#39;Sb&#39;, 12)
+19 | (9.8, &#39;Sb&#39;, 12)  | (10.3, &#39;Fe&#39;, 8)  | (10.3, &#39;Fe&#39;, 8)  |  (9.9, &#39;Mn&#39;, 3)
+20 | (10.3, &#39;Fe&#39;, 8)  | (10.6, &#39;Nb&#39;, 24) | (10.6, &#39;Nb&#39;, 24) | (10.3, &#39;Fe&#39;, 8)
+21 | (10.6, &#39;Nb&#39;, 24) | (10.6, &#39;Sb&#39;, 24) | (10.6, &#39;Sb&#39;, 24) | (10.6, &#39;Nb&#39;, 24)
+22 | (10.6, &#39;Sb&#39;, 24) | (10.7, &#39;Mn&#39;, 2)  | (11.1, &#39;Fe&#39;, 48) | (10.6, &#39;Sb&#39;, 24)
+23 | (11.1, &#39;Fe&#39;, 48) | (11.1, &#39;Fe&#39;, 48) | (11.4, &#39;Nb&#39;, 36) | (11.1, &#39;Fe&#39;, 48)
+24 | (11.4, &#39;Nb&#39;, 36) | (11.4, &#39;Nb&#39;, 36) | (11.4, &#39;Sb&#39;, 36) | (11.4, &#39;Nb&#39;, 36)
+25 | (11.4, &#39;Sb&#39;, 36) | (11.4, &#39;Sb&#39;, 36) | (11.9, &#39;Fe&#39;, 6)  | (11.4, &#39;Sb&#39;, 36)
+26 | (11.9, &#39;Fe&#39;, 6)  | (11.9, &#39;Fe&#39;, 6)  | (12.2, &#39;Nb&#39;, 12) | (11.9, &#39;Fe&#39;, 6)
+27 | (12.2, &#39;Nb&#39;, 12) | (12.2, &#39;Nb&#39;, 12) | (12.2, &#39;Sb&#39;, 12) | (12.2, &#39;Nb&#39;, 12)
+28 | (12.2, &#39;Sb&#39;, 12) | (12.2, &#39;Sb&#39;, 12) | (12.3, &#39;Mn&#39;, 4)  | (12.2, &#39;Sb&#39;, 12)
+29 | (12.3, &#39;Mn&#39;, 4)  | (12.6, &#39;Fe&#39;, 36) | (12.6, &#39;Fe&#39;, 36) | (12.6, &#39;Fe&#39;, 36)
+30 | (12.6, &#39;Fe&#39;, 36) | (12.9, &#39;Nb&#39;, 28) | (12.9, &#39;Nb&#39;, 28) | (12.9, &#39;Nb&#39;, 28)
+===============================================================================
+</pre></div>
+</div>
+<p>可以看到，32 个 Fe 原子可以被分成 4 组。元组内的三项分别是距离、原子类别和数量。
+比如， Fe1, Fe2, Fe9, Fe11, Fe17, Fe21 都属于组 #1，
+它们在 12.6 Angstrom 范围内具有着完全相同近邻原子。
+具体地，它们与最近的一个 Mn 原子距离 3.0 Angstrom，与第二近邻的 Mn 原子距离
+8.9 Angstrom。为了更加清晰地聚焦于 Mn 原子，可以使用 <code class="docutils literal notranslate"><span class="pre">--grep</span> <span class="pre">Mn</span></code>
+选项只保留含有 Mn 原子的行：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp groupby -f POSCAR Fe --grep Mn
+Group #1: Fe1, Fe2, Fe9, Fe11, Fe17, Fe21
+Group #2: Fe3, Fe4, Fe5, Fe6, Fe10, Fe12, Fe13, Fe15, Fe18, Fe19, Fe22, Fe23
+Group #3: Fe7, Fe8, Fe14, Fe16, Fe20, Fe24
+Group #4: Fe25, Fe26, Fe27, Fe28, Fe29, Fe30, Fe31, Fe32
+
+===============================================================================
+No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
+---+------------------+------------------+------------------+------------------
+ 3 |  (3.0, &#39;Mn&#39;, 1)  | (4.2, &#39;Fe&#39;, 12)  | (4.2, &#39;Fe&#39;, 12)  | (4.2, &#39;Fe&#39;, 12)
+ 6 | (4.9, &#39;Sb&#39;, 12)  |  (6.0, &#39;Fe&#39;, 6)  |  (6.0, &#39;Fe&#39;, 6)  |  (5.2, &#39;Mn&#39;, 1)
+ 9 | (6.5, &#39;Sb&#39;, 12)  |  (6.7, &#39;Mn&#39;, 2)  | (7.3, &#39;Fe&#39;, 24)  | (6.5, &#39;Sb&#39;, 12)
+15 | (8.8, &#39;Sb&#39;, 24)  | (8.8, &#39;Sb&#39;, 24)  |  (8.9, &#39;Mn&#39;, 4)  | (8.8, &#39;Sb&#39;, 24)
+16 |  (8.9, &#39;Mn&#39;, 1)  | (9.4, &#39;Fe&#39;, 24)  | (9.4, &#39;Fe&#39;, 24)  | (9.4, &#39;Fe&#39;, 24)
+19 | (9.8, &#39;Sb&#39;, 12)  | (10.3, &#39;Fe&#39;, 8)  | (10.3, &#39;Fe&#39;, 8)  |  (9.9, &#39;Mn&#39;, 3)
+22 | (10.6, &#39;Sb&#39;, 24) | (10.7, &#39;Mn&#39;, 2)  | (11.1, &#39;Fe&#39;, 48) | (10.6, &#39;Sb&#39;, 24)
+28 | (12.2, &#39;Sb&#39;, 12) | (12.2, &#39;Sb&#39;, 12) | (12.3, &#39;Mn&#39;, 4)  | (12.2, &#39;Sb&#39;, 12)
+29 | (12.3, &#39;Mn&#39;, 4)  | (12.6, &#39;Fe&#39;, 36) | (12.6, &#39;Fe&#39;, 36) | (12.6, &#39;Fe&#39;, 36)
+===============================================================================
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="std option">
@@ -1062,7 +1150,11 @@ OUTCAR 文件读取。</p>
 <h2>文章引用<a class="headerlink" href="#id15" title="此标题的永久链接">¶</a></h2>
 <p><strong>如果此软件以及文档给您的工作提供了帮助，
 请引用我们的文章，这对我们很重要，非常感谢！</strong></p>
-<p>TODO…</p>
+<p>J. Zhu, J. Li, Z. Ti, L. Wang, Y. Shen, L. Wei, X. Liu, X. Chen, P. Liu,
+J. Sui, Y. Zhang, eDoping: A high-throughput software package for evaluating
+point defect doping limits in semiconductor and insulator materials,
+<em>Materials Today Physics</em>, 55 (2025) 101754,
+<a class="reference external" href="https://doi.org/10.1016/j.mtphys.2025.101754">https://doi.org/10.1016/j.mtphys.2025.101754</a>.</p>
 </section>
 </section>
 
@@ -1077,7 +1169,7 @@ OUTCAR 文件读取。</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2023-2025, Jingyu Li, Jianbo Zhu
+                Copyright &#169; 2023-2025, Jianbo Zhu, Jingyu Li, Peng-Fei Liu
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1139,7 +1231,7 @@ OUTCAR 文件读取。</p>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=babeb00e"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b40b2652"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

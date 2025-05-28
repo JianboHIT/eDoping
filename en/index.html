@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>eDoping documentation</title>
+        <title>eDoping 0.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">eDoping  documentation</div></a>
+      <a href="#"><div class="brand">eDoping 0.2.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -259,7 +259,11 @@
 </section>
 <section id="id2">
 <h2>Installation<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
-<p>The eDoping package is based on Python3, so ensure that it is correctly installed. The package can be downloaded from GitHub, or using git:</p>
+<p>The eDoping package is based on Python3, so ensure that it is correctly installed. If the network is available, the most efficient way to install the eDoping package is via pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>eDoping
+</pre></div>
+</div>
+<p>If you do not have internet access or are interested in the source code, you can download the package from GitHub or use git:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/JianboHIT/eDoping.git
 </pre></div>
 </div>
@@ -624,7 +628,14 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-diff">
 <span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-diff" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compare the added or removed atoms between two POSCAR files with the same lattice vectors, which can be used to check for point defects.</p>
+<dd><p>Compares atom differences in two POSCAR files with the same lattice vectors to identify point defects. For example, check Mn interstitials in a NbFeSb supercell:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd examples/NbFeSb_Interstitials
+$ edp diff 1.perfect/POSCAR 2-1.defect-Mn_i/relax/POSCAR
+  No.    f_a     f_b     f_c     previous    present
+ i 1     0.1250  0.1250  0.1250   Vac1         Mn1
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">i</span></code> stands for interstitial defect (<code class="docutils literal notranslate"><span class="pre">v</span></code> stands for vacancy, <code class="docutils literal notranslate"><span class="pre">s</span></code> for substitution).</p>
 </dd></dl>
 
 <dl class="std option">
@@ -654,7 +665,73 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-groupby">
 <span class="sig-name descname"><span class="pre">groupby</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-groupby" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use the radial distribution function to group atoms in the POSCAR file, which can be used to identify non-equivalent positions for complex defects.</p>
+<dd><p>Group atoms in a POSCAR using the radial distribution function to identify complex defects at inequivalent sites. For example, introducing an Fe vacancy into an NbFeSb supercell with an Mn interstitial defect can be time-consuming if you calculate each Fe site individually. A practical approach is to group Fe atoms by their local environments. Within the same group, Fe atoms should exhibit similar defect behavior. Assume the following POSCAR file is of a NbFeSb supercell containing an Mn interstitial:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd examples/NbFeSb_Interstitials/2-1.defect-Mn_i/relax/
+$ edp groupby -f POSCAR Fe
+Group #1: Fe1, Fe2, Fe9, Fe11, Fe17, Fe21
+Group #2: Fe3, Fe4, Fe5, Fe6, Fe10, Fe12, Fe13, Fe15, Fe18, Fe19, Fe22, Fe23
+Group #3: Fe7, Fe8, Fe14, Fe16, Fe20, Fe24
+Group #4: Fe25, Fe26, Fe27, Fe28, Fe29, Fe30, Fe31, Fe32
+
+===============================================================================
+No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
+---+------------------+------------------+------------------+------------------
+ 0 |  (0.0, &#39;Fe&#39;, 1)  |  (0.0, &#39;Fe&#39;, 1)  |  (0.0, &#39;Fe&#39;, 1)  |  (0.0, &#39;Fe&#39;, 1)
+ 1 |  (2.6, &#39;Nb&#39;, 4)  |  (2.6, &#39;Nb&#39;, 4)  |  (2.6, &#39;Nb&#39;, 4)  |  (2.6, &#39;Nb&#39;, 4)
+ 2 |  (2.6, &#39;Sb&#39;, 4)  |  (2.6, &#39;Sb&#39;, 4)  |  (2.6, &#39;Sb&#39;, 4)  |  (2.6, &#39;Sb&#39;, 4)
+ 3 |  (3.0, &#39;Mn&#39;, 1)  | (4.2, &#39;Fe&#39;, 12)  | (4.2, &#39;Fe&#39;, 12)  | (4.2, &#39;Fe&#39;, 12)
+ 4 | (4.2, &#39;Fe&#39;, 12)  | (4.9, &#39;Nb&#39;, 12)  | (4.9, &#39;Nb&#39;, 12)  | (4.9, &#39;Nb&#39;, 12)
+ 5 | (4.9, &#39;Nb&#39;, 12)  | (4.9, &#39;Sb&#39;, 12)  | (4.9, &#39;Sb&#39;, 12)  | (4.9, &#39;Sb&#39;, 12)
+ 6 | (4.9, &#39;Sb&#39;, 12)  |  (6.0, &#39;Fe&#39;, 6)  |  (6.0, &#39;Fe&#39;, 6)  |  (5.2, &#39;Mn&#39;, 1)
+ 7 |  (6.0, &#39;Fe&#39;, 6)  | (6.5, &#39;Nb&#39;, 12)  | (6.5, &#39;Nb&#39;, 12)  |  (6.0, &#39;Fe&#39;, 6)
+ 8 | (6.5, &#39;Nb&#39;, 12)  | (6.5, &#39;Sb&#39;, 12)  | (6.5, &#39;Sb&#39;, 12)  | (6.5, &#39;Nb&#39;, 12)
+ 9 | (6.5, &#39;Sb&#39;, 12)  |  (6.7, &#39;Mn&#39;, 2)  | (7.3, &#39;Fe&#39;, 24)  | (6.5, &#39;Sb&#39;, 12)
+10 | (7.3, &#39;Fe&#39;, 24)  | (7.3, &#39;Fe&#39;, 24)  | (7.7, &#39;Nb&#39;, 16)  | (7.3, &#39;Fe&#39;, 24)
+11 | (7.7, &#39;Nb&#39;, 16)  | (7.7, &#39;Nb&#39;, 16)  | (7.7, &#39;Sb&#39;, 16)  | (7.7, &#39;Nb&#39;, 16)
+12 | (7.7, &#39;Sb&#39;, 16)  | (7.7, &#39;Sb&#39;, 16)  | (8.4, &#39;Fe&#39;, 12)  | (7.7, &#39;Sb&#39;, 16)
+13 | (8.4, &#39;Fe&#39;, 12)  | (8.4, &#39;Fe&#39;, 12)  | (8.8, &#39;Nb&#39;, 24)  | (8.4, &#39;Fe&#39;, 12)
+14 | (8.8, &#39;Nb&#39;, 24)  | (8.8, &#39;Nb&#39;, 24)  | (8.8, &#39;Sb&#39;, 24)  | (8.8, &#39;Nb&#39;, 24)
+15 | (8.8, &#39;Sb&#39;, 24)  | (8.8, &#39;Sb&#39;, 24)  |  (8.9, &#39;Mn&#39;, 4)  | (8.8, &#39;Sb&#39;, 24)
+16 |  (8.9, &#39;Mn&#39;, 1)  | (9.4, &#39;Fe&#39;, 24)  | (9.4, &#39;Fe&#39;, 24)  | (9.4, &#39;Fe&#39;, 24)
+17 | (9.4, &#39;Fe&#39;, 24)  | (9.8, &#39;Nb&#39;, 12)  | (9.8, &#39;Nb&#39;, 12)  | (9.8, &#39;Nb&#39;, 12)
+18 | (9.8, &#39;Nb&#39;, 12)  | (9.8, &#39;Sb&#39;, 12)  | (9.8, &#39;Sb&#39;, 12)  | (9.8, &#39;Sb&#39;, 12)
+19 | (9.8, &#39;Sb&#39;, 12)  | (10.3, &#39;Fe&#39;, 8)  | (10.3, &#39;Fe&#39;, 8)  |  (9.9, &#39;Mn&#39;, 3)
+20 | (10.3, &#39;Fe&#39;, 8)  | (10.6, &#39;Nb&#39;, 24) | (10.6, &#39;Nb&#39;, 24) | (10.3, &#39;Fe&#39;, 8)
+21 | (10.6, &#39;Nb&#39;, 24) | (10.6, &#39;Sb&#39;, 24) | (10.6, &#39;Sb&#39;, 24) | (10.6, &#39;Nb&#39;, 24)
+22 | (10.6, &#39;Sb&#39;, 24) | (10.7, &#39;Mn&#39;, 2)  | (11.1, &#39;Fe&#39;, 48) | (10.6, &#39;Sb&#39;, 24)
+23 | (11.1, &#39;Fe&#39;, 48) | (11.1, &#39;Fe&#39;, 48) | (11.4, &#39;Nb&#39;, 36) | (11.1, &#39;Fe&#39;, 48)
+24 | (11.4, &#39;Nb&#39;, 36) | (11.4, &#39;Nb&#39;, 36) | (11.4, &#39;Sb&#39;, 36) | (11.4, &#39;Nb&#39;, 36)
+25 | (11.4, &#39;Sb&#39;, 36) | (11.4, &#39;Sb&#39;, 36) | (11.9, &#39;Fe&#39;, 6)  | (11.4, &#39;Sb&#39;, 36)
+26 | (11.9, &#39;Fe&#39;, 6)  | (11.9, &#39;Fe&#39;, 6)  | (12.2, &#39;Nb&#39;, 12) | (11.9, &#39;Fe&#39;, 6)
+27 | (12.2, &#39;Nb&#39;, 12) | (12.2, &#39;Nb&#39;, 12) | (12.2, &#39;Sb&#39;, 12) | (12.2, &#39;Nb&#39;, 12)
+28 | (12.2, &#39;Sb&#39;, 12) | (12.2, &#39;Sb&#39;, 12) | (12.3, &#39;Mn&#39;, 4)  | (12.2, &#39;Sb&#39;, 12)
+29 | (12.3, &#39;Mn&#39;, 4)  | (12.6, &#39;Fe&#39;, 36) | (12.6, &#39;Fe&#39;, 36) | (12.6, &#39;Fe&#39;, 36)
+30 | (12.6, &#39;Fe&#39;, 36) | (12.9, &#39;Nb&#39;, 28) | (12.9, &#39;Nb&#39;, 28) | (12.9, &#39;Nb&#39;, 28)
+===============================================================================
+</pre></div>
+</div>
+<p>You can see that the 32 Fe atoms are divided into 4 groups. Each cell contains three entries: distance, atom type, and count. For instance, Fe1, Fe2, Fe9, Fe11, Fe17, and Fe21 all belong to group #1, sharing identical neighboring atoms within 12.6 angstroms. Specifically, they are 3.0 angstroms away from the nearest Mn atom and 8.9 angstroms from the second-nearest Mn atom. To focus on Mn atoms clearly, you can use the <code class="docutils literal notranslate"><span class="pre">--grep</span> <span class="pre">Mn</span></code> option to keep only lines with Mn atoms:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp groupby -f POSCAR Fe --grep Mn
+Group #1: Fe1, Fe2, Fe9, Fe11, Fe17, Fe21
+Group #2: Fe3, Fe4, Fe5, Fe6, Fe10, Fe12, Fe13, Fe15, Fe18, Fe19, Fe22, Fe23
+Group #3: Fe7, Fe8, Fe14, Fe16, Fe20, Fe24
+Group #4: Fe25, Fe26, Fe27, Fe28, Fe29, Fe30, Fe31, Fe32
+
+===============================================================================
+No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
+---+------------------+------------------+------------------+------------------
+ 3 |  (3.0, &#39;Mn&#39;, 1)  | (4.2, &#39;Fe&#39;, 12)  | (4.2, &#39;Fe&#39;, 12)  | (4.2, &#39;Fe&#39;, 12)
+ 6 | (4.9, &#39;Sb&#39;, 12)  |  (6.0, &#39;Fe&#39;, 6)  |  (6.0, &#39;Fe&#39;, 6)  |  (5.2, &#39;Mn&#39;, 1)
+ 9 | (6.5, &#39;Sb&#39;, 12)  |  (6.7, &#39;Mn&#39;, 2)  | (7.3, &#39;Fe&#39;, 24)  | (6.5, &#39;Sb&#39;, 12)
+15 | (8.8, &#39;Sb&#39;, 24)  | (8.8, &#39;Sb&#39;, 24)  |  (8.9, &#39;Mn&#39;, 4)  | (8.8, &#39;Sb&#39;, 24)
+16 |  (8.9, &#39;Mn&#39;, 1)  | (9.4, &#39;Fe&#39;, 24)  | (9.4, &#39;Fe&#39;, 24)  | (9.4, &#39;Fe&#39;, 24)
+19 | (9.8, &#39;Sb&#39;, 12)  | (10.3, &#39;Fe&#39;, 8)  | (10.3, &#39;Fe&#39;, 8)  |  (9.9, &#39;Mn&#39;, 3)
+22 | (10.6, &#39;Sb&#39;, 24) | (10.7, &#39;Mn&#39;, 2)  | (11.1, &#39;Fe&#39;, 48) | (10.6, &#39;Sb&#39;, 24)
+28 | (12.2, &#39;Sb&#39;, 12) | (12.2, &#39;Sb&#39;, 12) | (12.3, &#39;Mn&#39;, 4)  | (12.2, &#39;Sb&#39;, 12)
+29 | (12.3, &#39;Mn&#39;, 4)  | (12.6, &#39;Fe&#39;, 36) | (12.6, &#39;Fe&#39;, 36) | (12.6, &#39;Fe&#39;, 36)
+===============================================================================
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="std option">
@@ -842,7 +919,11 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 <section id="id15">
 <h2>How to Cite<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h2>
 <p><strong>If this software and documentation have helped you in your work, please cite our article. This is very important to us. Thank you very much!</strong></p>
-<p>TODO…</p>
+<p>J. Zhu, J. Li, Z. Ti, L. Wang, Y. Shen, L. Wei, X. Liu, X. Chen, P. Liu,
+J. Sui, Y. Zhang, eDoping: A high-throughput software package for evaluating
+point defect doping limits in semiconductor and insulator materials,
+<em>Materials Today Physics</em>, 55 (2025) 101754,
+<a class="reference external" href="https://doi.org/10.1016/j.mtphys.2025.101754">https://doi.org/10.1016/j.mtphys.2025.101754</a>.</p>
 </section>
 </section>
 
@@ -857,7 +938,7 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2023-2025, Jingyu Li, Jianbo Zhu
+                Copyright &#169; 2023-2025, Jianbo Zhu, Jingyu Li, Peng-Fei Liu
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -919,7 +1000,7 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b1f64a84"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
