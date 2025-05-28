@@ -43,3 +43,11 @@ edp -h
 ```
 
 这会打印出 `eDoping` 程序包的帮助信息，包括所有可用的子命令。
+
+## 文章引用
+
+J. Zhu, J. Li, Z. Ti, L. Wang, Y. Shen, L. Wei, X. Liu, X. Chen, P. Liu,
+J. Sui, Y. Zhang, eDoping: A high-throughput software package for evaluating
+point defect doping limits in semiconductor and insulator materials,
+*Materials Today Physics*, 55 (2025) 101754,
+https://doi.org/10.1016/j.mtphys.2025.101754.

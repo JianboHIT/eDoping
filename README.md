@@ -42,7 +42,7 @@ pip install .
 ```
 
 Once the installation is complete, you can start using the `eDoping` package 
-with the edp command. To verify that the installation was successful, 
+with the `edp` command. To verify that the installation was successful, 
 you can use the `-h` (or `--help`) option to display the help information:
 
 ```
@@ -51,3 +51,11 @@ edp -h
 
 This will print out the help information for the `eDoping` package, including 
 all available sub-commands.
+
+## How to Cite
+
+J. Zhu, J. Li, Z. Ti, L. Wang, Y. Shen, L. Wei, X. Liu, X. Chen, P. Liu,
+J. Sui, Y. Zhang, eDoping: A high-throughput software package for evaluating
+point defect doping limits in semiconductor and insulator materials,
+*Materials Today Physics*, 55 (2025) 101754,
+https://doi.org/10.1016/j.mtphys.2025.101754.
