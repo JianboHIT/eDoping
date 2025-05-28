@@ -12,14 +12,15 @@ filecmpot = '{}.cmpot'.format(__prog__)
 filedebug = '{}.debug'.format(__prog__)
 
 
-__author__ = 'Jianbo ZHU, Jingyu LI, Yongsheng ZHANG, et al.'
+__author__ = 'Jianbo ZHU, Jingyu LI, Peng-Fei LIU, et al.'
 __version__ = '0.2.0b'
 __date__ = '2025-05-16'
 __description__ = 'Point Defect Formation Energy Calculation'
 
 __ref__ = """
-Jianbo Zhu, Jingyu Li, Yongsheng Zhang, et al, ..., 2025
-DOI:XXXXXX/XXXX/XXXX-XXXX
+J. Zhu, J. Li, P. Liu, et al, eDoping: A high-throughput software package for 
+evaluating point defect doping limits in semiconductor and insulator materials,
+Materials Today Physics, 55 (2025) 101754.  DOI: 10.1016/j.mtphys.2025.101754
 """
 
 
