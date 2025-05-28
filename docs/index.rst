@@ -949,4 +949,8 @@ EDOPING.cmpot
 **如果此软件以及文档给您的工作提供了帮助，
 请引用我们的文章，这对我们很重要，非常感谢！**
 
-TODO...
+J. Zhu, J. Li, Z. Ti, L. Wang, Y. Shen, L. Wei, X. Liu, X. Chen, P. Liu,
+J. Sui, Y. Zhang, eDoping: A high-throughput software package for evaluating
+point defect doping limits in semiconductor and insulator materials,
+*Materials Today Physics*, 55 (2025) 101754,
+https://doi.org/10.1016/j.mtphys.2025.101754.
