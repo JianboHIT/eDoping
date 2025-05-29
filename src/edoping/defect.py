@@ -162,7 +162,7 @@ def formation(inputlist=None, infolevel=1):
     # Information, version, author
     t = time.localtime(time.time())
     infos = ['{} - {}'.format(__description__, __prog__),
-             'Author: {} (v{}, {})'.format(__author__, __version__, __date__),
+             'Author: {}, et al. (v{}, {})'.format(__author__, __version__, __date__),
              'Run at {}'.format(time.strftime("%Y-%m-%d %A %X", t))]
     print(*infos, sep='\n')
     print('')
