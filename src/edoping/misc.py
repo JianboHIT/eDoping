@@ -18,9 +18,10 @@ __date__ = '2025-05-29'
 __description__ = 'Point Defect Formation Energy Calculation'
 
 __ref__ = """
-J. Zhu, J. Li, P. Liu, et al, eDoping: A high-throughput software package for 
-evaluating point defect doping limits in semiconductor and insulator materials,
-Materials Today Physics, 55 (2025) 101754.  DOI: 10.1016/j.mtphys.2025.101754
+ J. Zhu, J. Li, P. Liu, et al, eDoping: A high-throughput software
+ package for evaluating point defect doping limits in semiconductor
+ and insulator materials, Materials Today Physics, 55 (2025) 101754.
+ DOI: 10.1016/j.mtphys.2025.101754
 """
 
 
