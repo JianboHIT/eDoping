@@ -56,8 +56,14 @@ all available sub-commands.
 
 ## How to Cite
 
-J. Zhu, J. Li, Z. Ti, L. Wang, Y. Shen, L. Wei, X. Liu, X. Chen, P. Liu,
+[1] J. Zhu, J. Li, Z. Ti, L. Wang, Y. Shen, L. Wei, X. Liu, X. Chen, P. Liu,
 J. Sui, Y. Zhang, eDoping: A high-throughput software package for evaluating
 point defect doping limits in semiconductor and insulator materials,
 *Materials Today Physics*, 55 (2025) 101754,
 https://doi.org/10.1016/j.mtphys.2025.101754.
+
+[2] J. Li, J. Zhu, Z. Ti, W. Zhai, L. Wei, C. Zhang, P. Liu, Y. Zhang,
+Synergistic defect engineering for improving n-type NbFeSb thermoelectric
+performance through high-throughput computations,
+*Journal of Materials Chemistry A*, 10 (46) (2022) 24598-24610,
+https://doi.org/10.1039/d2ta07142h.
