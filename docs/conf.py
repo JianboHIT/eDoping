@@ -13,16 +13,15 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-from edoping.misc import __version__
+from edoping.misc import __author__, __version__, __date__
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'eDoping'
-copyright = '2023-2025, Jianbo Zhu, Jingyu Li, Peng-Fei Liu'
-author = 'Jianbo Zhu, Jingyu Li, Peng-Fei Liu'
+author = __author__
 release = __version__
-version = '.'.join(__version__.split('.')[:2])
+copyright = '2023-{}, {}'.format(__date__.split('-')[0], __author__)
 
 # -- General configuration ---------------------------------------------------
 
