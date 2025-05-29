@@ -2,6 +2,8 @@
 
 带电点缺陷的高通量计算程序包。
 
+<div align="center"><img src="docs/_static/logo.png" width="360"></div><br>
+
 软件手册：https://jianbohit.github.io/eDoping/
 
 ## 安装
