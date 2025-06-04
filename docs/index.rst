@@ -54,14 +54,14 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
 
    $ edp -h
    usage: edoping [-h] [-v] [-q] Subcommand ...
-
-   defect calculation - v0.1.4
-
-   optional arguments:
+   
+   Point Defect Formation Energy Calculation - v0.2.1
+   
+   options:
      -h, --help       show this help message and exit
      -v, --verbosity  increase output verbosity
      -q, --quiet      only show key output
-
+   
    Tips:
      Subcommand       Description
        cal            Calculate defect fromation energy
@@ -70,6 +70,7 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
        volume         Read volume from OUTCAR
        epsilon        Read epsilon from OUTCAR
        evbm           Read VBM from EIGENVAL
+       fixchg         Produce charge-fixed inputs
        boxhyd         Place a single hydrogen atom in the box
        move           Move atomic position in cell
        replace        Replace atoms X by Y
@@ -80,11 +81,13 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
        trlevel        Calculate transition levels
        scfermi        Calculate sc-fermi level
        fzfermi        Calculate fz-fermi level
-
+   
    >>>>>>>>>> Citation of EDOPING <<<<<<<<<<
    If you have used EDOPING, please cite the following article:
-   Jingyu Li, Jianbo Zhu, Yongsheng Zhang, et al, ..., 2023
-   DOI:XXXXXX/XXXX/XXXX-XXXX
+    J. Zhu, J. Li, P. Liu, et al, eDoping: A high-throughput software
+    package for evaluating point defect doping limits in semiconductor
+    and insulator materials, Materials Today Physics, 55 (2025) 101754.
+    DOI: 10.1016/j.mtphys.2025.101754
 
 我们可以进一步查看子命令的帮助信息:
 
