@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>eDoping 0.2.0 documentation</title>
+        <title>eDoping 0.2.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">eDoping 0.2.0 documentation</div></a>
+      <a href="#"><div class="brand">eDoping 0.2.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -279,9 +279,9 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp -h
 usage: edoping [-h] [-v] [-q] Subcommand ...
 
-defect calculation - v0.1.4
+Point Defect Formation Energy Calculation - v0.2.1
 
-optional arguments:
+options:
   -h, --help       show this help message and exit
   -v, --verbosity  increase output verbosity
   -q, --quiet      only show key output
@@ -294,6 +294,7 @@ Tips:
     volume         Read volume from OUTCAR
     epsilon        Read epsilon from OUTCAR
     evbm           Read VBM from EIGENVAL
+    fixchg         Produce charge-fixed inputs
     boxhyd         Place a single hydrogen atom in the box
     move           Move atomic position in cell
     replace        Replace atoms X by Y
@@ -307,8 +308,10 @@ Tips:
 
 &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Citation of EDOPING &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
 If you have used EDOPING, please cite the following article:
-Jingyu Li, Jianbo Zhu, Yongsheng Zhang, et al, ..., 2023
-DOI:XXXXXX/XXXX/XXXX-XXXX
+ J. Zhu, J. Li, P. Liu, et al, eDoping: A high-throughput software
+ package for evaluating point defect doping limits in semiconductor
+ and insulator materials, Materials Today Physics, 55 (2025) 101754.
+ DOI: 10.1016/j.mtphys.2025.101754
 </pre></div>
 </div>
 <p>We can further check the help information of subcommands:</p>
@@ -919,11 +922,16 @@ No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
 <section id="id15">
 <h2>How to Cite<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h2>
 <p><strong>If this software and documentation have helped you in your work, please cite our article. This is very important to us. Thank you very much!</strong></p>
-<p>J. Zhu, J. Li, Z. Ti, L. Wang, Y. Shen, L. Wei, X. Liu, X. Chen, P. Liu,
+<p>[1] J. Zhu, J. Li, Z. Ti, L. Wang, Y. Shen, L. Wei, X. Liu, X. Chen, P. Liu,
 J. Sui, Y. Zhang, eDoping: A high-throughput software package for evaluating
 point defect doping limits in semiconductor and insulator materials,
 <em>Materials Today Physics</em>, 55 (2025) 101754,
 <a class="reference external" href="https://doi.org/10.1016/j.mtphys.2025.101754">https://doi.org/10.1016/j.mtphys.2025.101754</a>.</p>
+<p>[2] J. Li, J. Zhu, Z. Ti, W. Zhai, L. Wei, C. Zhang, P. Liu, Y. Zhang,
+Synergistic defect engineering for improving n-type NbFeSb thermoelectric
+performance through high-throughput computations,
+<em>Journal of Materials Chemistry A</em>, 10 (46) (2022) 24598-24610,
+<a class="reference external" href="https://doi.org/10.1039/d2ta07142h">https://doi.org/10.1039/d2ta07142h</a>.</p>
 </section>
 </section>
 
@@ -1000,7 +1008,7 @@ point defect doping limits in semiconductor and insulator materials,
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b1f64a84"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=158ece9d"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
