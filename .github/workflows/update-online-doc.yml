@@ -37,20 +37,8 @@ jobs:
         pip install -e .
         pip install sphinx furo
 
-    - name: Build the Documentation
-      run: |
-        cd docs
-        make latexpdf
-        make html
-
-    - name: Build the English version
-      run: |
-        cd docs
-        sphinx-build -b latex -D language=en . _build/latex/en
-        cd _build/latex/en
-        make all-pdf
-        cd ../../..
-        sphinx-build -b html -D language=en . _build/html/en
+    - name: Build the Documentation(s)
+      run: cd docs && make all
 
     - name: Deploy to GitHub Pages
       if: success()
