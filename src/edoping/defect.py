@@ -10,6 +10,7 @@ from .dft import Cell, read_energy, read_volume, \
 class InputList():
     _default = {'dperfect': '../perfect',
                 'ddefect': '.',
+                'cmpot': [0, 0],
                 'valence': [-2, -1, 0, 1, 2],
                 'ddname': 'auto',
                 'prefix': 'charge_',
@@ -19,8 +20,9 @@ class InputList():
                 'pvolume': float('inf'),
                 'ewald': 0,
                 'epsilon': float('inf'),
+                'iccoef': float('inf'),
+                'padiff': [float('inf'),],
                 'bftype': 0,
-                'cmpot': [0, 0],
                 'emin': -1,
                 'emax': 2,
                 'npts': 1001}  # read-only
@@ -125,15 +127,15 @@ class InputList():
                 elif name in ['npts', 'bftype']:
                     value = int(p2)  # Int
 
-                elif name in ['ewald', 'epsilon', 'penergy',
-                              'evbm', 'ecbm', 'emin', 'emax', 'pvolume']:
+                elif name in ['ewald', 'epsilon', 'penergy', 'evbm', 'ecbm',
+                              'emin', 'emax', 'pvolume', 'iccoef']:
                     value = float(p2)  # Float
 
                 elif name in ['valence']:
                     # Int-list
                     value = [int(item) for item in p2.split()]
 
-                elif name in ['cmpot']:
+                elif name in ['cmpot', 'padiff']:
                     # Float-list
                     value = [float(item) for item in p2.split()]
 
@@ -250,15 +252,21 @@ def formation(inputlist=None, infolevel=1):
 
     # Image-charge correction
     print('Image-charge correction: ', end='')
+    ck0 = ipt.iccoef == float('inf')
     ck1 = ipt.ewald == float('inf')
     ck2 = ipt.epsilon == float('inf')
     ck3 = ipt.epsilon > 1E8
-    if any([ck1, ck2, ck3]):
+    if not ck0:
+        Eic_q2 = ipt.iccoef
+        print('( Eic/q^2 = {:.4f} )'.format(Eic_q2))
+    elif any([ck1, ck2, ck3]):
         Eic_q2 = 0
         print('Negligible')
     else:
-        # 2/3*(q**2)*Ewald/epsilon
-        Eic_q2 = 2 / 3 * ipt.ewald / ipt.epsilon
+        # # 1/3*(q**2)*Ewald/epsilon
+        # Eic_q2 = 1 / 3 * ipt.ewald / ipt.epsilon
+        # (1 - 1/3 * (1 - 1/epsilon)) * Ewald/epsilon/2
+        Eic_q2 = (1 - 1/3 * (1 - 1/ipt.epsilon)) * ipt.ewald / ipt.epsilon / 2
         print('( Eic/q^2 = {:.4f} )'.format(Eic_q2))
     
     # Band-filling correction (alias Moss-Burstein correction)
@@ -305,34 +313,43 @@ def formation(inputlist=None, infolevel=1):
         
         
     # Potential alignment correction
-    print('Find defect site(s) for potential alignment correction:')
-    # print('Potential alignment correction:')
-    # print('Reading POSCARs ...', end='        ')
-    pos1 = Cell(os.path.join(ipt.dperfect, 'POSCAR'))
-    idx = ipt.valence.index(0) if 0 in ipt.valence else 0
-    pos2 = Cell(os.path.join(ipt.ddefect, ipt.ddname[idx], 'POSCAR'))
-    # idx1, idx2, dmax = pos1.diff(pos2, showdiff=True, out='far')
-    diffs = diff_cell(pos1, pos2)
-    dist = disp_diffs(pos1.basis, diffs, with_dist=True)
-    if dist is None:
-        raise RuntimeError('No point defect is found')
-    _, dsite, elt1, eidx1, elt2, eidx2 = diffs[np.argmax(dist)]
-    dmax = np.max(dist)
-    idx1 = pos1.index(elt1, eidx1) - 1  # global index, 0-start
-    idx2 = pos2.index(elt2, eidx2) - 1  # global index, 0-start
-    print('\nFind the farthest site: ', end='')
-    dsp = '{:.4f} at {:s}{:d} ({:.4f} {:.4f} {:.4f})'
-    print(dsp.format(dmax, elt1, eidx1, *dsite))
+    if all(pa == float('inf') for pa in ipt.padiff):
+        print('Find defect site(s) for potential alignment correction:')
+        # print('Potential alignment correction:')
+        # print('Reading POSCARs ...', end='        ')
+        pos1 = Cell(os.path.join(ipt.dperfect, 'POSCAR'))
+        idx = ipt.valence.index(0) if 0 in ipt.valence else 0
+        pos2 = Cell(os.path.join(ipt.ddefect, ipt.ddname[idx], 'POSCAR'))
+        # idx1, idx2, dmax = pos1.diff(pos2, showdiff=True, out='far')
+        diffs = diff_cell(pos1, pos2)
+        dist = disp_diffs(pos1.basis, diffs, with_dist=True)
+        if dist is None:
+            raise RuntimeError('No point defect is found')
+        _, dsite, elt1, eidx1, elt2, eidx2 = diffs[np.argmax(dist)]
+        dmax = np.max(dist)
+        idx1 = pos1.index(elt1, eidx1) - 1  # global index, 0-start
+        idx2 = pos2.index(elt2, eidx2) - 1  # global index, 0-start
+        print('\nFind the farthest site: ', end='')
+        dsp = '{:.4f} at {:s}{:d} ({:.4f} {:.4f} {:.4f})'
+        print(dsp.format(dmax, elt1, eidx1, *dsite))
 
-    print('Read electrostatic potential from perfect cell: ', end='')
-    pot1 = read_pot(os.path.join(ipt.dperfect, 'OUTCAR'))[idx1]
-    print('{:.4f}'.format(pot1))
-    print('Read electrostatic potentials from defect cells:')
-    pot2 = []
-    for van, fname in zip(ipt.valence, ipt.ddname):
-        poti = read_pot(os.path.join(ipt.ddefect, fname, 'OUTCAR'))[idx2]
-        print('    {:+d}: {:.4f}'.format(van, poti))
-        pot2.append(poti)
+        print('Read electrostatic potential from perfect cell: ', end='')
+        pot1 = read_pot(os.path.join(ipt.dperfect, 'OUTCAR'))[idx1]
+        print('{:.4f}'.format(pot1))
+        print('Read electrostatic potentials from defect cells:')
+        pot2 = []
+        for van, fname in zip(ipt.valence, ipt.ddname):
+            poti = read_pot(os.path.join(ipt.ddefect, fname, 'OUTCAR'))[idx2]
+            print('    {:+d}: {:.4f}'.format(van, poti))
+            pot2.append(poti - pot1)
+    elif any(pa == float('inf') for pa in ipt.padiff):
+        raise ValueError('PADIFF should be all set to inf or all set to float')
+    elif len(ipt.padiff) != len(ipt.valence):
+        raise ValueError('PADIFF should have the same length as VALENCE')
+    else:
+        pot2 = list(ipt.padiff)
+        print('Potential alignment correction:\n    ', end='')
+        print('  '.join(['{:.4f}'.format(pot) for pot in pot2]))
     print('')
 
     # Summary
@@ -346,7 +363,7 @@ def formation(inputlist=None, infolevel=1):
         dE = Ed - Eperfect
         Eq = q * Evbm
         Eic = q ** 2 * Eic_q2
-        Epa = q * (pot - pot1)
+        Epa = q * pot
         E0 = dE + Dcm + Eq + Epa + Eic + dEv + dEc
         E0q.append(E0)
         print(dsp.format(q, dE, Eq, Eic, dEv, dEc, Epa, E0))
