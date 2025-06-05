@@ -828,6 +828,16 @@ EDOPING.in
    等价于 :option:`DDNAME = charge_-1 charge_0 charge_+1 <DDNAME>` 。
    或者，可以直接指定子目录名称，用空格分隔（目前不允许在子目录名称中含有空格）。
 
+.. option:: DREFER
+
+   指定含有缺陷的超胞所在的目录，主要用于和完美晶胞对比确认缺陷位置。
+   默认值为 ``auto`` ，程序自动从 0 价缺陷目录中读取缺陷超胞结构。
+   如果提供，则程序会在 :option:`DDNAME` / :option:`DREFER`
+   目录下寻找缺陷超胞的 POSCAR 文件。
+
+   .. versionadded:: 0.3
+      :option:`DREFER` 参数。
+
 .. option:: PREFIX
 
    不同电荷值的自洽计算子目录的前缀，默认值为 ``charge_`` 。
