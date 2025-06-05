@@ -74,8 +74,22 @@ class InputList():
                 else:
                     ddname.append('{:s}{:+d}'.format(prefix, van))
             self.ddname = ddname
-        dd = sorted(zip(self.valence, self.ddname), key=lambda x: x[0])
-        self.valence, self.ddname = list(zip(*dd))  # sort by valence
+        if len(self.ddname) != len(self.valence):
+            raise ValueError('DDNAME should have the same length as VALENCE')
+
+        # sort by valence
+        if all(pa == float('inf') for pa in self.padiff):
+            # sort: VALENCE and DDNAME
+            dd = sorted(zip(self.valence, self.ddname), key=lambda x: x[0])
+            self.valence, self.ddname = list(zip(*dd))
+        elif any(pa == float('inf') for pa in self.padiff):
+            raise ValueError('PADIFF should be all set to inf or all set to float')
+        elif len(self.padiff) != len(self.valence):
+            raise ValueError('PADIFF should have the same length as VALENCE')
+        else:
+            # sort: VALENCE, DDNAME, PADIFF
+            dd = sorted(zip(self.valence, self.ddname, self.padiff), key=lambda x: x[0])
+            self.valence, self.ddname, self.padiff = list(zip(*dd))
 
     def __str__(self):
         '''
@@ -342,10 +356,6 @@ def formation(inputlist=None, infolevel=1):
             poti = read_pot(os.path.join(ipt.ddefect, fname, 'OUTCAR'))[idx2]
             print('    {:+d}: {:.4f}'.format(van, poti))
             pot2.append(poti - pot1)
-    elif any(pa == float('inf') for pa in ipt.padiff):
-        raise ValueError('PADIFF should be all set to inf or all set to float')
-    elif len(ipt.padiff) != len(ipt.valence):
-        raise ValueError('PADIFF should have the same length as VALENCE')
     else:
         pot2 = list(ipt.padiff)
         print('Potential alignment correction:\n    ', end='')
