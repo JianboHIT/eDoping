@@ -13,6 +13,7 @@ class InputList():
                 'cmpot': [0, 0],
                 'valence': [-2, -1, 0, 1, 2],
                 'ddname': 'auto',
+                'drefer': 'auto',
                 'prefix': 'charge_',
                 'evbm': float('inf'),
                 'ecbm': float('inf'),
@@ -91,6 +92,11 @@ class InputList():
             dd = sorted(zip(self.valence, self.ddname, self.padiff), key=lambda x: x[0])
             self.valence, self.ddname, self.padiff = list(zip(*dd))
 
+        # set drefer
+        if self.drefer.lower().startswith('auto'):
+            idx = self.valence.index(0) if 0 in self.valence else 0
+            self.drefer = self.ddname[idx]
+
     def __str__(self):
         '''
         Display in print().
@@ -135,8 +141,10 @@ class InputList():
                     raise ValueError(''.join([dsp, dsp2]))
                 name = p1.strip().lower()
 
-                if name in ['dperfect', 'ddefect', 'prefix']:
+                if name in ['dperfect', 'ddefect', 'drefer', 'prefix']:
                     value = p2.strip()  # String
+                    if any(s in value for s in ' <>:,"|?*'):
+                        raise ValueError('Illegal characters for {}'.format(name.upper()))
 
                 elif name in ['npts', 'bftype']:
                     value = int(p2)  # Int
@@ -332,8 +340,7 @@ def formation(inputlist=None, infolevel=1):
         # print('Potential alignment correction:')
         # print('Reading POSCARs ...', end='        ')
         pos1 = Cell(os.path.join(ipt.dperfect, 'POSCAR'))
-        idx = ipt.valence.index(0) if 0 in ipt.valence else 0
-        pos2 = Cell(os.path.join(ipt.ddefect, ipt.ddname[idx], 'POSCAR'))
+        pos2 = Cell(os.path.join(ipt.ddefect, ipt.drefer, 'POSCAR'))
         # idx1, idx2, dmax = pos1.diff(pos2, showdiff=True, out='far')
         diffs = diff_cell(pos1, pos2)
         dist = disp_diffs(pos1.basis, diffs, with_dist=True)
