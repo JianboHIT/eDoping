@@ -98,7 +98,8 @@ def cmd(arg=None):
     parser_chempot = sub_parser.add_parser('chempot', help='Calculate chemical potential')
     parser_chempot.add_argument('-n', '--norm', action='store_true', help='Enable coefficients normalization (if energy/atom is given)')
     parser_chempot.add_argument('-f', '--filename', default=filecmpot, help='Assign filename(default: {})'.format(filecmpot))
-    parser_chempot.add_argument('--cond', metavar='WEIGHT', type=float, nargs='+', help='Customized conditions')
+    parser_chempot.add_argument('--cond', metavar='WEIGHT', type=float, nargs='+', help='Customized chemical potential conditions')
+    parser_chempot.add_argument('--refs', metavar='VALUE', type=float, nargs='+', help='Reference chemical potentials in eV/atom')
 
     parser_trlevel = sub_parser.add_parser('trlevel', help='Calculate transition levels')
     parser_trlevel.add_argument('-f', '--filename', default=filetrans, help='Assign filename(default: {})'.format(filetrans))
@@ -389,6 +390,7 @@ def cmd(arg=None):
         # return (name, x0, status, msg),labels
         results,labels = pminmax(args.filename, 
                                  objcoefs=args.cond,
+                                 referance=args.refs,
                                  normalize=args.norm)
         if is_quiet:
             for rst in results:
