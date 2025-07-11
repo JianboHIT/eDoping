@@ -69,7 +69,7 @@ def cmd(arg=None):
     parser_replace = sub_parser.add_parser('replace', help='Replace atoms X by Y')
     parser_replace.add_argument('old', metavar='X', help='Name of previous atom')
     parser_replace.add_argument('new', metavar='Y', help='Name of present atom')
-    parser_replace.add_argument('-p', '--position', type=float, nargs=3, metavar='X', help='Position of new interstitial atom')
+    parser_replace.add_argument('-p', '--position', type=float, nargs=3, metavar=('fa', 'fb', 'fc'), help='Position of new interstitial atom')
     parser_replace.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Input filename(default: POSCAR)')
     parser_replace.add_argument('-o', '--output', metavar='FILENAME', default='POSCAR', help='Output filename(default: POSCAR)')
     
