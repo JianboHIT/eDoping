@@ -68,7 +68,7 @@ def read_cmpot(filename=filecmpot, eq_idx=0, normalize=False):
 
 
 @required(is_import_lnp, 'scipy')
-def pminmax(filename, objcoefs=None, normalize=False):  
+def pminmax(filename, objcoefs=None, referance=None, normalize=False):
     '''
     Calculate chemical potential under poor and rich conditions.
 
@@ -78,6 +78,8 @@ def pminmax(filename, objcoefs=None, normalize=False):
         A file contains formation energy.
     objcoefs : float-list
         Customized coefficients of the linear objective function.
+    referance : float-list, optional
+        The referance values of chemical potential, by default None.
     normalize : bool, optional
         Whether to normalize coefficients or not, by default False
 
@@ -90,7 +92,14 @@ def pminmax(filename, objcoefs=None, normalize=False):
     labels, constraints = read_cmpot(filename, normalize=normalize)
     A_ub, b_ub, A_eq, b_eq = constraints
     bounds = (None, None)
-    # print(A_ub, b_ub, A_eq, b_eq, bounds)
+    if referance is None:
+        refs = 0
+    else:
+        refs = np.asarray(referance)
+        if A_eq.shape[-1] != refs.shape[-1]:
+            raise RuntimeError('The number of referance values is not equal to species')
+
+    # print(A_ub, b_ub, A_eq, b_eq, bounds, refs)
     
     Nelmt = A_eq.shape[-1]
     if objcoefs is None:
@@ -117,10 +126,10 @@ def pminmax(filename, objcoefs=None, normalize=False):
             objcoefs = np.atleast_2d(objcoefs)
         else:
             raise RuntimeError('The number of objective coefficients is not equal to species')
-            
+
     results= []
     for name, copt in zip(names, objcoefs):
         rst = linprog(-copt, A_ub, b_ub, A_eq, b_eq, bounds)
-        result = (name, rst.x, rst.status, rst.message)
+        result = (name, rst.x + refs, rst.status, rst.message)
         results.append(result)
     return results, labels
