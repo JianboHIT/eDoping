@@ -69,6 +69,7 @@ def cmd(arg=None):
     parser_replace = sub_parser.add_parser('replace', help='Replace atoms X by Y')
     parser_replace.add_argument('old', metavar='X', help='Name of previous atom')
     parser_replace.add_argument('new', metavar='Y', help='Name of present atom')
+    parser_replace.add_argument('-p', '--position', type=float, nargs=3, metavar='X', help='Position of new interstitial atom')
     parser_replace.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Input filename(default: POSCAR)')
     parser_replace.add_argument('-o', '--output', metavar='FILENAME', default='POSCAR', help='Output filename(default: POSCAR)')
     
@@ -273,7 +274,14 @@ def cmd(arg=None):
             }
         else:
             raise ValueError('Invaild value: {}'.format(args.old))
-        loc = poscar.pop(**atom_old)
+
+        if atom_old['atom'].lower().startswith('vac'):
+            if args.position is None:
+                raise ValueError('Position of interstitial atom is required by --position option.')
+            loc = args.position
+        else:
+            loc = poscar.pop(**atom_old)
+
         new = re.match(r'([a-zA-Z]+)', args.new)
         if new:
             atom_new = {
@@ -282,7 +290,10 @@ def cmd(arg=None):
             }
         else:
             raise ValueError('Invaild value: {}'.format(args.new))
-        poscar.insert(**atom_new)
+
+        if not atom_new['atom'].lower().startswith('vac'):
+            poscar.insert(**atom_new)
+
         poscar.write(poscar=args.output)
         dsp = 'Replace {} by {}, and new POSCAR is saved to {}'
         if not is_quiet:
