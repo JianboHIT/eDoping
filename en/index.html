@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>eDoping 0.2.2 documentation</title>
+        <title>eDoping 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">eDoping 0.2.2 documentation</div></a>
+      <a href="#"><div class="brand">eDoping 0.3.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -626,6 +626,10 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 </div>
 <p>Here, <span class="math notranslate nohighlight">\(i\)</span> refers to different compounds, <span class="math notranslate nohighlight">\(c_i\)</span> is the element ratio from the input file, <span class="math notranslate nohighlight">\(\mu\)</span> is the compound enthalpy from the input file; if the <code class="docutils literal notranslate"><span class="pre">-n</span></code> (<code class="docutils literal notranslate"><span class="pre">--norm</span></code>) option is used, then <span class="math notranslate nohighlight">\(C = \sum _i c_i\)</span>, otherwise <span class="math notranslate nohighlight">\(C=1\)</span>. Simply put, to obtain correct results, you need to specify the <code class="docutils literal notranslate"><span class="pre">-n</span></code> (<code class="docutils literal notranslate"><span class="pre">--norm</span></code>) option for scenarios (1+B) and (2+B), but avoid it for scenarios (1+A) and (3+B). Due to lack of necessary information, we cannot handle scenarios (2+A) and (3+A), requiring the user to perform the necessary data processing.</p>
 <p>As for the reference of the enthalpy, the basic principle is: the reference for solving the chemical potentials is the initial reference given for compound enthalpy. If all provided values are (I) absolute enthalpy, then the given potentials are absolute chemical potentials; if all provided values are (II) formation enthalpy, then the given chemical potentials are differences from the respective elemental states.</p>
+<p>Since the <a class="reference internal" href="#edoping-in">EDOPING.in</a> file requires specifying absolute chemical potentials, the <code class="docutils literal notranslate"><span class="pre">--refs</span></code> option can be used to define standard chemical potentials for each elemental species, thereby obtaining the corresponding absolute chemical potentials. Internally, the program adds these reference values to the final calculated chemical potential values.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3: </span>The <code class="docutils literal notranslate"><span class="pre">--refs</span></code> option.</p>
+</div>
 </dd></dl>
 
 <dl class="std option">
@@ -748,7 +752,10 @@ No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-replace">
 <span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-replace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Replace atoms in the POSCAR file.</p>
+<dd><p>Replace atoms in the POSCAR file. Two positional variables are typically required to specify the old atom and the new atom. When the new atom is set to the <code class="docutils literal notranslate"><span class="pre">Vac</span></code> keyword, it deletes the atom to create a vacancy defect. When the old atom is set to the <code class="docutils literal notranslate"><span class="pre">Vac</span></code> keyword, it inserts an atom to create an interstitial defect. For interstitial defects, the position of the interstitial atom must be specified with the <code class="docutils literal notranslate"><span class="pre">-p/--position</span></code> option.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3: </span>Support the <code class="docutils literal notranslate"><span class="pre">Vac</span></code> keyword for creating vacancy/interstitial defects.</p>
+</div>
 </dd></dl>
 
 </section>
@@ -796,6 +803,15 @@ No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
 <dt class="sig sig-object std" id="cmdoption-arg-DDNAME">
 <span class="sig-name descname"><span class="pre">DDNAME</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-DDNAME" title="Permalink to this definition">¶</a></dt>
 <dd><p>The subdirectory naming convention for self-consistent calculations of each charge state (<a class="reference internal" href="#cmdoption-arg-VALENCE"><code class="xref std std-option docutils literal notranslate"><span class="pre">VALENCE</span></code></a>) defaults to <code class="docutils literal notranslate"><span class="pre">auto</span></code>. This auto-generation combines <a class="reference internal" href="#cmdoption-arg-PREFIX"><code class="xref std std-option docutils literal notranslate"><span class="pre">PREFIX</span></code></a> with <a class="reference internal" href="#cmdoption-arg-VALENCE"><code class="xref std std-option docutils literal notranslate"><span class="pre">VALENCE</span></code></a> while preserving the +/- sign prefix. For instance, given <a class="reference internal" href="#cmdoption-arg-VALENCE"><code class="xref std std-option docutils literal notranslate"><span class="pre">VALENCE</span> <span class="pre">=</span> <span class="pre">-1</span> <span class="pre">0</span> <span class="pre">1</span></code></a> and <a class="reference internal" href="#cmdoption-arg-PREFIX"><code class="xref std std-option docutils literal notranslate"><span class="pre">PREFIX</span> <span class="pre">=</span> <span class="pre">charge_</span></code></a>, setting <a class="reference internal" href="#cmdoption-arg-DDNAME"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDNAME</span> <span class="pre">=</span> <span class="pre">auto</span></code></a> produces subdirectories equivalent to specifying <a class="reference internal" href="#cmdoption-arg-DDNAME"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDNAME</span> <span class="pre">=</span> <span class="pre">charge_-1</span> <span class="pre">charge_0</span> <span class="pre">charge_+1</span></code></a>. Alternatively, explicit subdirectory names can be defined with space separation (note: spaces within names are currently unsupported).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-DREFER">
+<span class="sig-name descname"><span class="pre">DREFER</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-DREFER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the directory containing the defective supercell, primarily used for comparing with the perfect crystal to confirm the location of the defect. The default value is <code class="docutils literal notranslate"><span class="pre">auto</span></code>, where the program automatically reads the defective supercell structure from the neutral defect directory. If provided, the program will read the POSCAR file of the defective supercell under the <a class="reference internal" href="#cmdoption-arg-DDNAME"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDNAME</span></code></a> / <a class="reference internal" href="#cmdoption-arg-DREFER"><code class="xref std std-option docutils literal notranslate"><span class="pre">DREFER</span></code></a> directories.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.3: </span>The <a class="reference internal" href="#cmdoption-arg-DREFER"><code class="xref std std-option docutils literal notranslate"><span class="pre">DREFER</span></code></a> keyword.</p>
+</div>
 </dd></dl>
 
 <dl class="std option">
@@ -1008,7 +1024,7 @@ performance through high-throughput computations,
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=227644f7"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c02300dd"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

@@ -637,6 +637,14 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
    如果提供的都是 (I) 绝对的焓值，那么给出的就是绝对化学势；
    如果提供的都是 (II) 形成焓，那么给出的元素化学势和对应单质的差值。
 
+   由于 `EDOPING.in`_ 文件需要指定绝对化学势，为了简化计算流程，
+   可以通过 ``--refs`` 选项指定每个单质元素的标准化学势，
+   从而最终获得相应的绝对化学势。在程序内部，
+   实际上就是将最后求解的化学势数值加上该参考值。
+
+   .. versionadded:: 0.3
+      ``--refs`` 选项。
+
 .. option:: diff
 
    对比两个具有相同基矢 POSCAR 的原子增减情况，可以用于检查点缺陷。
@@ -771,7 +779,13 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
 
 .. option:: replace
 
-   替换 POSCAR 文件中的原子。
+   替换 POSCAR 文件中的原子。通常需要两个位置变量以此表示旧的原子和新的原子。
+   特别地，当新原子指定为 ``Vac`` 时表示删除原子，构造空位缺陷；
+   当旧原子指定为 ``Vac`` 时表示仅插入原子，构造间隙缺陷。
+   构造间隙缺陷时，必须通过 ``-p/--position`` 选项指定间隙原子的位置。
+
+   .. versionadded:: 0.3
+      支持通过 ``Vac`` 字符构造空位缺陷和间隙缺陷。
 
 输入/输出文件
 -------------
@@ -827,6 +841,16 @@ EDOPING.in
    且 :option:`PREFIX = charge_ <PREFIX>` ，那么当 :option:`DDNAME = auto <DDNAME>` 时，
    等价于 :option:`DDNAME = charge_-1 charge_0 charge_+1 <DDNAME>` 。
    或者，可以直接指定子目录名称，用空格分隔（目前不允许在子目录名称中含有空格）。
+
+.. option:: DREFER
+
+   指定含有缺陷的超胞所在的目录，主要用于和完美晶胞对比确认缺陷位置。
+   默认值为 ``auto`` ，程序自动从 0 价缺陷目录中读取缺陷超胞结构。
+   如果提供，则程序会在 :option:`DDNAME` / :option:`DREFER`
+   目录下寻找缺陷超胞的 POSCAR 文件。
+
+   .. versionadded:: 0.3
+      :option:`DREFER` 参数。
 
 .. option:: PREFIX
 

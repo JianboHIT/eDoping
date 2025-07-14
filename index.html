@@ -6,7 +6,7 @@
 <link rel="index" title="索引" href="genindex.html" /><link rel="search" title="搜索" href="search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>eDoping 0.2.2 文档</title>
+        <title>eDoping 0.3.0 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">eDoping 0.2.2 文档</div></a>
+      <a href="#"><div class="brand">eDoping 0.3.0 文档</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -804,6 +804,13 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 最终求解化学势的参考就是初始给定化合物焓值的参考。
 如果提供的都是 (I) 绝对的焓值，那么给出的就是绝对化学势；
 如果提供的都是 (II) 形成焓，那么给出的元素化学势和对应单质的差值。</p>
+<p>由于 <a class="reference internal" href="#edoping-in">EDOPING.in</a> 文件需要指定绝对化学势，为了简化计算流程，
+可以通过 <code class="docutils literal notranslate"><span class="pre">--refs</span></code> 选项指定每个单质元素的标准化学势，
+从而最终获得相应的绝对化学势。在程序内部，
+实际上就是将最后求解的化学势数值加上该参考值。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">在 0.3 版本加入: </span><code class="docutils literal notranslate"><span class="pre">--refs</span></code> 选项。</p>
+</div>
 </dd></dl>
 
 <dl class="std option">
@@ -948,7 +955,13 @@ No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-replace">
 <span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-replace" title="永久链接至目标">¶</a></dt>
-<dd><p>替换 POSCAR 文件中的原子。</p>
+<dd><p>替换 POSCAR 文件中的原子。通常需要两个位置变量以此表示旧的原子和新的原子。
+特别地，当新原子指定为 <code class="docutils literal notranslate"><span class="pre">Vac</span></code> 时表示删除原子，构造空位缺陷；
+当旧原子指定为 <code class="docutils literal notranslate"><span class="pre">Vac</span></code> 时表示仅插入原子，构造间隙缺陷。
+构造间隙缺陷时，必须通过 <code class="docutils literal notranslate"><span class="pre">-p/--position</span></code> 选项指定间隙原子的位置。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">在 0.3 版本加入: </span>支持通过 <code class="docutils literal notranslate"><span class="pre">Vac</span></code> 字符构造空位缺陷和间隙缺陷。</p>
+</div>
 </dd></dl>
 
 </section>
@@ -1007,6 +1020,18 @@ No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
 且 <a class="reference internal" href="#cmdoption-arg-PREFIX"><code class="xref std std-option docutils literal notranslate"><span class="pre">PREFIX</span> <span class="pre">=</span> <span class="pre">charge_</span></code></a> ，那么当 <a class="reference internal" href="#cmdoption-arg-DDNAME"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDNAME</span> <span class="pre">=</span> <span class="pre">auto</span></code></a> 时，
 等价于 <a class="reference internal" href="#cmdoption-arg-DDNAME"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDNAME</span> <span class="pre">=</span> <span class="pre">charge_-1</span> <span class="pre">charge_0</span> <span class="pre">charge_+1</span></code></a> 。
 或者，可以直接指定子目录名称，用空格分隔（目前不允许在子目录名称中含有空格）。</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-DREFER">
+<span class="sig-name descname"><span class="pre">DREFER</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-DREFER" title="永久链接至目标">¶</a></dt>
+<dd><p>指定含有缺陷的超胞所在的目录，主要用于和完美晶胞对比确认缺陷位置。
+默认值为 <code class="docutils literal notranslate"><span class="pre">auto</span></code> ，程序自动从 0 价缺陷目录中读取缺陷超胞结构。
+如果提供，则程序会在 <a class="reference internal" href="#cmdoption-arg-DDNAME"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDNAME</span></code></a> / <a class="reference internal" href="#cmdoption-arg-DREFER"><code class="xref std std-option docutils literal notranslate"><span class="pre">DREFER</span></code></a>
+目录下寻找缺陷超胞的 POSCAR 文件。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">在 0.3 版本加入: </span><a class="reference internal" href="#cmdoption-arg-DREFER"><code class="xref std std-option docutils literal notranslate"><span class="pre">DREFER</span></code></a> 参数。</p>
+</div>
 </dd></dl>
 
 <dl class="std option">
@@ -1239,7 +1264,7 @@ performance through high-throughput computations,
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=91875e66"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=2b49b2c8"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
