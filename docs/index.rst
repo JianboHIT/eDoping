@@ -784,6 +784,30 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
    当旧原子指定为 ``Vac`` 时表示仅插入原子，构造间隙缺陷。
    构造间隙缺陷时，必须通过 ``-p/--position`` 选项指定间隙原子的位置。
 
+   例子1：将 POSCAR 中的 Fe2 替换为 Co，并将新结构保存为 POSCAR-sub ：
+
+   .. code-block:: bash
+
+      $ edp replace -o POSCAR-sub Fe2 Co
+
+   例子2：在 POSCAR 中构建 Fe2 位置的空位缺陷，并将新结构保存为 POSCAR-vac ：
+
+   .. code-block:: bash
+
+      $ edp replace -o POSCAR-vac Fe2 Vac
+
+   例子3：在 POSCAR 中 (0.125, 0.125, 0.125) 处插入 Co 间隙原子，并将新结构保存为 POSCAR-int ：
+
+   .. code-block:: bash
+
+      $ edp replace -o POSCAR-int Vac Co -p 0.125 0.125 0.125
+
+   可以通过 :option:`edp diff <diff>` 检查 POSCAR 文件的变化：
+
+   .. code-block:: bash
+
+      $ edp diff POSCAR POSCAR-int
+
    .. versionadded:: 0.3
       支持通过 ``Vac`` 字符构造空位缺陷和间隙缺陷。
 
