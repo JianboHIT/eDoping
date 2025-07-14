@@ -6,6 +6,12 @@ eDoping 手册
 
    PDF 文件下载链接：:download:`edoping.pdf <_build/latex/edoping.pdf>`
 
+.. only:: latex
+
+   .. image:: _static/logo.png
+      :align: center
+      :width: 70%
+
 主要功能
 --------
 
@@ -53,15 +59,15 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
 .. code-block::
 
    $ edp -h
-   usage: edoping [-h] [-v] [-q] Subcommand ...
-   
-   Point Defect Formation Energy Calculation - v0.2.1
-   
+   usage: edp [-h] [-v] [-q] Subcommand ...
+
+   Point Defect Formation Energy Calculation - v0.3.1
+
    options:
      -h, --help       show this help message and exit
      -v, --verbosity  increase output verbosity
      -q, --quiet      only show key output
-   
+
    Tips:
      Subcommand       Description
        cal            Calculate defect fromation energy
@@ -94,14 +100,16 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
 .. code-block:: 
 
    $ edp replace -h
-   usage: edoping replace [-h] [-i FILENAME] [-o FILENAME] X Y
+   usage: edp replace [-h] [-p fa fb fc] [-i FILENAME] [-o FILENAME] X Y
 
    positional arguments:
      X                     Name of previous atom
      Y                     Name of present atom
 
-   optional arguments:
+   options:
      -h, --help            show this help message and exit
+     -p fa fb fc, --position fa fb fc
+                           Position of new interstitial atom
      -i FILENAME, --input FILENAME
                            Input filename(default: POSCAR)
      -o FILENAME, --output FILENAME
@@ -143,8 +151,9 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
 文件结构
 ^^^^^^^^
 
-以计算 NbFeSb 带有 Mn 和 Ni 间隙的缺陷为例（详见 ``examples/``），
-这里我们推荐按照如下目录形式组织文件（前置的编号方便 Tab 键快速补全）：
+以计算 NbFeSb 带有 Mn 和 Ni 间隙的缺陷为例（详见 Github/Gitee 仓库中的
+``examples/``），这里我们推荐按照如下目录形式组织文件
+（前置的编号方便 Tab 键快速补全）：
 
 .. code-block::
 
