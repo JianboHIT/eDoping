@@ -18,7 +18,7 @@ def cmd(arg=None):
     footnote = f'>>>>>>>>>> Citation of {__prog__} <<<<<<<<<<\n'\
                f'If you have used {__prog__}, '\
                f'please cite the following article:{__ref__}'
-    parser = argparse.ArgumentParser(prog=__prog__.lower(),
+    parser = argparse.ArgumentParser(prog='edp',
                                      description='{} - v{}'.format(__description__, __version__),
                                      formatter_class=argparse.RawDescriptionHelpFormatter, 
                                      epilog=footnote)
