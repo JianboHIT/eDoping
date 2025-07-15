@@ -16,49 +16,109 @@
 import re
 import json
 import urllib.request
+import urllib.parse
 import urllib.error
 from functools import partial
-from multiprocessing import Pool
+from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 
 from .dft import Cell
 
 
-def fetch_url(url, timeout=60):
+def fetch_url(url, timeout=60, headers=None):
     '''
     Fetch content from the given URL.
     '''
+    err_log = ''
+    req = urllib.request.Request(url, headers=headers)
     try:
-        with urllib.request.urlopen(url, timeout=timeout) as response:
+        with urllib.request.urlopen(req, timeout=timeout) as response:
             return json.loads(response.read().decode())
     except urllib.error.HTTPError as e:
-        print(f'HTTP error: {e.code} - {e.reason}.')
-    except (urllib.error.URLError, TimeoutError) as e:
-        print(f'URL or Timeout error: {e.reason}')
+        err_log = f'HTTP error: {e.code} - {e.reason}.\n'
+    except urllib.error.URLError as e:
+        err_log = f'URL error: {e.reason}.\n'
+    except TimeoutError:
+        err_log = f'Timeout error: Please try again later, or use another network.\n'
     except json.JSONDecodeError:
-        print('Error decoding JSON data.')
+        err_log = f'Error decoding JSON data.\n'
     except Exception as e:  # This catches any other exceptions
-        print(f"Unexpected error: {e}")
+        err_log = f'Unexpected error: {e}\n'
+    finally:
+        # print('[GET]', url, '  ...', 'failed' if err_log else 'done') # for debug
+        print(err_log, end='')
 
-def query_oqmd(elements, max_ehull=-1, get_struct=False, fields=(),
-               timeout=60, batch=200):
+def query_oqmd(params, timeout=60, batch=200, include_struct=False):
     '''
-    Query phase data from the OQMD (https://www.oqmd.org/) API.
+    Request data from the OQMD (https://www.oqmd.org/) database.
+
+    Parameters
+    ----------
+    params : dict
+        Query parameters.
+    timeout : float, optional
+        The period (in seconds) to await a server reply. Default is 60.
+    batch : int, optional
+        The number of entries to retrieve in each API request. Default is 200.
+    include_struct : bool, optional
+        Whether to include crystal structure details. Default is False.
+
+    Returns
+    -------
+    list
+        Retrieved data.
+    '''
+    request = partial(fetch_url, timeout=timeout, headers={})
+    url = 'http://oqmd.org/oqmdapi/formationenergy?'
+    url += urllib.parse.urlencode(params)
+
+    content_first = request(url)
+    ntot = content_first['meta']['data_available']
+
+    if ntot > batch:
+        urls = [f'{url}&offset={batch*(i+1)}' for i in range(round(ntot//batch))]
+        with ThreadPoolExecutor() as executor:
+            content_others = list(executor.map(request, urls))
+        contents = [content_first,] + content_others
+    else:
+        contents = [content_first,]
+
+    datas = list()
+    for content in contents:
+        if content is None:
+            continue
+        datas.extend(content['data'])
+    if include_struct:
+        for data in datas:
+            cell = Cell()
+            cell.basis = np.array(data['unit_cell'])
+            for row in data['sites']:
+                atom, _, fa, fb, fc, *_ = row.strip().split()
+                fa, fb, fc = float(fa), float(fb), float(fc)
+                if atom in cell.sites:
+                    cell.sites[atom].append(np.array([fa, fb, fc]))
+                else:
+                    cell.sites[atom] = [np.array([fa, fb, fc]),]
+            data['struct'] = cell
+    return datas
+
+def get_phases(elements, max_ehull=None, include_struct=False,
+               backend='OQMD', timeout=60, batch=200):
+    '''
+    Query phase data from the online database.
 
     Parameters
     ----------
     elements : list of str
         List of chemical element symbols.
     max_ehull : float, optional
-        Maximum energy hull filter. If negative, filtering is disabled.
-        Default is -1.
-    get_struct : bool, optional
-        Whether to retrieve structure details. Default is False.
-    fields : tuple of str, optional
-        Specific fields to retrieve from the API. If empty, defaults to 
-        `name`, `entry_id`, `icsd_id`, `formationenergy_id`, `delta_e`,
-        and `stability`.
+        Maximum energy hull filter. If not specified (None), filtering is
+        disabled.
+    include_struct : bool, optional
+        Whether to include crystal structure details. Default is False.
+    bankend : str, optional
+        The bacnend database to query. Currently supported: OQMD.
     timeout : float, optional
         The period (in seconds) to await a server reply. Default is 60.
     batch : int, optional
@@ -67,63 +127,50 @@ def query_oqmd(elements, max_ehull=-1, get_struct=False, fields=(),
     Returns
     -------
     list
-        Retrieved phase data.
+        Retrieved phase data. Each phase is represented as a dictionary with
+        the following keys: `name`, `id`, `delta_e`, `ehull`, and `struct`.
+        `struct` is a `Cell` object if `include_struct` is True, otherwise
+        it is None.
     '''
-    
     if timeout <= 0:
         raise ValueError("Timeout must be greater than 0.")
     
     if batch < 10:
         raise ValueError("Batch size must be 10 or more.")
 
-    default_fields = ('name',
-                      'entry_id',
-                      'icsd_id',
-                      'formationenergy_id',
-                      'delta_e',
-                      'stability')
+    query_options = dict(timeout=timeout,
+                         batch=batch,
+                         include_struct=include_struct)
 
-    url = 'http://oqmd.org/oqmdapi/formationenergy'
-    url += f"?composition={'-'.join(elements)}"
-    url += f"&limit={batch}&fields={','.join(fields or default_fields)}"
-    url += ',unit_cell,sites' if get_struct else ''
-    url += f'&filter=stability<={max_ehull}' if max_ehull >= 0 else ''
-    
-    content_first = fetch_url(url, timeout)
-    ntot = content_first['meta']['data_available']
-    
-    if ntot > batch:
-        worker = partial(fetch_url, timeout=timeout)
-        urls = [f'{url}&offset={batch*(i+1)}' for i in range(round(ntot//batch))]
-        with Pool() as pool:
-            content_others = pool.map(worker, urls)
-        contents = [content_first,] + content_others
+    if backend.lower() == 'oqmd':
+        params = {
+            'composition': '-'.join(elements),
+            'limit': batch,
+            'fields': ','.join([
+                'name',
+                'entry_id',
+                # 'icsd_id',
+                # 'formationenergy_id',
+                'delta_e',
+                'stability',
+                'unit_cell',
+                'sites',
+            ]),
+        }
+        if max_ehull:
+            params['filter'] = f'stability<={max_ehull}'
+
+        phases = list()
+        for data in query_oqmd(params, **query_options):
+            phase = {
+                'name': data['name'],
+                'id': data['entry_id'],
+                'delta_e': data['delta_e'],
+                'ehull': data['stability'],
+                'struct': data.get('struct', None),
+            }
+            phases.append(phase)
     else:
-        contents = [content_first,]
-    
-    phases = dict()
-    for content in contents:
-        if content is not None:
-            for data in content['data']:
-                name, delta_e = data['name'], data['delta_e']
-                if (name not in phases) or (delta_e < phases[name]['delta_e']):
-                    phases[name] = data
-    return list(phases.values())
+        raise RuntimeError(f"Unknown backend: {backend} (Supported: OQMD)")
 
-def struct2vasp(unit_cell, sites, out=None, comment=None):
-    cell = Cell()
-    cell.basis = np.array(unit_cell)
-    for row in sites:
-        atom, _, fa, fb, fc, *_ = row.strip().split()
-        fa, fb, fc = float(fa), float(fb), float(fc)
-        if atom in cell.sites:
-            cell.sites[atom].append(np.array([fa, fb, fc]))
-        else:
-            cell.sites[atom] = [np.array([fa, fb, fc]),]
-    
-    if out is not None:
-        if not isinstance(out, str):
-            raise ValueError('A valid string is required for `out` as filename')
-        cell.write(out, header=comment)
-    
-    return cell
+    return phases
