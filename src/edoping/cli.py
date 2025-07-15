@@ -96,6 +96,7 @@ def cmd(arg=None):
     parser_diff.add_argument('filename2', help='Filename of the second POSCAR')
     
     parser_query = sub_parser.add_parser('query', help='Fetch data from OQMD website')
+    parser_query.add_argument('--backend', default='OQMD', choices=['OQMD', 'MP'], help='The backend database to query (default: OQMD)')
     parser_query.add_argument('-s', '--structure', action='store_true', help='Fetch structure files at same time')
     parser_query.add_argument('-x', '--extra', default='', help='Extra elements beyond host compound')
     parser_query.add_argument('-t', '--timeout', type=float, default=60, help='The period (in seconds) to await a server reply (default: 60)')
@@ -369,12 +370,13 @@ def cmd(arg=None):
             elements=elmt_all,
             max_ehull=args.ehull,
             include_struct=args.structure,
+            backend=args.backend,
             timeout=args.timeout,
             batch=args.batch,
         )
 
         if is_detail:
-            print(f'Number of phases fetched from the database: {len(phases_all)}')
+            print(f'Number of phases fetched from {args.backend} database: {len(phases_all)}')
 
         # remove duplicate phases according fromation energy (delta_e)
         phases_uni = dict()
