@@ -13,7 +13,7 @@ filedebug = '{}.debug'.format(__prog__)
 
 
 __author__ = 'Jianbo Zhu, Jingyu Li, Peng-Fei Liu'
-__version__ = '0.3.1'
+__version__ = '0.3.2a1'
 __date__ = '2025-07-17'
 __description__ = 'Point Defect Formation Energy Calculation'
 
