@@ -6,6 +6,12 @@ eDoping 手册
 
    PDF 文件下载链接：:download:`edoping.pdf <_build/latex/edoping.pdf>`
 
+.. only:: latex
+
+   .. image:: _static/logo.png
+      :align: center
+      :width: 70%
+
 主要功能
 --------
 
@@ -53,15 +59,15 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
 .. code-block::
 
    $ edp -h
-   usage: edoping [-h] [-v] [-q] Subcommand ...
-   
-   Point Defect Formation Energy Calculation - v0.2.1
-   
+   usage: edp [-h] [-v] [-q] Subcommand ...
+
+   Point Defect Formation Energy Calculation - v0.3.1
+
    options:
      -h, --help       show this help message and exit
      -v, --verbosity  increase output verbosity
      -q, --quiet      only show key output
-   
+
    Tips:
      Subcommand       Description
        cal            Calculate defect fromation energy
@@ -94,14 +100,16 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
 .. code-block:: 
 
    $ edp replace -h
-   usage: edoping replace [-h] [-i FILENAME] [-o FILENAME] X Y
+   usage: edp replace [-h] [-p fa fb fc] [-i FILENAME] [-o FILENAME] X Y
 
    positional arguments:
      X                     Name of previous atom
      Y                     Name of present atom
 
-   optional arguments:
+   options:
      -h, --help            show this help message and exit
+     -p fa fb fc, --position fa fb fc
+                           Position of new interstitial atom
      -i FILENAME, --input FILENAME
                            Input filename(default: POSCAR)
      -o FILENAME, --output FILENAME
@@ -143,8 +151,9 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
 文件结构
 ^^^^^^^^
 
-以计算 NbFeSb 带有 Mn 和 Ni 间隙的缺陷为例（详见 ``examples/``），
-这里我们推荐按照如下目录形式组织文件（前置的编号方便 Tab 键快速补全）：
+以计算 NbFeSb 带有 Mn 和 Ni 间隙的缺陷为例（详见 Github/Gitee 仓库中的
+``examples/``），这里我们推荐按照如下目录形式组织文件
+（前置的编号方便 Tab 键快速补全）：
 
 .. code-block::
 
@@ -783,6 +792,30 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
    特别地，当新原子指定为 ``Vac`` 时表示删除原子，构造空位缺陷；
    当旧原子指定为 ``Vac`` 时表示仅插入原子，构造间隙缺陷。
    构造间隙缺陷时，必须通过 ``-p/--position`` 选项指定间隙原子的位置。
+
+   例子1：将 POSCAR 中的 Fe2 替换为 Co，并将新结构保存为 POSCAR-sub ：
+
+   .. code-block:: bash
+
+      $ edp replace -o POSCAR-sub Fe2 Co
+
+   例子2：在 POSCAR 中构建 Fe2 位置的空位缺陷，并将新结构保存为 POSCAR-vac ：
+
+   .. code-block:: bash
+
+      $ edp replace -o POSCAR-vac Fe2 Vac
+
+   例子3：在 POSCAR 中 (0.125, 0.125, 0.125) 处插入 Co 间隙原子，并将新结构保存为 POSCAR-int ：
+
+   .. code-block:: bash
+
+      $ edp replace -o POSCAR-int Vac Co -p 0.125 0.125 0.125
+
+   可以通过 :option:`edp diff <diff>` 检查 POSCAR 文件的变化：
+
+   .. code-block:: bash
+
+      $ edp diff POSCAR POSCAR-int
 
    .. versionadded:: 0.3
       支持通过 ``Vac`` 字符构造空位缺陷和间隙缺陷。

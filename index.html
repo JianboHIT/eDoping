@@ -6,7 +6,7 @@
 <link rel="index" title="索引" href="genindex.html" /><link rel="search" title="搜索" href="search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>eDoping 0.3.0 文档</title>
+        <title>eDoping 0.3.1 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">eDoping 0.3.0 文档</div></a>
+      <a href="#"><div class="brand">eDoping 0.3.1 文档</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -282,9 +282,9 @@
 通过 <code class="docutils literal notranslate"><span class="pre">-h</span></code> (或者 <code class="docutils literal notranslate"><span class="pre">--help</span></code>) 选项可以打印帮助信息，
 同时检查安装是否成功：</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp -h
-usage: edoping [-h] [-v] [-q] Subcommand ...
+usage: edp [-h] [-v] [-q] Subcommand ...
 
-Point Defect Formation Energy Calculation - v0.2.1
+Point Defect Formation Energy Calculation - v0.3.1
 
 options:
   -h, --help       show this help message and exit
@@ -321,14 +321,16 @@ If you have used EDOPING, please cite the following article:
 </div>
 <p>我们可以进一步查看子命令的帮助信息:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp replace -h
-usage: edoping replace [-h] [-i FILENAME] [-o FILENAME] X Y
+usage: edp replace [-h] [-p fa fb fc] [-i FILENAME] [-o FILENAME] X Y
 
 positional arguments:
   X                     Name of previous atom
   Y                     Name of present atom
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
+  -p fa fb fc, --position fa fb fc
+                        Position of new interstitial atom
   -i FILENAME, --input FILENAME
                         Input filename(default: POSCAR)
   -o FILENAME, --output FILENAME
@@ -365,8 +367,9 @@ $<span class="w"> </span>bash<span class="w"> </span>compile_for_linux.sh
 但是目前的接口并未完全支持，有待后续完善。</p>
 <section id="id4">
 <h3>文件结构<a class="headerlink" href="#id4" title="此标题的永久链接">¶</a></h3>
-<p>以计算 NbFeSb 带有 Mn 和 Ni 间隙的缺陷为例（详见 <code class="docutils literal notranslate"><span class="pre">examples/</span></code>），
-这里我们推荐按照如下目录形式组织文件（前置的编号方便 Tab 键快速补全）：</p>
+<p>以计算 NbFeSb 带有 Mn 和 Ni 间隙的缺陷为例（详见 Github/Gitee 仓库中的
+<code class="docutils literal notranslate"><span class="pre">examples/</span></code>），这里我们推荐按照如下目录形式组织文件
+（前置的编号方便 Tab 键快速补全）：</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>NbFeSb_Interstitials
 ├── 1.perfect
 ├── 2-1.defect-Mn_i
@@ -959,6 +962,22 @@ No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
 特别地，当新原子指定为 <code class="docutils literal notranslate"><span class="pre">Vac</span></code> 时表示删除原子，构造空位缺陷；
 当旧原子指定为 <code class="docutils literal notranslate"><span class="pre">Vac</span></code> 时表示仅插入原子，构造间隙缺陷。
 构造间隙缺陷时，必须通过 <code class="docutils literal notranslate"><span class="pre">-p/--position</span></code> 选项指定间隙原子的位置。</p>
+<p>例子1：将 POSCAR 中的 Fe2 替换为 Co，并将新结构保存为 POSCAR-sub ：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-sub<span class="w"> </span>Fe2<span class="w"> </span>Co
+</pre></div>
+</div>
+<p>例子2：在 POSCAR 中构建 Fe2 位置的空位缺陷，并将新结构保存为 POSCAR-vac ：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-vac<span class="w"> </span>Fe2<span class="w"> </span>Vac
+</pre></div>
+</div>
+<p>例子3：在 POSCAR 中 (0.125, 0.125, 0.125) 处插入 Co 间隙原子，并将新结构保存为 POSCAR-int ：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-int<span class="w"> </span>Vac<span class="w"> </span>Co<span class="w"> </span>-p<span class="w"> </span><span class="m">0</span>.125<span class="w"> </span><span class="m">0</span>.125<span class="w"> </span><span class="m">0</span>.125
+</pre></div>
+</div>
+<p>可以通过 <a class="reference internal" href="#cmdoption-arg-diff"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">diff</span></code></a> 检查 POSCAR 文件的变化：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>diff<span class="w"> </span>POSCAR<span class="w"> </span>POSCAR-int
+</pre></div>
+</div>
 <div class="versionadded">
 <p><span class="versionmodified added">在 0.3 版本加入: </span>支持通过 <code class="docutils literal notranslate"><span class="pre">Vac</span></code> 字符构造空位缺陷和间隙缺陷。</p>
 </div>
@@ -1264,7 +1283,7 @@ performance through high-throughput computations,
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=2b49b2c8"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=398f8ed2"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

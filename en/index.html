@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>eDoping 0.3.0 documentation</title>
+        <title>eDoping 0.3.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">eDoping 0.3.0 documentation</div></a>
+      <a href="#"><div class="brand">eDoping 0.3.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -277,9 +277,9 @@
 </div>
 <p>After installation is complete, we can use the eDoping package with the <code class="docutils literal notranslate"><span class="pre">edp</span></code> command. The <code class="docutils literal notranslate"><span class="pre">-h</span></code> (or <code class="docutils literal notranslate"><span class="pre">--help</span></code>) option can print help information and also check if the installation was successful:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp -h
-usage: edoping [-h] [-v] [-q] Subcommand ...
+usage: edp [-h] [-v] [-q] Subcommand ...
 
-Point Defect Formation Energy Calculation - v0.2.1
+Point Defect Formation Energy Calculation - v0.3.1
 
 options:
   -h, --help       show this help message and exit
@@ -316,14 +316,16 @@ If you have used EDOPING, please cite the following article:
 </div>
 <p>We can further check the help information of subcommands:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp replace -h
-usage: edoping replace [-h] [-i FILENAME] [-o FILENAME] X Y
+usage: edp replace [-h] [-p fa fb fc] [-i FILENAME] [-o FILENAME] X Y
 
 positional arguments:
   X                     Name of previous atom
   Y                     Name of present atom
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
+  -p fa fb fc, --position fa fb fc
+                        Position of new interstitial atom
   -i FILENAME, --input FILENAME
                         Input filename(default: POSCAR)
   -o FILENAME, --output FILENAME
@@ -343,7 +345,7 @@ $<span class="w"> </span>bash<span class="w"> </span>compile_for_linux.sh
 <p>Ensure the eDoping package is correctly installed (refer to the <a class="reference internal" href="#id2">Installation</a> section for details), and you can print help information using <code class="docutils literal notranslate"><span class="pre">edp</span> <span class="pre">-h</span></code>. Density functional calculations use <code class="docutils literal notranslate"><span class="pre">VASP</span></code> software as an example; theoretically, other computational software could be used, but current interfaces do not fully support them yet and require further improvement.</p>
 <section id="id4">
 <h3>Directory Structure<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
-<p>As an example of calculating defects in NbFeSb with Mn and Ni interstitials (see <code class="docutils literal notranslate"><span class="pre">examples/</span></code> for details), we recommend organizing files with the following directory structure (prefix numbers enable rapid tab completion):</p>
+<p>Taking NbFeSb with Mn or Ni interstitials as an example (see <code class="docutils literal notranslate"><span class="pre">examples/</span></code> in the Github/Gitee repository), we recommend organizing files in the following directory structure (prefix numbers make it convenient for tab completion):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>NbFeSb_Interstitials
 ├── 1.perfect
 ├── 2-1.defect-Mn_i
@@ -753,6 +755,22 @@ No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
 <dt class="sig sig-object std" id="cmdoption-arg-replace">
 <span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-replace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace atoms in the POSCAR file. Two positional variables are typically required to specify the old atom and the new atom. When the new atom is set to the <code class="docutils literal notranslate"><span class="pre">Vac</span></code> keyword, it deletes the atom to create a vacancy defect. When the old atom is set to the <code class="docutils literal notranslate"><span class="pre">Vac</span></code> keyword, it inserts an atom to create an interstitial defect. For interstitial defects, the position of the interstitial atom must be specified with the <code class="docutils literal notranslate"><span class="pre">-p/--position</span></code> option.</p>
+<p>Example 1: Replace <code class="docutils literal notranslate"><span class="pre">Fe2</span></code> in the POSCAR file with <code class="docutils literal notranslate"><span class="pre">Co</span></code>, and save the new structure as POSCAR-sub:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-sub<span class="w"> </span>Fe2<span class="w"> </span>Co
+</pre></div>
+</div>
+<p>Example 2: Create a vacancy defect at the <code class="docutils literal notranslate"><span class="pre">Fe2</span></code> position in the POSCAR file, and save the new structure as POSCAR-vac:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-vac<span class="w"> </span>Fe2<span class="w"> </span>Vac
+</pre></div>
+</div>
+<p>Example 3: Insert a <code class="docutils literal notranslate"><span class="pre">Co</span></code> interstitial atom at (0.125, 0.125, 0.125) in the POSCAR file, and save the new structure as POSCAR-int:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-int<span class="w"> </span>Vac<span class="w"> </span>Co<span class="w"> </span>-p<span class="w"> </span><span class="m">0</span>.125<span class="w"> </span><span class="m">0</span>.125<span class="w"> </span><span class="m">0</span>.125
+</pre></div>
+</div>
+<p>You can use <a class="reference internal" href="#cmdoption-arg-diff"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">diff</span></code></a> to check the changes in the POSCAR file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>diff<span class="w"> </span>POSCAR<span class="w"> </span>POSCAR-int
+</pre></div>
+</div>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.3: </span>Support the <code class="docutils literal notranslate"><span class="pre">Vac</span></code> keyword for creating vacancy/interstitial defects.</p>
 </div>
@@ -1024,7 +1042,7 @@ performance through high-throughput computations,
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c02300dd"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=645b84c4"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
