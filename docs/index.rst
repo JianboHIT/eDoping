@@ -24,7 +24,7 @@ eDoping 手册
 * 流程化带电点缺陷的形成能计算
 * 完全基于命令行，无需编程和复杂的脚本
 * 可以进行多组元体系的元素化学势估计
-* 基于 OQMD 的竞争相结构和形成能获取
+* 从 OQMD/MaterialsProject 快速获取竞争相结构和形成能
 * 缺陷形成能的修正项计算
 * 自洽费米能级的估计
 
@@ -233,7 +233,8 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
 `AFLOW <https://aflowlib.org>`_ 等）获得。
 
 这里，我们提供了一个查询命令 :option:`edp query<query>` ，
-可以直接从OQMD数据库获取所有竞争相的形成能。比如，对于含有 Mn 原子缺陷的 NbFeSb ，
+可以直接从OQMD数据库获取所有竞争相的形成能（从 v0.4 开始支持 MaterialsProject
+数据库，详见 :option:`edp query<query>` 介绍）。比如，对于含有 Mn 原子缺陷的 NbFeSb ，
 可以通过如下命令获得 Ehull < 0.01 eV/atom 的所有竞争相的形成能
 （在 ``3.phases/NbFeSb_with_Mn`` 目录下运行）：
 
@@ -779,18 +780,37 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
 
 .. option:: query
 
-   从材料数据库 (目前只支持 `OQMD <https://www.oqmd.org>`_) 获取竞争相的信息
+   从公开材料数据库获取竞争相信息。通过 ``--backend`` 选项指定数据库的名称：
 
-   使用时确保网络畅通，且受制于数据库的访问频率限制，
-   不建议在短时间内反复多次使用。
-   通常情况下，可以先到数据库官网进行查询，
-   具有更好的可视化结果，然后再通过该命令进行数据获取。
-   
+   - ``OQMD`` (默认值): The Open Quantum Materials Database (https://www.oqmd.org)
+   - ``MP`` : The Materials Project (https://next-gen.materialsproject.org)
+
    通过该命令我们可以得到用于化学势估计的输入数据文件 `EDOPING.cmpot`_ ,
    其中给定的最简原子比和化合物平均每个原子的形成焓。因此，
    为了得到正确的化学势 :math:`\Delta \mu_i`，
    在使用 :option:`edp chempot <chempot>` 进行计算时需要添加
    ``-n`` (``--norm``) 选项。
+
+   .. hint::
+      使用 Materials Project 数据库前必须正确配置 ``MP_API_KEY`` 环境变量（在
+      `Materials Project - API 页面 <https://next-gen.materialsproject.org/api>`_
+      注册并获取 API key），将下面命令中的 ``<your_api_key>`` 替换为你的 API key：
+
+      .. code-block:: bash
+
+         $ export MP_API_KEY=<your_api_key>
+
+      对于私有化平台，可以将其添加到 ``~/.bashrc`` 文件中避免反复配置。
+
+   .. tip::
+
+      使用时确保网络畅通，且受制于数据库的访问频率限制，
+      不建议在短时间内反复多次使用。
+      通常情况下，可以先到数据库官网进行查询，
+      具有更好的可视化结果，然后再通过该命令进行数据获取。
+
+   .. versionadded:: 0.4
+      支持 Materials Project 后端数据库。
 
 .. option:: replace
 
