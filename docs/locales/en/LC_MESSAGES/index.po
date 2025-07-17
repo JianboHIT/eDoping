@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eDoping \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-14 16:55+0800\n"
-"PO-Revision-Date: 2025-07-14 16:55+0800\n"
+"POT-Creation-Date: 2025-07-17 15:33+0800\n"
+"PO-Revision-Date: 2025-07-17 15:33+0800\n"
 "Last-Translator: Jianbo Zhu <zhjb1996@163.com>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
@@ -17,52 +17,41 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: ../../index.rst:3
 msgid "eDoping 手册"
 msgstr "eDoping's Documentation"
 
-#: ../../index.rst:7
 msgid "PDF 文件下载链接：:download:`edoping.pdf <_build/latex/edoping.pdf>`"
 msgstr ""
 "Download the PDF file: :download:`edoping.pdf <_build/latex/en/edoping.pdf>`"
 
-#: ../../index.rst:16
 msgid "主要功能"
 msgstr "Feature List"
 
-#: ../../index.rst:18
 msgid "流程化带电点缺陷的形成能计算"
 msgstr ""
 "Streamlined calculation of formation energies for charged point defects"
 
-#: ../../index.rst:19
 msgid "完全基于命令行，无需编程和复杂的脚本"
 msgstr ""
 "Entirely command-line based, requiring no programming or complex scripts"
 
-#: ../../index.rst:20
 msgid "可以进行多组元体系的元素化学势估计"
 msgstr ""
 "Supports estimation of elemental chemical potentials in multi-component "
 "systems"
 
-#: ../../index.rst:21
 msgid "基于 OQMD 的竞争相结构和形成能获取"
 msgstr "Access to competing phase structures and formation energies from OQMD"
 
-#: ../../index.rst:22
 msgid "缺陷形成能的修正项计算"
 msgstr "Calculation of correction terms for defect formation energies"
 
-#: ../../index.rst:23
 msgid "自洽费米能级的估计"
 msgstr "Determination of the self-consistent Fermi energy"
 
-#: ../../index.rst:26
 msgid "程序安装"
 msgstr "Installation"
 
-#: ../../index.rst:28
 msgid ""
 "eDoping 程序包基于 python3 软件，确保它已经被正确安装。 如果可以联网，最简单"
 "的方式就是通过 pip 安装 eDoping 程序包:"
@@ -71,19 +60,16 @@ msgstr ""
 "installed. If the network is available, the most efficient way to install "
 "the eDoping package is via pip:"
 
-#: ../../index.rst:35
 msgid "如果无法联网或者对源代码感兴趣，程序包从 Github 下载，或者利用 git :"
 msgstr ""
 "If you do not have internet access or are interested in the source code, you "
 "can download the package from GitHub or use git:"
 
-#: ../../index.rst:41
 msgid "对于中国大陆地区，也可以从 Gitee 获取源码，与上面类似："
 msgstr ""
 "For users in mainland China, the source code can also be obtained from "
 "Gitee, similar to the above:"
 
-#: ../../index.rst:47
 msgid ""
 "下载源码后，进入文件夹 (如果是压缩文件需要先解压缩) ，确保网络通畅, 我们可以"
 "通过 ``pip`` (或 ``pip3``) 工具来自动安装程序以及所有依赖的库 (实际上只依赖"
@@ -94,7 +80,6 @@ msgstr ""
 "automatically install the program and all dependent libraries (it actually "
 "only depends on numpy and scipy) using the ``pip`` (or ``pip3``) tool:"
 
-#: ../../index.rst:55
 msgid ""
 "安装完成，我们就可以通过 ``edp`` 命令来使用 eDoping 程序包了。 通过 ``-h`` "
 "(或者 ``--help``) 选项可以打印帮助信息， 同时检查安装是否成功："
@@ -103,15 +88,12 @@ msgstr ""
 "``edp`` command. The ``-h`` (or ``--help``) option can print help "
 "information and also check if the installation was successful:"
 
-#: ../../index.rst:98
 msgid "我们可以进一步查看子命令的帮助信息:"
 msgstr "We can further check the help information of subcommands:"
 
-#: ../../index.rst:118
 msgid "至此，我们就已经成功地安装了 eDoping 程序包。"
 msgstr "At this point, we have successfully installed the eDoping package."
 
-#: ../../index.rst:120
 msgid ""
 "**可选地:** python 作为一种解释性编成语言， 因此每次运行都需要完全地加载相应"
 "的环境或者虚拟环境。 对于个人设备这是非常方便的，但是对于大型公共计算平台， "
@@ -135,7 +117,6 @@ msgstr ""
 "prepare a clean Python virtual environment and install pyinstaller and other "
 "eDoping dependencies, then run the following command:"
 
-#: ../../index.rst:139
 msgid ""
 "当脚本运行成功后， 在 standalone/dist 中就得到了一个可执行程序 ``edp``, 可以"
 "把它移动到任何需要的位置，方便日常工作。"
@@ -144,11 +125,9 @@ msgstr ""
 "in standalone/dist, which can be moved to any desired location for "
 "convenient daily use."
 
-#: ../../index.rst:144
 msgid "快速开始"
 msgstr "Quick Start"
 
-#: ../../index.rst:146
 msgid ""
 "确保已正确安装 eDoping 程序包（详细参考 `程序安装`_ 部分）， 可以通过 ``edp -"
 "h`` 打印帮助信息。 密度泛函计算以 ``VASP`` 软件为例，理论上也可采用其它计算能"
@@ -161,25 +140,22 @@ msgstr ""
 "current interfaces do not fully support them yet and require further "
 "improvement."
 
-#: ../../index.rst:152
 msgid "文件结构"
 msgstr "Directory Structure"
 
-#: ../../index.rst:154
 msgid ""
 "以计算 NbFeSb 带有 Mn 和 Ni 间隙的缺陷为例（详见 Github/Gitee 仓库中的 "
 "``examples/``），这里我们推荐按照如下目录形式组织文件 （前置的编号方便 Tab 键"
 "快速补全）："
 msgstr ""
-"Taking NbFeSb with Mn or Ni interstitials as an example (see ``examples/`` in "
-"the Github/Gitee repository), we recommend organizing files in the following "
-"directory structure (prefix numbers make it convenient for tab completion):"
+"Taking NbFeSb with Mn or Ni interstitials as an example (see ``examples/`` "
+"in the Github/Gitee repository), we recommend organizing files in the "
+"following directory structure (prefix numbers make it convenient for tab "
+"completion):"
 
-#: ../../index.rst:195
 msgid "能量计算"
 msgstr "Energy Calculation"
 
-#: ../../index.rst:197
 msgid ""
 "这是缺陷计算的核心耗时部分，需要调用VASP软件计算得到完美晶胞和所有价态下缺陷"
 "胞的能量 （注意确保所有结构被合理驰豫至收敛），即 ``1.perfect`` 和 ``2-X."
@@ -191,7 +167,6 @@ msgstr ""
 "relaxed to convergence), specifically the subfolders under ``1.perfect`` and "
 "``2-X.defect-XX`` directories."
 
-#: ../../index.rst:201
 msgid ""
 "为了模拟不同电荷量的缺陷，需要在 INCAR 文件中通过 NELECT 参数设置体系总电子数"
 "目。 为简化该过程，可以使用 :option:`edp fixchg <fixchg>` 命令从不带电的计算"
@@ -203,7 +178,6 @@ msgstr ""
 "automatically generate charged defect calculation folders (e.g., "
 "``charge_+1``, ``charge_-1``) from the neutral calculation directory:"
 
-#: ../../index.rst:209
 msgid ""
 "这里 ``charge_0`` 中包含结构不带电时自洽计算所需的文件， 上述命令会完全复制该"
 "文件夹为 ``charge_+1`` 、 ``charge_-1`` 等文件夹， 并修改其中 INCAR 文件中的 "
@@ -215,11 +189,9 @@ msgstr ""
 "NELECT parameter in their INCAR files to set the system's net charge to the "
 "specified value."
 
-#: ../../index.rst:215
 msgid "化学势计算"
 msgstr "Chemical Potential Calculation"
 
-#: ../../index.rst:217
 msgid ""
 "在缺陷形成能计算中， 原子化学势项用于表达缺陷晶胞与完美晶胞之间原子种类和数目"
 "不守恒导致的能量变化。 一种原子的化学势由两部分构成，即 :math:`\\mu_i = \\mu "
@@ -243,7 +215,6 @@ msgstr ""
 "<https://www.oqmd.org>`_, `MaterialsProject <https://next-gen."
 "materialsproject.org>`_, `AFLOW <https://aflowlib.org>`_, etc."
 
-#: ../../index.rst:229
 msgid ""
 "这里，我们提供了一个查询命令 :option:`edp query<query>` ， 可以直接从OQMD数据"
 "库获取所有竞争相的形成能。比如，对于含有 Mn 原子缺陷的 NbFeSb ， 可以通过如下"
@@ -257,7 +228,6 @@ msgstr ""
 "with Ehull < 0.01 eV/atom (executed in the ``3.phases/NbFeSb_with_Mn`` "
 "directory):"
 
-#: ../../index.rst:238
 msgid ""
 "结果保存在文件 `EDOPING.cmpot`_ 中。 这里如果省略 ``--ehull`` 选项，则会获取"
 "所有稳定和亚稳竞争相的能量。 此外，可以通过 ``-s/--structure`` 选项同时下载所"
@@ -269,7 +239,6 @@ msgstr ""
 "format) for all competing phases can be downloaded via the ``-s/--"
 "structure`` option to enable more accurate energy calculations:"
 
-#: ../../index.rst:247
 msgid ""
 "然后根据计算的结果手动准备 `EDOPING.cmpot`_ 文件。 基于 `EDOPING.cmpot`_ 文"
 "件，就可以通过 :option:`edp chempot<chempot>` 命令根据化学环境确定元素的化学"
@@ -280,7 +249,6 @@ msgstr ""
 "can be determined according to the chemical environment using the :option:"
 "`edp chempot<chempot>` command:"
 
-#: ../../index.rst:255
 msgid ""
 "注意这里的 ``-n`` （或者 ``--norm``）选项表示文件中的形成能单位是 eV/atom。 "
 "如果形成能是对应组分下的晶胞总能，则不需要该选项。 `EDOPING.cmpot`_ 文件会被"
@@ -293,11 +261,9 @@ msgstr ""
 "and the chemical potentials (:math:`\\Delta \\mu _i`) under different "
 "environments will be printed on the screen."
 
-#: ../../index.rst:261
 msgid "修正项"
 msgstr "Correction Terms"
 
-#: ../../index.rst:263
 msgid ""
 "在点缺陷计算时，由于有限尺寸的限制通常需要对获得的形成能进行修正，即公式中"
 "的 :math:`E_{corr}` 项。各种修正项中，镜像电荷修正需要额外提供介电常数和马德"
@@ -311,7 +277,6 @@ msgstr ""
 "constants. To apply this correction mechanism, you can follow these steps to "
 "calculate the dielectric constants and Madelung constants using VASP."
 
-#: ../../index.rst:268
 msgid ""
 "在VASP中，针对完美结构的原始晶胞，可以参考下面的INCAR参数来获得介电常数 （参"
 "考 ``4-1.corr-dielectric/INCAR``）："
@@ -320,7 +285,6 @@ msgstr ""
 "can use the following INCAR parameters to obtain the dielectric constants "
 "(refer to ``4-1.corr-dielectric/INCAR``):"
 
-#: ../../index.rst:294
 msgid ""
 "等待计算完成后，可以通过 :option:`edp epsilon<epsilon>` 命令打印 OUTCAR 文件"
 "中介电常数的信息："
@@ -328,7 +292,6 @@ msgstr ""
 "Upon calculation completion, the dielectric tensor data can be extracted "
 "from OUTCAR files using the :option:`edp epsilon <epsilon>` command:"
 
-#: ../../index.rst:329
 msgid ""
 "从显示结果看到，离子贡献的介电常数为 19.55 （最后一个张量），电子贡献的介电常"
 "数为 24.48 （倒数第二个张量），因此总介电常数为 43.93。"
@@ -337,7 +300,6 @@ msgstr ""
 "constant is 19.55 (the last tensor), the electronic contribution is 24.48 "
 "(the second-to-last tensor), so the total dielectric constant is 43.93."
 
-#: ../../index.rst:333
 msgid ""
 "对于马德隆常数，我们可以在和超胞同等尺寸的晶胞中放置一个单氢原子，VASP 自洽计"
 "算后 OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp boxhyd "
@@ -352,7 +314,6 @@ msgstr ""
 "the supercell POSCAR (execute within the ``4-2.corr-hydrogen`` directory "
 "containing the original supercell POSCAR):"
 
-#: ../../index.rst:342
 msgid ""
 "运行后，得到 POSCAR.H 文件，对其进行自洽计算，通过 :option:`edp ewald "
 "<ewald>` 命令可以获得马德龙常数："
@@ -361,25 +322,20 @@ msgstr ""
 "consistent field (SCF) calculation using this file, then extract the "
 "Madelung constant with the :option:`edp ewald <ewald>` command:"
 
-#: ../../index.rst:350
 msgid "即该超胞的马德隆常数为 1.7152。"
 msgstr "The Madelung constant for this supercell is 1.7152."
 
-#: ../../index.rst:354
 msgid "后处理"
 msgstr "Post-processing"
 
-#: ../../index.rst:356
 msgid "根据前面的信息准备 `EDOPING.in`_ 文件如下："
 msgstr ""
 "Prepare the `EDOPING.in`_ file based on the previous information as follows:"
 
-#: ../../index.rst:378
 msgid "然后调用 :option:`edp cal <cal>` 命令进行计算:"
 msgstr ""
 "Then invoke the :option:`edp cal <cal>` command to perform the computation:"
 
-#: ../../index.rst:384
 msgid ""
 "运行结束后，会生成 `EDOPING.log`_ 和 `EDOPING.dat`_ 文件， 分别记录了程序的运"
 "行日志和计算结果。"
@@ -388,11 +344,9 @@ msgstr ""
 "generated, which record the program's execution log and the calculation "
 "results, respectively."
 
-#: ../../index.rst:389
 msgid "点缺陷形成能计算"
 msgstr "Point Defect Formation Energy Calculation"
 
-#: ../../index.rst:391
 msgid ""
 "在第一性原理的计算框架下，这里所有的计算都围绕能量 (或者也被称为焓值) 计算进"
 "行。 对于一个带电量为 :math:`q` 的缺陷 :math:`D` ，其形成能定义为："
@@ -401,7 +355,6 @@ msgstr ""
 "are centered around energy (also referred to as enthalpy) calculations. For "
 "a defect :math:`D` with charge :math:`q`, its formation energy is defined as:"
 
-#: ../../index.rst:394
 msgid ""
 "\\Delta H _{D} ^{q} (E _{F}) = E _{D} ^{q} - E _{perfect} - \\sum _{i} {n "
 "_{i} \\mu _{i}} + q E _{F} + E _{corr}"
@@ -409,7 +362,6 @@ msgstr ""
 "\\Delta H _{D} ^{q} (E _{F}) = E _{D} ^{q} - E _{perfect} - \\sum _{i} {n "
 "_{i} \\mu _{i}} + q E _{F} + E _{corr}"
 
-#: ../../index.rst:398
 msgid ""
 "这里，:math:`E_D^q` 表示带电量为 :math:`q` 的缺陷 :math:`D` 的超胞的能量， :"
 "math:`E_{perfect}` 表示对应的完美超胞的能量， :math:`\\mu_i` 表示形成缺陷过程"
@@ -435,11 +387,9 @@ msgstr ""
 "a function of the Fermi level. Next, we will explain the calculation of each "
 "term and the final data processing steps in detail."
 
-#: ../../index.rst:413
 msgid "缺陷晶胞构建与体系能量计算"
 msgstr "Defect Supercell Construction and System Energy Calculation"
 
-#: ../../index.rst:415
 msgid ""
 "完美晶胞的能量比较容易获得，因此我们这里将从缺陷结构的能量计算谈起。 我们首先"
 "考虑单一点缺陷的晶胞结构构建，包括空位、置换和间隙。 对于空位和间隙缺陷，通常"
@@ -459,7 +409,6 @@ msgstr ""
 "a POSCAR file. You can also use crystallography visualization tools to help "
 "generate defect structures, such as the free VESTA software."
 
-#: ../../index.rst:423
 msgid ""
 "当我们需要考虑更加复杂的缺陷时，可能的超胞结构构型数量将急剧增长， 利用结构的"
 "对称性我们能够有效减小所需的计算量。 对于比较简单的情况，我们可以利用结构可视"
@@ -487,7 +436,6 @@ msgstr ""
 "properties of point defects, neighbor analysis may provide a more direct and "
 "effective means to determine candidate composite defect configurations."
 
-#: ../../index.rst:436
 msgid ""
 "当缺陷结构构造好后， 我们可以通过 :option:`edp diff <diff>` 命令来对比原始的"
 "晶胞和当前晶胞的差异， 确保我们构造的构型是我们想要的。"
@@ -497,19 +445,15 @@ msgstr ""
 "and the current supercell to ensure that the constructed configuration is as "
 "desired."
 
-#: ../../index.rst:442
 msgid ":option:`replace` - 产生原子取代结构"
 msgstr ":option:`replace` - Generate Atomic Substitution Structure"
 
-#: ../../index.rst:443
 msgid ":option:`groupby` - 不等价原子位置分析"
 msgstr ":option:`groupby` - Non-equivalent Atom Position Analysis"
 
-#: ../../index.rst:444
 msgid ":option:`diff` - 晶体结构对比与分析"
 msgstr ":option:`diff` - Crystal Structure Comparison and Analysis"
 
-#: ../../index.rst:446
 msgid ""
 "当缺陷结构构建好后，我们将需要花费一定的时间来驰豫晶胞的结构， 从而获得收敛的"
 "能量值。而且，我们需要改变每种缺陷结构体系的电子数目， 来模拟不同的带电情况 "
@@ -521,12 +465,10 @@ msgstr ""
 "in VASP's INCAR file) is necessary to simulate different charge states, "
 "ultimately acquiring their corresponding energy values."
 
-#: ../../index.rst:452
 msgid ":option:`fixchg` - 准备不同电荷数的计算文件"
 msgstr ""
 ":option:`fixchg` - Prepare Calculation Files with Different Charge Numbers"
 
-#: ../../index.rst:454
 msgid ""
 "对于 VASP 软件，如果结构优化/自洽计算正常结束， 我们可以通过 ``grep`` 命令配"
 "合 ``tail`` 命令从 OUTCAR 读取能量:"
@@ -535,7 +477,6 @@ msgstr ""
 "calculation ends successfully, we can use the ``grep`` command combined with "
 "``tail`` to read the energy from the OUTCAR file:"
 
-#: ../../index.rst:462
 msgid ""
 "这个例子中，体系的能量值为 -755.646 eV。 也可以通过 :option:`edp energy "
 "<energy>` 命令从 OUTCAR 文件中读取能量值。"
@@ -544,15 +485,12 @@ msgstr ""
 "value can also be extracted from OUTCAR files using the :option:`edp energy "
 "<energy>` command."
 
-#: ../../index.rst:467
 msgid ":option:`energy` - 从 OUTCAR 读取体系能量值。"
 msgstr ":option:`energy` - Read System Energy Value from OUTCAR."
 
-#: ../../index.rst:470
 msgid "化学势计算与数据库使用"
 msgstr "Chemical Potential Calculation and Database Usage"
 
-#: ../../index.rst:472
 msgid ""
 "在我们完成缺陷结构的构建和相关的计算后， 应该可以注意到一个重要的事情： 缺陷"
 "结构和相应的完美结构很难保持原子数目的守恒。 为了评估缺陷的形成能，我们就必须"
@@ -587,16 +525,13 @@ msgstr ""
 "math:`\\Delta \\mu _i`; instead, we can make a range estimation and further "
 "determine its value based on specific experimental conditions."
 
-#: ../../index.rst:489
 msgid "按照我们前面的讨论，我们可以明确的知道一定有"
 msgstr ""
 "According to our previous discussion, we can clearly know that there must be"
 
-#: ../../index.rst:491
 msgid "\\Delta \\mu _i < 0"
 msgstr "\\Delta \\mu _i < 0"
 
-#: ../../index.rst:495
 msgid ""
 "另外一方面，按照能量守恒， 我们知道化合物中所有元素的内能改变量就是该化合物的"
 "形成焓 :math:`\\Delta H _{comp}` 也就是"
@@ -605,11 +540,9 @@ msgstr ""
 "in internal energy of all elements in the compound is the formation enthalpy "
 "of the compound :math:`\\Delta H _{comp}`, that is,"
 
-#: ../../index.rst:500
 msgid "\\sum _i {c_i \\cdot \\Delta \\mu _i} = \\Delta H _{comp}"
 msgstr "\\sum _i {c_i \\cdot \\Delta \\mu _i} = \\Delta H _{comp}"
 
-#: ../../index.rst:504
 msgid ""
 "这里，假设 :math:`c_1 + c_2 + \\ldots + c_N = 1`， 而且 :math:`\\Delta H "
 "_{comp}` 为平均每个原子的形成焓。 我们由此可以确定 :math:`\\Delta \\mu _i` 的"
@@ -619,11 +552,9 @@ msgstr ""
 "_{comp}` is the formation enthalpy per average atom. We can thus determine "
 "the lower bound of :math:`\\Delta \\mu _i`:"
 
-#: ../../index.rst:508
 msgid "c_i \\cdot \\Delta \\mu _i > \\Delta H _{comp}"
 msgstr "c_i \\cdot \\Delta \\mu _i > \\Delta H _{comp}"
 
-#: ../../index.rst:512
 msgid ""
 "在实验中，称 :math:`\\Delta \\mu _i = 0` 时的 :math:`\\mu _i` 为 \"rich\", "
 "称 :math:`\\Delta \\mu _i = \\Delta H _{comp} / c _i` 时的 :math:`\\mu _i` "
@@ -633,7 +564,6 @@ msgstr ""
 "`\\Delta \\mu _i = 0`, and \"poor\" when :math:`\\Delta \\mu _i = \\Delta H "
 "_{comp} / c _i`."
 
-#: ../../index.rst:516
 msgid ""
 "对于二元化合物，我们不难注意到，当一种元子的化学势为 \"rich\" 时， 另外一种原"
 "子的化学势必然为 \"poor\"。 因此，我们通常会给出两种原子分别为 \"rich\" 的情"
@@ -648,7 +578,6 @@ msgstr ""
 "from one extreme to the other, with real experimental conditions likely "
 "falling between these two extremes."
 
-#: ../../index.rst:522
 msgid ""
 "随着元素种类增加到三种时, \"poor\" 和 \"rich\" 的概念就比较复杂了， 因为当一"
 "种原子为 \"rich\" 时，另外两种原子的情况我们并不能确定， 我们不得不进行细致的"
@@ -660,7 +589,6 @@ msgstr ""
 "classification discussion to approximate the experimental environment as "
 "closely as possible."
 
-#: ../../index.rst:526
 msgid ""
 "尽管如此，这个范围依然太粗糙了。 目前，最有效的进一步缩小化学势范围的办法就是"
 "考虑加入竞争相的考虑。 按照我们前面的分析不难想到， 目标化合物中各原子的化学"
@@ -676,13 +604,11 @@ msgstr ""
 "phase in experiments. Thus, we can introduce a series of inequality "
 "constraints:"
 
-#: ../../index.rst:533
 msgid ""
 "\\sum _i {c _{j,i} \\cdot \\Delta \\mu _{j,i}} \\leq \\Delta H _{comp,j}"
 msgstr ""
 "\\sum _i {c _{j,i} \\cdot \\Delta \\mu _{j,i}} \\leq \\Delta H _{comp,j}"
 
-#: ../../index.rst:537
 msgid ""
 "这里的角标 :math:`j` 表示第 :math:`j` 竞争相。 在这一系列的不等式约束下，化学"
 "势的范围会更加精细， 可行域的形状也变得更加复杂。"
@@ -692,7 +618,6 @@ msgstr ""
 "potentials becomes more refined, and the shape of the feasible region "
 "becomes more complex."
 
-#: ../../index.rst:541
 msgid ""
 "在我们的程序设计中，摈弃了对可行域形状的讨论， 而是将注意力直接放在了每种元素"
 "的化学势取值范围上。 尤其对于多组元化合物，当元素种类为 N 时， 其可行域的维度"
@@ -712,7 +637,6 @@ msgstr ""
 "with the :option:`edp chempot <chempot>` command to directly obtain the "
 "chemical potential ranges for different elements."
 
-#: ../../index.rst:551
 msgid ""
 "手动处理大量竞争相是一个费力耗时的过程， 因此我们提供了 :option:`edp query "
 "<query>` 命令来， 能够从数据库直接获取所有竞争相结构文件。 同时，我们还可以从"
@@ -735,19 +659,16 @@ msgstr ""
 "determine the element's chemical potential range, thereby accelerating our "
 "workflow."
 
-#: ../../index.rst:565
 msgid ":option:`chempot` - 根据化合物和竞争相形成焓估计原子的化学势"
 msgstr ""
 ":option:`chempot` - Estimate Atomic Chemical Potentials Based on Compound "
 "and Competing Phase Formation Enthalpy"
 
-#: ../../index.rst:566
 msgid ":option:`query` - 从数据库获取竞争相结构和形成焓"
 msgstr ""
 ":option:`query` - Retrieve Competing Phase Structures and Formation "
 "Enthalpies from Database"
 
-#: ../../index.rst:570
 msgid ""
 "由于数据库的高通量计算缘故，形成焓精度非常有限， 因此只建议作为初步探索使"
 "用， 我们无法对数据库获取到的数据可靠性作任何保证。 此外，此功能的开发主要是"
@@ -760,17 +681,14 @@ msgstr ""
 "feature was developed primarily to facilitate communication and learning. If "
 "any infringement occurs, we will immediately disable this feature."
 
-#: ../../index.rst:578
 msgid "命令行使用参考"
 msgstr "Command Line Usage Reference"
 
-#: ../../index.rst:580
 msgid "我们可以通过 ``edp -h`` 来查看所有支持的命令， 一般命令的使用格式为："
 msgstr ""
 "You can view all supported commands using ``edp -h``. The general format for "
 "using commands is:"
 
-#: ../../index.rst:587
 msgid ""
 "这里的 ``-v`` 选项可以增加屏幕的显示信息， 而 ``-q`` 选项会尽量抑制屏幕的显示"
 "信息。 我们可以通过子命令的 ``-h`` 选项来查看支持的操作， 比如查看 :option:"
@@ -781,18 +699,15 @@ msgstr ""
 "option with subcommands to see the supported operations, for example, to "
 "check the options supported by the :option:`edp chempot <chempot>` command:"
 
-#: ../../index.rst:596
 msgid "接下来我们将介绍支持的子命令 (以字母表顺序排序):"
 msgstr ""
 "Next, we will introduce the supported subcommands (listed in alphabetical "
 "order):"
 
-#: ../../index.rst:600
 msgid "产生仅包含单氢原子的同尺寸 POSCAR 文件。"
 msgstr ""
 "Generate a same-sized POSCAR file containing only a single hydrogen atom."
 
-#: ../../index.rst:604
 msgid ""
 "根据配置文件（由 ``-i/--input`` 选项指定, 默认为 `EDOPING.in`_） 计算缺陷形成"
 "能随费米能级的变化。"
@@ -801,11 +716,9 @@ msgstr ""
 "based on the configuration file (specified by the ``-i/--input`` option, "
 "default is `EDOPING.in`_)."
 
-#: ../../index.rst:609
 msgid "求解元素化学势的范围"
 msgstr "Solve the range of elemental chemical potentials"
 
-#: ../../index.rst:611
 msgid ""
 "这里我们需要准备一个输入文件 (默认文件名为 `EDOPING.cmpot`_), 第一行需要以 "
 "'#' 号开始, 然后依次是每种元素的名称， 以空格分隔。接下来是所有考虑的化合物的"
@@ -819,7 +732,6 @@ msgstr ""
 "The first compound listed (i.e., the second line in the file) is recognized "
 "by the program as the target compound, our base phase material."
 
-#: ../../index.rst:618
 msgid ""
 "**重要提醒**: 在处理元素配比和能量时， 由于个人习惯以及不同数据库的格式规范差"
 "异， 我们需要非常小心这里的归一化相关的问题:"
@@ -828,19 +740,16 @@ msgstr ""
 "personal habits and differences in database format specifications, we need "
 "to be very careful about normalization issues:"
 
-#: ../../index.rst:622
 msgid "元素配比格式: (1) 晶胞中每种原子数目 (2) 最简原子数比 (3) 归一化比例"
 msgstr ""
 "Element Ratio Format: (1) Number of each atom in the unit cell (2) Simplest "
 "atomic ratio (3) Normalized ratio"
 
-#: ../../index.rst:623
 msgid "化合物的焓值表示: (A) 晶胞的总焓值 (B) 平均每个原子的焓值"
 msgstr ""
 "Compound Enthalpy Representation: (A) Total enthalpy of the unit cell (B) "
 "Average enthalpy per atom"
 
-#: ../../index.rst:624
 msgid ""
 "焓值的参考: (I) 绝对焓值，即计算程序中给出的焓值 (II) 形成焓，即相对与对应单"
 "质的焓值差"
@@ -849,15 +758,12 @@ msgstr ""
 "program (II) Formation enthalpy, i.e., the difference in enthalpy relative "
 "to its elemental state"
 
-#: ../../index.rst:627
 msgid "在程序内部，我们实际上是在处理类似下面的式子:"
 msgstr "Internally, the program is handling expressions like the one below:"
 
-#: ../../index.rst:629
 msgid "\\frac{1}{C} \\sum _{i} {c _{i} \\cdot \\mu _{i}} \\le \\mu"
 msgstr "\\frac{1}{C} \\sum _{i} {c _{i} \\cdot \\mu _{i}} \\le \\mu"
 
-#: ../../index.rst:633
 msgid ""
 "这里，:math:`i` 代指不同的化合物， :math:`c_i` 是输入文件的元素配比， :math:"
 "`\\mu` 是输入文件的化合物焓值； 如果使用了 ``-n`` (``--norm``) 选项，则 :"
@@ -875,7 +781,6 @@ msgstr ""
 "information, we cannot handle scenarios (2+A) and (3+A), requiring the user "
 "to perform the necessary data processing."
 
-#: ../../index.rst:644
 msgid ""
 "至于焓值的参考问题，基本原则就是： 最终求解化学势的参考就是初始给定化合物焓值"
 "的参考。 如果提供的都是 (I) 绝对的焓值，那么给出的就是绝对化学势； 如果提供的"
@@ -888,7 +793,6 @@ msgstr ""
 "values are (II) formation enthalpy, then the given chemical potentials are "
 "differences from the respective elemental states."
 
-#: ../../index.rst:649
 msgid ""
 "由于 `EDOPING.in`_ 文件需要指定绝对化学势，为了简化计算流程， 可以通过 ``--"
 "refs`` 选项指定每个单质元素的标准化学势， 从而最终获得相应的绝对化学势。在程"
@@ -900,11 +804,9 @@ msgstr ""
 "absolute chemical potentials. Internally, the program adds these reference "
 "values to the final calculated chemical potential values."
 
-#: ../../index.rst:654
 msgid "``--refs`` 选项。"
 msgstr "The ``--refs`` option."
 
-#: ../../index.rst:659
 msgid ""
 "对比两个具有相同基矢 POSCAR 的原子增减情况，可以用于检查点缺陷。 以含有 Mn 间"
 "隙的 NbFeSb 超胞为例，结果如下："
@@ -913,25 +815,20 @@ msgstr ""
 "to identify point defects. For example, check Mn interstitials in a NbFeSb "
 "supercell:"
 
-#: ../../index.rst:669
 msgid "这里，``i`` 表示间隙型缺陷（``v`` 表示空位，``s`` 表示取代）。"
 msgstr ""
 "Here, ``i`` stands for interstitial defect (``v`` stands for vacancy, ``s`` "
 "for substitution)."
 
-#: ../../index.rst:673
 msgid "从 OUTCAR 文件读取最后一步的能量。"
 msgstr "Read the final step energy from the OUTCAR file."
 
-#: ../../index.rst:677
 msgid "从 OUTCAR 文件读取并打印各项介电常数。"
 msgstr "Read and print the dielectric constants from the OUTCAR file."
 
-#: ../../index.rst:681
 msgid "从 OUTCAR 文件读取并打印马德龙常数。"
 msgstr "Read and print the Madelung constant from the OUTCAR file."
 
-#: ../../index.rst:685
 msgid ""
 "自动生成带电缺陷的计算文件夹，通过 ``-i/--inputdir`` 选项指定不带电结构自洽计"
 "算的文件夹（默认为 ``charge_0``）。这里实际上会从 POTCAR 文件计算体系的净电子"
@@ -948,7 +845,6 @@ msgstr ""
 "calculation folder first, run this command to generate the charged defect "
 "folders, and then submit them in batches."
 
-#: ../../index.rst:693
 msgid ""
 "利用径向分布函数对 POSCAR 中的原子进行分组，可以用于寻找不等价位置的复合缺"
 "陷。 比如，我们想在含有 Mn 间隙缺陷的 NbFeSb 超胞中再引入一个 Fe 空位。 在超"
@@ -965,7 +861,6 @@ msgstr ""
 "atoms should exhibit similar defect behavior. Assume the following POSCAR "
 "file is of a NbFeSb supercell containing an Mn interstitial:"
 
-#: ../../index.rst:745
 msgid ""
 "可以看到，32 个 Fe 原子可以被分成 4 组。元组内的三项分别是距离、原子类别和数"
 "量。 比如， Fe1, Fe2, Fe9, Fe11, Fe17, Fe21 都属于组 #1， 它们在 12.6 "
@@ -981,14 +876,12 @@ msgstr ""
 "nearest Mn atom. To focus on Mn atoms clearly, you can use the ``--grep Mn`` "
 "option to keep only lines with Mn atoms:"
 
-#: ../../index.rst:776
 msgid ""
 "从材料数据库 (目前只支持 `OQMD <https://www.oqmd.org>`_) 获取竞争相的信息"
 msgstr ""
 "Retrieve competing phase information from a materials database (currently "
 "only supports `OQMD <https://www.oqmd.org>`_)."
 
-#: ../../index.rst:778
 msgid ""
 "使用时确保网络畅通，且受制于数据库的访问频率限制， 不建议在短时间内反复多次使"
 "用。 通常情况下，可以先到数据库官网进行查询， 具有更好的可视化结果，然后再通"
@@ -1000,7 +893,6 @@ msgstr ""
 "database website for better visualization results, and then use this command "
 "to retrieve the data."
 
-#: ../../index.rst:783
 msgid ""
 "通过该命令我们可以得到用于化学势估计的输入数据文件 `EDOPING.cmpot`_ , 其中给"
 "定的最简原子比和化合物平均每个原子的形成焓。因此， 为了得到正确的化学势 :"
@@ -1014,7 +906,6 @@ msgstr ""
 "to add the ``-n`` (``--norm``) option when using :option:`edp chempot "
 "<chempot>`."
 
-#: ../../index.rst:791
 msgid ""
 "替换 POSCAR 文件中的原子。通常需要两个位置变量以此表示旧的原子和新的原子。 特"
 "别地，当新原子指定为 ``Vac`` 时表示删除原子，构造空位缺陷； 当旧原子指定为 "
@@ -1028,20 +919,17 @@ msgstr ""
 "interstitial defect. For interstitial defects, the position of the "
 "interstitial atom must be specified with the ``-p/--position`` option."
 
-#: ../../index.rst:796
 msgid "例子1：将 POSCAR 中的 Fe2 替换为 Co，并将新结构保存为 POSCAR-sub ："
 msgstr ""
 "Example 1: Replace ``Fe2`` in the POSCAR file with ``Co``, and save the new "
 "structure as POSCAR-sub:"
 
-#: ../../index.rst:802
 msgid ""
 "例子2：在 POSCAR 中构建 Fe2 位置的空位缺陷，并将新结构保存为 POSCAR-vac ："
 msgstr ""
 "Example 2: Create a vacancy defect at the ``Fe2`` position in the POSCAR "
 "file, and save the new structure as POSCAR-vac:"
 
-#: ../../index.rst:808
 msgid ""
 "例子3：在 POSCAR 中 (0.125, 0.125, 0.125) 处插入 Co 间隙原子，并将新结构保存"
 "为 POSCAR-int ："
@@ -1049,25 +937,20 @@ msgstr ""
 "Example 3: Insert a ``Co`` interstitial atom at (0.125, 0.125, 0.125) in the "
 "POSCAR file, and save the new structure as POSCAR-int:"
 
-#: ../../index.rst:814
 msgid "可以通过 :option:`edp diff <diff>` 检查 POSCAR 文件的变化："
 msgstr ""
 "You can use :option:`edp diff <diff>` to check the changes in the POSCAR "
 "file:"
 
-#: ../../index.rst:820
 msgid "支持通过 ``Vac`` 字符构造空位缺陷和间隙缺陷。"
 msgstr "Support the ``Vac`` keyword for creating vacancy/interstitial defects."
 
-#: ../../index.rst:824
 msgid "输入/输出文件"
 msgstr "Input/Output Files"
 
-#: ../../index.rst:827
 msgid "EDOPING.in"
 msgstr "EDOPING.in"
 
-#: ../../index.rst:829
 msgid ""
 "这是 :option:`edp cal <cal>` 命令的输入文件，用于指定点实施缺陷计算的一些配"
 "置。 关键字推荐使用大写字母（大小写不敏感特性还在实验中）。``#`` 号开头的行是"
@@ -1080,19 +963,16 @@ msgstr ""
 "ignored by the program. Content after ``#`` within a line will also be "
 "ignored."
 
-#: ../../index.rst:835
 msgid "完美基体超胞自洽计算的目录路径。"
 msgstr ""
 "Directory path for the self-consistent calculation of the perfect substrate "
 "supercell."
 
-#: ../../index.rst:839
 msgid "缺陷超胞自洽计算的顶级目录路径，其中包含不同带电情况自洽计算的子目录。"
 msgstr ""
 "Top-level directory path for self-consistent calculations of defect "
 "supercells, containing subdirectories for different charge conditions."
 
-#: ../../index.rst:843
 msgid ""
 "增减原子的化学势 :math:`\\mu_i` （ :math:`= \\mu _i^\\Theta + \\Delta \\mu "
 "_i` ）， 以空格分隔，是一个包含偶数个值的序列，交替表示移除的加入的原子的化学"
@@ -1104,7 +984,6 @@ msgstr ""
 "potential of removed and added atoms. For example, for Nb substituted by Ta "
 "(i.e., removing Nb atom and adding Ta atom), it is set to:"
 
-#: ../../index.rst:851
 msgid ""
 "特别地，对于间隙和空位，可以认为同时地移除或者加入一个化学势为 0 的原子， 比"
 "如对于 Nb 空位缺陷："
@@ -1113,11 +992,9 @@ msgstr ""
 "chemical-potential atom is simultaneously removed or added. For example, for "
 "Nb vacancy defects:"
 
-#: ../../index.rst:858
 msgid "对于 Nb 间隙缺陷："
 msgstr "For Nb interstitial defects:"
 
-#: ../../index.rst:866
 msgid ""
 "缺陷原子的电荷值，以空格分隔。注意，电子本身带负电，这意味着在 VASP 的 INCAR "
 "文件中，增加 NELECT 值对应更负的电荷值。"
@@ -1126,7 +1003,6 @@ msgstr ""
 "themselves are negatively charged, which means in VASP's INCAR file, "
 "increasing the NELECT value corresponds to a more negative charge value."
 
-#: ../../index.rst:871
 msgid ""
 "每个电荷值（:option:`VALENCE`）自洽计算的子目录名称，默认值为 ``auto`` ， 通"
 "过组合 :option:`PREFIX` 和 :option:`VALENCE` 自动生成， 这里价态会保留前置"
@@ -1145,7 +1021,6 @@ msgstr ""
 "be defined with space separation (note: spaces within names are currently "
 "unsupported)."
 
-#: ../../index.rst:880
 msgid ""
 "指定含有缺陷的超胞所在的目录，主要用于和完美晶胞对比确认缺陷位置。 默认值为 "
 "``auto`` ，程序自动从 0 价缺陷目录中读取缺陷超胞结构。 如果提供，则程序会在 :"
@@ -1158,17 +1033,14 @@ msgstr ""
 "provided, the program will read the POSCAR file of the defective supercell "
 "under the :option:`DDNAME` / :option:`DREFER` directories."
 
-#: ../../index.rst:885
 msgid ":option:`DREFER` 参数。"
 msgstr "The :option:`DREFER` keyword."
 
-#: ../../index.rst:890
 msgid "不同电荷值的自洽计算子目录的前缀，默认值为 ``charge_`` 。"
 msgstr ""
 "The prefix for subdirectories of self-consistent calculations with different "
 "charge values, default is ``charge_``."
 
-#: ../../index.rst:894
 msgid ""
 "价带顶能量。默认值为 ``inf`` ，程序自动从 :option:`DDEFECT` 目录下的 "
 "EIGENVAL 文件读取。"
@@ -1177,7 +1049,6 @@ msgstr ""
 "automatically reads it from the EIGENVAL file in the :option:`DDEFECT` "
 "directory."
 
-#: ../../index.rst:899
 msgid ""
 "导带底能量。默认值为 ``inf`` ，程序自动从 :option:`DDEFECT` 目录下的 "
 "EIGENVAL 文件读取。"
@@ -1186,7 +1057,6 @@ msgstr ""
 "automatically reads it from the EIGENVAL file in the :option:`DDEFECT` "
 "directory."
 
-#: ../../index.rst:904
 msgid ""
 "完美晶胞的总能量。默认值为 ``inf`` ，程序自动从 :option:`DPERFECT` 目录下的 "
 "OUTCAR 文件读取。"
@@ -1195,7 +1065,6 @@ msgstr ""
 "automatically reads it from the OUTCAR file in the :option:`DPERFECT` "
 "directory."
 
-#: ../../index.rst:909
 msgid ""
 "完美晶胞的体积。默认值为 ``inf`` ，程序自动从 :option:`DPERFECT` 目录下的 "
 "OUTCAR 文件读取。"
@@ -1204,19 +1073,16 @@ msgstr ""
 "automatically reads it from the OUTCAR file in the :option:`DPERFECT` "
 "directory."
 
-#: ../../index.rst:914
 msgid "马德龙常数。默认值为 ``0`` ，表示禁用镜像电荷修正项。"
 msgstr ""
 "Madelung constant. Default is ``0``, indicating that the image charge "
 "correction term is disabled."
 
-#: ../../index.rst:918
 msgid "介电常数。默认值为 ``inf`` ，表示禁用镜像电荷修正项。"
 msgstr ""
 "Dielectric constant. Default is ``inf``, indicating that the image charge "
 "correction term is disabled."
 
-#: ../../index.rst:922
 msgid ""
 "镜像电荷修正项可以改写为 :math:`E _{\\text{IC}} = C _{\\text{IC}} \\cdot q "
 "^2`, 可以直接通过 ICCOEF 指定系数 :math:`C _{\\text{IC}}` 。默认值为 "
@@ -1227,7 +1093,6 @@ msgstr ""
 "specified via ICCOEF. The default value ``inf`` indicates automatic "
 "calculation based on :option:`EPSILON` and :option:`EWALD`, given by:"
 
-#: ../../index.rst:926
 msgid ""
 "C _{\\text{IC}} = \\left[ 1 - \\frac{1}{3} \\left( 1-\\frac{1}{\\varepsilon} "
 "\\right) \\right]\n"
@@ -1237,7 +1102,6 @@ msgstr ""
 "\\right) \\right]\n"
 "          \\frac{E _{wald}}{2 \\varepsilon}"
 
-#: ../../index.rst:933
 msgid ""
 "电势对齐修正项可以改写为 :math:`E _{\\text{PA}} = q \\cdot \\Delta V`, 可以直"
 "接通过 PADIFF （和 :option:`VALENCE` 长度相等的列表）指定电势差 :math:"
@@ -1251,7 +1115,6 @@ msgstr ""
 "electrostatic potential difference at the farthest point from the defect in "
 "OUTCAR files."
 
-#: ../../index.rst:940
 msgid ""
 "能带填充修正机制的类型。默认值为 ``0``，表示禁用能带填充修正项。 ``1`` 表示仅"
 "修正导带，``-1`` 表示仅修正价带，``2`` 表示同时修正导带和价带。"
@@ -1261,37 +1124,30 @@ msgstr ""
 "only the conduction band, ``-1`` means correcting only the valence band, and "
 "``2`` means correcting both the conduction and valence bands."
 
-#: ../../index.rst:945
 msgid "费米能级的下边界（以 :option:`EVBM` 为基准），默认值为 ``-1`` 。"
 msgstr ""
 "Lower bound of the Fermi level (relative to :option:`EVBM`), default is "
 "``-1``."
 
-#: ../../index.rst:949
 msgid "费米能级的上边界（以 :option:`EVBM` 为基准），默认值为 ``2`` 。"
 msgstr ""
 "Upper bound of the Fermi level (relative to :option:`EVBM`), default is "
 "``2``."
 
-#: ../../index.rst:953
 msgid "费米能级采样点数，默认值为 ``1001`` 。"
 msgstr "Number of sampling points for the Fermi level, default is ``1001``."
 
-#: ../../index.rst:956
 msgid "EDOPING.log"
 msgstr "EDOPING.log"
 
-#: ../../index.rst:958
 msgid ":option:`edp cal <cal>` 命令的运行日志，和屏幕输出一样。"
 msgstr ""
 "Execution log for the :option:`edp cal <cal>` command, same as the screen "
 "output."
 
-#: ../../index.rst:961
 msgid "EDOPING.dat"
 msgstr "EDOPING.dat"
 
-#: ../../index.rst:963
 msgid ""
 ":option:`edp cal <cal>` 命令的计算结果文件，包含不同电荷值缺陷的形成能。 它包"
 "含 ``Nq + 3`` 列，以空格分隔，第一列是费米能级（以 :option:`EVBM` 为基准）， "
@@ -1308,11 +1164,9 @@ msgstr ""
 "comment row containing column names, and the last two values represent the "
 "supercell volume and degeneracy factor. An example is as follows:"
 
-#: ../../index.rst:983
 msgid "EDOPING.cmpot"
 msgstr "EDOPING.cmpot"
 
-#: ../../index.rst:985
 msgid ""
 ":option:`edp chempot <chempot>` 命令的输入文件，用于指定化合物的配比和形成"
 "能。 以下面的 Mn 掺杂 NbFeSb 体系为例解释文件格式： 第一行以 ``#`` 号开始，包"
@@ -1329,11 +1183,9 @@ msgstr ""
 "For more details on the normalization of elemental ratios and formation "
 "energies, see the :option:`edp chempot <chempot>` command."
 
-#: ../../index.rst:1007
 msgid "文章引用"
 msgstr "How to Cite"
 
-#: ../../index.rst:1009
 msgid ""
 "**如果此软件以及文档给您的工作提供了帮助， 请引用我们的文章，这对我们很重要，"
 "非常感谢！**"
@@ -1341,7 +1193,6 @@ msgstr ""
 "**If this software and documentation have helped you in your work, please "
 "cite our article. This is very important to us. Thank you very much!**"
 
-#: ../../index.rst:1012
 msgid ""
 "[1] J. Zhu, J. Li, Z. Ti, L. Wang, Y. Shen, L. Wei, X. Liu, X. Chen, P. Liu, "
 "J. Sui, Y. Zhang, eDoping: A high-throughput software package for evaluating "
@@ -1355,7 +1206,6 @@ msgstr ""
 "*Materials Today Physics*, 55 (2025) 101754, https://doi.org/10.1016/j."
 "mtphys.2025.101754."
 
-#: ../../index.rst:1018
 msgid ""
 "[2] J. Li, J. Zhu, Z. Ti, W. Zhai, L. Wei, C. Zhang, P. Liu, Y. Zhang, "
 "Synergistic defect engineering for improving n-type NbFeSb thermoelectric "
