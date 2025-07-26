@@ -23,12 +23,16 @@ all: zh en
 # Chinese build
 zh:
 	@$(SPHINXBUILD) -M latexpdf "$(SOURCEDIR)" "$(BUILDDIR)" && \
+	 VERSION=$$(grep -m1 -oP '(?<=\\release{).*(?=})' "$(BUILDDIR)/latex/edoping.tex") && \
+	 cp "$(BUILDDIR)/latex/edoping.pdf" "$(BUILDDIR)/latex/eDoping_v$${VERSION}.pdf" && \
 	 $(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)"
 
 # English build
 en:
 	@$(SPHINXBUILD) -b latex "$(SOURCEDIR)" "$(BUILDDIR)/latex/en" -D language=en && \
 	 make -C "$(BUILDDIR)/latex/en" all-pdf && \
+	 VERSION=$$(grep -m1 -oP '(?<=\\release{).*(?=})' "$(BUILDDIR)/latex/en/edoping.tex") && \
+	 cp "$(BUILDDIR)/latex/en/edoping.pdf" "$(BUILDDIR)/latex/en/eDoping_v$${VERSION}.pdf" && \
 	 $(SPHINXBUILD) -b html "$(SOURCEDIR)" "$(BUILDDIR)/html/en" -D language=en
 
 .PHONY: help all zh en Makefile

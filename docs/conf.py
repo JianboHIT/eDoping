@@ -22,6 +22,10 @@ project = 'eDoping'
 author = __author__
 release = __version__
 copyright = '2023-{}, {}'.format(__date__.split('-')[0], __author__)
+rst_prolog = f"""
+.. |manual_pdf_zh| replace:: :download:`{project}_v{release}.pdf <_build/latex/{project}_v{release}.pdf>`
+.. |manual_pdf_en| replace:: :download:`{project}_v{release}.pdf <_build/latex/en/{project}_v{release}.pdf>`
+"""
 
 # -- General configuration ---------------------------------------------------
 
