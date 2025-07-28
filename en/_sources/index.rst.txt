@@ -4,7 +4,7 @@ eDoping 手册
 
 .. only:: html
 
-   PDF 文件下载链接：:download:`edoping.pdf <_build/latex/edoping.pdf>`
+   **[切换语言:** 简体中文 \| `English <en/index.html>`_ **]** (下载 PDF 手册: |manual_pdf_zh|)
 
 .. only:: latex
 
