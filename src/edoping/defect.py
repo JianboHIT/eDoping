@@ -15,6 +15,7 @@
 
 import sys, os, time
 import numpy as np
+from itertools import product
 from collections import defaultdict
 from .misc import Logger, filein, filetrans, filedata
 from .misc import __prog__, __author__, __version__, __date__, __description__
@@ -623,6 +624,77 @@ def cal_rdf(cell, atom_idx, nhead=30, npad=2, ndigits=1):
             dt.append(key+(len(dist[key]), ))   # key: (loc, elt, Ncount)
         dists[tuple(dt)].append(f'{atom}{idx}') # value: label of centre atoms 
     return dists
+
+def cubicize(cell, nref=100):
+    '''
+    Solve the transformation matrix for building an almost cubic cell.
+
+    Parameters
+    ----------
+    cell : Cell
+        A Cell object.
+    nref : int, optional
+        The reference atom count, by default 100.
+
+    Returns
+    -------
+    ndarray of shape (3, 3)
+        The transformation matrix.
+    int
+        The number of real atoms in the supercell.
+    '''
+    natom = cell.get_natom()
+    scale = nref / natom
+    det = np.linalg.det(cell.basis)
+    rec = np.linalg.inv(cell.basis)
+    dim = np.rint(rec * np.power(scale * det, 1/3)).astype('int64')
+    nreal = np.rint(natom * np.linalg.det(dim)).astype('int64')
+    return dim, nreal
+
+def supercell(cell, transform):
+    '''
+    Create a supercell from the transformation matrix.
+
+    Parameters
+    ----------
+    cell : Cell
+        A Cell object.
+    transform : array-like, shape (3, 3)
+        Row-wise transformation matrix (integer elements) defining the supercell.
+
+    Returns
+    -------
+    Cell
+        The supercell.
+    '''
+    trans_mat = np.asarray(transform)
+    if trans_mat.shape != (3, 3):
+        raise ValueError('Transformation matrix must be a 3x3 matrix.')
+    if np.any(np.abs(np.round(trans_mat) - trans_mat) > 1e-4):
+        raise ValueError('All elements in transformation matrix must be integers.')
+    scale = np.round(np.linalg.det(trans_mat)).astype('int64')
+    trans_rev = np.linalg.inv(trans_mat)
+
+    vertices = np.array(list(product([0, 1], repeat=3)))    # shape: (8, 3)
+    trans_vert = vertices @ trans_mat
+    lower = np.floor(np.min(trans_vert, axis=0))
+    upper = np.ceil(np.max(trans_vert, axis=0))
+    cc = product(*[np.arange(a, b) for a, b in zip(lower, upper)])
+    cc = sorted(cc, key=lambda x: np.linalg.norm(x, ord=2)) # sort by L2 norm
+    cc = np.reshape(cc, (-1, 1, 3))                         # shape: (Nsuper, 1, 3)
+
+    scell = Cell()  # supercell
+    scell.basis = trans_mat @ cell.basis
+    for atom, poss in cell.sites.items():
+        num = len(poss) * scale
+        poss2 = np.reshape((np.array(poss) + cc) @ trans_rev, (-1, 3))
+        index_inner = np.all((poss2 >= 0) & (poss2 < 1), axis=1)
+        poss2 = poss2[index_inner]
+        num2 = len(poss2)
+        if num2 != num:
+            raise ValueError(f'Supercell has {num2} {atom} atoms, but {num} expected.')
+        scell.sites[atom] = poss2
+    return scell
 
 def diff_cell(cell_1, cell_2, prec=0.2):
         '''
