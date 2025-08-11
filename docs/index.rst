@@ -6,6 +6,12 @@ eDoping 手册
 
    **[切换语言:** 简体中文 \| `English <en/index.html>`_ **]** (下载 PDF 手册: |manual_pdf_zh|)
 
+   .. toctree::
+      :caption: 相关文档
+      :hidden:
+
+      zintl
+
 .. only:: latex
 
    .. image:: _static/logo.png
