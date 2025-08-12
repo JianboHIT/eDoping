@@ -36,7 +36,7 @@ def fd(x):
     '''
     Reduced Fermi-Dirac distribution fd = 1/(1+exp(x))
     '''
-    u = np.tanh(x)
+    u = np.tanh(x/2)
     return (1-u)/2
 
 
@@ -85,7 +85,7 @@ def scfermi_bs(t, doscar='DOSCAR', *filenames):
         '''
         Q2 = n-p
         '''
-        Q2 = trapezoid(dosE*fd((dosE-xfermi)/kbT), dosE) - Nele
+        Q2 = trapezoid(dosV*fd((dosE-xfermi)/kbT), dosE) - Nele
         return Q2
     
     fqtot = lambda x: fq2(x) - fq1(x)     # net ele, increase with Efermi
