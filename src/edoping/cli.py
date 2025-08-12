@@ -17,16 +17,9 @@
 
 import argparse
 import re
-from .defect import formation, read_H0, cal_trans, cal_rdf, \
-                    diff_cell, disp_diffs, move_pos, write_bsenergy
+
 from .misc import filein, filecmpot, filetrans, filedata, \
                   __prog__, __description__, __version__, __ref__
-from .dft import Cell, read_energy, read_ewald, read_volume, \
-                 read_evbm, read_evbm_from_ne, read_epsilon, read_zval, \
-                 fix_charge
-from .fermi import scfermi, scfermi_fz, equ_defect
-from .query import query_oqmd, struct2vasp
-from .cpot import pminmax
 
 
 def cmd(arg=None):
@@ -162,8 +155,10 @@ def cmd(arg=None):
     if args.task is None:
         parser.print_help()
     elif args.task == 'cal':
+        from .defect import formation
         formation(inputlist=args.input)
     elif args.task == 'energy':
+        from .dft import read_energy
         value = read_energy(outcar=args.filename, average=args.ave)
         unit = 'eV/atom' if args.ave else 'eV/cell'
         if is_quiet:
@@ -171,18 +166,21 @@ def cmd(arg=None):
         else:
             print('Final energy: {:.4f} {}'.format(value, unit))
     elif args.task == 'ewald':
+        from .dft import read_ewald
         value = read_ewald(outcar=args.filename)
         if is_quiet:
             print('{:.4f}'.format(value))
         else:
             print('Final (absolute) Ewald: {:.4f}'.format(value))
     elif args.task == 'volume':
+        from .dft import read_volume
         value = read_volume(outcar=args.filename)
         if is_quiet:
             print('{:.4f}'.format(value))
         else:
             print('Final volume of cell: {:.4f}'.format(value))
     elif args.task == 'epsilon':
+        from .dft import read_epsilon
         # read_epsilon(outcar='OUTCAR', isNumeric=False)
         pf = '{:12.4f}'
         if is_quiet:
@@ -199,6 +197,7 @@ def cmd(arg=None):
                 for value in values:
                     print(value)
     elif args.task == 'evbm':
+        from .dft import read_evbm, read_evbm_from_ne
         if args.ratio is not None:
             vb, cb, gp = read_evbm(eigenval=args.filename, pvalue=args.ratio)
         else:
@@ -218,6 +217,7 @@ def cmd(arg=None):
             print(('CBM: ' + pf).format(cb[0]))
             print(('GAP: ' + pf).format(gp))
     elif args.task == 'fixchg':
+        from .dft import Cell, read_zval, fix_charge
         # Read ZVAL from POTCAR && Check consistency with POSCAR
         if is_detail:
             print('Parsing number of valence electrons from POTCAR and POSCAR in {}...'.format(args.inputdir))
@@ -254,6 +254,7 @@ def cmd(arg=None):
             if not is_quiet:
                 print('Produce directory {} successfully.'.format(outdir))
     elif args.task == 'boxhyd':
+        from .dft import Cell
         pos = Cell(poscar=args.input)
         poshyd = Cell()
         poshyd.basis = pos.basis
@@ -263,6 +264,8 @@ def cmd(arg=None):
             dsp='The new POSCAR is saved to {}'
             print(dsp.format(args.output))
     elif args.task == 'move':
+        from .dft import Cell
+        from .defect import move_pos
         pos = Cell(poscar=args.input)
         index = args.index - 1   # convert common 1-start to pythonic 0-start
         atom, idx, site = list(pos.all_pos())[index]
@@ -279,6 +282,7 @@ def cmd(arg=None):
             dsp='The new POSCAR is saved to {}'
             print(dsp.format(args.output))
     elif args.task == 'replace':
+        from .dft import Cell
         poscar = Cell(poscar=args.input)
         old = re.match(r'([a-zA-Z]+)(\d*)', args.old)
         if old:
@@ -316,6 +320,8 @@ def cmd(arg=None):
             label_new = '{}'.format(atom_new['atom'])
             print(dsp.format(label_old, label_new, args.output))
     elif args.task == 'groupby':
+        from .dft import Cell
+        from .defect import cal_rdf
         pos = Cell(poscar=args.filename)
         Natom = len(pos.sites[args.atom])
         kwargs = {
@@ -340,6 +346,8 @@ def cmd(arg=None):
                 if (not args.grep) or ("'{}'".format(args.grep) in line): print(line)
             print('===={}'.format('='.join(['='*18 for _ in headers])))
     elif args.task == 'diff':
+        from .dft import Cell
+        from .defect import diff_cell, disp_diffs
         c1 = Cell(poscar=args.filename1)
         c2 = Cell(poscar=args.filename2)
         diffs = diff_cell(c1, c2, prec=args.prec)
@@ -347,6 +355,7 @@ def cmd(arg=None):
                    full_list=is_detail,
                    with_dist=args.distance)
     elif args.task == 'query':
+        from .query import query_oqmd, struct2vasp
         elmt_comp = re.findall(r'[A-z][a-z]*', args.compound)
         elmt_extra = re.findall(r'[A-z][a-z]*', args.extra)
         elmt_all = list(elmt_comp)
@@ -412,6 +421,7 @@ def cmd(arg=None):
                   ' might prepare the file manually.\n'
                   '***************************************************************\n')
     elif args.task == 'chempot':
+        from .cpot import pminmax
         # pminmax(filename, objcoefs=None)
         # return (name, x0, status, msg),labels
         results,labels = pminmax(args.filename, 
@@ -450,6 +460,7 @@ def cmd(arg=None):
                 else:
                     print()
     elif args.task == 'trlevel':
+        from .defect import read_H0, cal_trans, write_bsenergy
         data, volume = read_H0(args.filename)
         q, H0 = data[:,0].astype('int32'), data[:,1]
         result, bsdata = cal_trans(q, H0, args.emin, args.emax, 
@@ -468,6 +479,7 @@ def cmd(arg=None):
                 print('Save formation eneryg data to {}.'.format(args.output))
         
     elif args.task == 'scfermi':
+        from .fermi import scfermi
         # scfermi(t, *filenames, doscar='DOSCAR', Evbm=0, detail=False)
         out = scfermi(args.temperature, 
                       *args.filename, 
@@ -491,6 +503,7 @@ def cmd(arg=None):
             print('{} : {:.3f}'.format(dsp[0], EF))
             print('{} : {:.4E}'.format(dsp[1], Ne))
     elif args.task == 'fzfermi':
+        from .fermi import scfermi_fz
         # scfermi_fz(t, conc, charge, volume, doscar='DOSCAR', Evbm=0)
         out = scfermi_fz(t=args.temperature, 
                          conc=args.conc, 
@@ -516,6 +529,7 @@ def cmd(arg=None):
             print(dsp[0].format(DH0, args.charge))
             print(dsp[1].format(Ef, DHq))
     elif args.task == 'equi':
+        from .fermi import equ_defect
         # equ_defect(t, *filenames, efermi=(0, ), detail=False)
         # not_detail: header, (Ef, q_eff, H_eff)
         #  is_detail: header, (Ef, q_eff, H_eff, Ntot, Nq)
