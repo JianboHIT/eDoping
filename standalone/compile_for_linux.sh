@@ -27,7 +27,7 @@ ls src/* | tee pkg_files
 
 for fn in $(cat pkg_files | awk -F '[/.]' '{print $2}'); do
   for fp in $(cat pkg_files | awk -F '[/.]' '{print $2}'); do
-    sed -i "s/^from .$fp/from  $fp/g" src/$fn.py
+    sed -i "s/from .$fp/from  $fp/g" src/$fn.py
   done
 done
 
