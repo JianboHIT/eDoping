@@ -31,14 +31,14 @@ eDoping 手册
 程序安装
 --------
 
-eDoping 程序包基于 python3 软件，确保它已经被正确安装。
-如果可以联网，最简单的方式就是通过 pip 安装 eDoping 程序包:
+eDoping 程序包基于 ``python3`` 软件，确保它已经被正确安装。
+如果可以联网，最简单的方式就是通过 ``pip`` 安装（或更新） eDoping 程序包:
 
 .. code-block:: bash
 
-   $ pip install eDoping
+   $ pip install -U eDoping
 
-如果无法联网或者对源代码感兴趣，程序包从 Github 下载，或者利用 git :
+如果无法联网或者对源代码感兴趣，程序包从 Github 下载，或者利用 ``git`` :
 
 .. code-block:: bash
 
@@ -589,7 +589,7 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
 
 .. code-block:: bash
 
-   $ edp [-v| -q] <command> --option1 --option2 [inputfile]
+   $ edp [-v|-q] <command> --option1 --option2 [inputfile]
 
 这里的 ``-v`` 选项可以增加屏幕的显示信息，
 而 ``-q`` 选项会尽量抑制屏幕的显示信息。
@@ -811,6 +811,55 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
 
    .. versionadded:: 0.4
       支持 Materials Project 后端数据库。
+
+.. option:: refine
+
+   对晶体结构进行调整，目前支持的操作如下：
+
+   - ``-t/--transform``: 根据给定的变换矩阵进行扩胞。变换矩阵通常是一个 3x3 
+     的整数矩阵，输入时 9 个组元以空格分隔排列成一行，比如 ``-t "2 0 0 0 2 0 0 0 2"`` 。
+     该选项也支持 3 个元素和 1 个元素的格式，分别表示对角矩阵和缩放的单位矩阵。
+     下面的三条命令是等价的：
+
+     .. code-block:: bash
+
+        $ edp refine -t "2 0 0 0 2 0 0 0 2"
+        $ edp refine -t "2 2 2"
+        $ edp refine -t 2
+
+     此外，如果不提供值，软件会尝试从当前目录下的 ``TRANSMAT.in`` 文件读取变换矩阵
+     （兼容 `vaspkit <https://vaspkit.com/>`_ 软件格式）：
+
+     .. code-block:: bash
+
+        $ edp refine -t
+
+     .. important::
+
+        eDoping 软件内部使用行向量矩阵的表示晶胞基矢，这与 VASP、Quantum Espresso、
+        vaspkit 等软件保持一致，但是与 VESTA、phonopy 等软件采用的列向量形式不同。
+        它们的转变矩阵相差一个转置操作。
+
+   - ``-c/--cubicize``: 在给定的原子数附近进行立方体扩胞。比如：
+
+     .. code-block:: bash
+
+        $ edp refine -c 100
+
+     这表示寻找原子数靠近 100 且最接近立方体的超胞。
+
+   - ``-d/--displace``: 移动晶胞中的原子。通常需要提供四个参数，
+     依次表示需要移动的原子索引，沿着笛卡尔坐标系 x/y/z 方向的位移量
+     （以埃为单位，注意：**不是分数坐标**）。比如：
+
+     .. code-block:: bash
+
+        $ edp refine -d Sb3 0 0 0.1
+
+     这表示将第 3 个 Sb 原子沿着 z 方向移动 0.1 埃。
+
+   .. versionadded:: 0.4
+      支持 ``refine`` 命令。
 
 .. option:: replace
 
