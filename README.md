@@ -12,11 +12,11 @@ A high-throughput software package for evaluating point defects.
 
 The `eDoping` package is built on Python3, so please ensure that it is 
 properly installed on your system. If the network is available, 
-the most efficient way to install the eDoping package is via 
+the most efficient way to install (or update) the eDoping package is via 
 `pip` (or `pip3`):
 
 ```
-pip install eDoping
+pip install -U eDoping
 ```
 
 If you do not have internet access or are interested in the source code,

@@ -9,11 +9,11 @@
 ## 安装
 
 `eDoping` 程序包基于 python3 软件，确保它已经被正确安装。
-如果可以联网，最简单的方式就是通过 `pip` (或 `pip3`) 安装
+如果可以联网，最简单的方式就是通过 `pip` (或 `pip3`) 安装(或更新)
 eDoping 程序包:
 
 ```
-pip install eDoping
+pip install -U eDoping
 ```
 
 如果无法联网或者对源代码感兴趣，可以从 Github 下载程序包，或者利用 git :
