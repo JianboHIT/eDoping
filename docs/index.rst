@@ -67,7 +67,7 @@ eDoping 程序包基于 ``python3`` 软件，确保它已经被正确安装。
    $ edp -h
    usage: edp [-h] [-v] [-q] Subcommand ...
 
-   Point Defect Formation Energy Calculation - v0.3.1
+   Point Defect Formation Energy Calculation - v0.4.0
 
    options:
      -h, --help       show this help message and exit
@@ -84,7 +84,7 @@ eDoping 程序包基于 ``python3`` 软件，确保它已经被正确安装。
        evbm           Read VBM from EIGENVAL
        fixchg         Produce charge-fixed inputs
        boxhyd         Place a single hydrogen atom in the box
-       move           Move atomic position in cell
+       refine         Refine the unit cell
        replace        Replace atoms X by Y
        groupby        Group atoms by radial distribution function
        diff           Show difference between two POSCAR
@@ -115,7 +115,7 @@ eDoping 程序包基于 ``python3`` 软件，确保它已经被正确安装。
    options:
      -h, --help            show this help message and exit
      -p fa fb fc, --position fa fb fc
-                           Position of new interstitial atom
+                           Fractional coordinates of new interstitial atom
      -i FILENAME, --input FILENAME
                            Input filename(default: POSCAR)
      -o FILENAME, --output FILENAME
