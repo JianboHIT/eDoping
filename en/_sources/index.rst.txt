@@ -24,21 +24,21 @@ eDoping 手册
 * 流程化带电点缺陷的形成能计算
 * 完全基于命令行，无需编程和复杂的脚本
 * 可以进行多组元体系的元素化学势估计
-* 基于 OQMD 的竞争相结构和形成能获取
+* 从 OQMD/MaterialsProject 快速获取竞争相结构和形成能
 * 缺陷形成能的修正项计算
 * 自洽费米能级的估计
 
 程序安装
 --------
 
-eDoping 程序包基于 python3 软件，确保它已经被正确安装。
-如果可以联网，最简单的方式就是通过 pip 安装 eDoping 程序包:
+eDoping 程序包基于 ``python3`` 软件，确保它已经被正确安装。
+如果可以联网，最简单的方式就是通过 ``pip`` 安装（或更新） eDoping 程序包:
 
 .. code-block:: bash
 
-   $ pip install eDoping
+   $ pip install -U eDoping
 
-如果无法联网或者对源代码感兴趣，程序包从 Github 下载，或者利用 git :
+如果无法联网或者对源代码感兴趣，程序包从 Github 下载，或者利用 ``git`` :
 
 .. code-block:: bash
 
@@ -67,7 +67,7 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
    $ edp -h
    usage: edp [-h] [-v] [-q] Subcommand ...
 
-   Point Defect Formation Energy Calculation - v0.3.1
+   Point Defect Formation Energy Calculation - v0.4.0
 
    options:
      -h, --help       show this help message and exit
@@ -84,7 +84,7 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
        evbm           Read VBM from EIGENVAL
        fixchg         Produce charge-fixed inputs
        boxhyd         Place a single hydrogen atom in the box
-       move           Move atomic position in cell
+       refine         Refine the unit cell
        replace        Replace atoms X by Y
        groupby        Group atoms by radial distribution function
        diff           Show difference between two POSCAR
@@ -115,7 +115,7 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
    options:
      -h, --help            show this help message and exit
      -p fa fb fc, --position fa fb fc
-                           Position of new interstitial atom
+                           Fractional coordinates of new interstitial atom
      -i FILENAME, --input FILENAME
                            Input filename(default: POSCAR)
      -o FILENAME, --output FILENAME
@@ -233,7 +233,8 @@ eDoping 程序包基于 python3 软件，确保它已经被正确安装。
 `AFLOW <https://aflowlib.org>`_ 等）获得。
 
 这里，我们提供了一个查询命令 :option:`edp query<query>` ，
-可以直接从OQMD数据库获取所有竞争相的形成能。比如，对于含有 Mn 原子缺陷的 NbFeSb ，
+可以直接从OQMD数据库获取所有竞争相的形成能（从 v0.4 开始支持 MaterialsProject
+数据库，详见 :option:`edp query<query>` 介绍）。比如，对于含有 Mn 原子缺陷的 NbFeSb ，
 可以通过如下命令获得 Ehull < 0.01 eV/atom 的所有竞争相的形成能
 （在 ``3.phases/NbFeSb_with_Mn`` 目录下运行）：
 
@@ -588,7 +589,7 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
 
 .. code-block:: bash
 
-   $ edp [-v| -q] <command> --option1 --option2 [inputfile]
+   $ edp [-v|-q] <command> --option1 --option2 [inputfile]
 
 这里的 ``-v`` 选项可以增加屏幕的显示信息，
 而 ``-q`` 选项会尽量抑制屏幕的显示信息。
@@ -779,18 +780,86 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
 
 .. option:: query
 
-   从材料数据库 (目前只支持 `OQMD <https://www.oqmd.org>`_) 获取竞争相的信息
+   从公开材料数据库获取竞争相信息。通过 ``--backend`` 选项指定数据库的名称：
 
-   使用时确保网络畅通，且受制于数据库的访问频率限制，
-   不建议在短时间内反复多次使用。
-   通常情况下，可以先到数据库官网进行查询，
-   具有更好的可视化结果，然后再通过该命令进行数据获取。
-   
+   - ``OQMD`` (默认值): The Open Quantum Materials Database (https://www.oqmd.org)
+   - ``MP`` : The Materials Project (https://next-gen.materialsproject.org)
+
    通过该命令我们可以得到用于化学势估计的输入数据文件 `EDOPING.cmpot`_ ,
    其中给定的最简原子比和化合物平均每个原子的形成焓。因此，
    为了得到正确的化学势 :math:`\Delta \mu_i`，
    在使用 :option:`edp chempot <chempot>` 进行计算时需要添加
    ``-n`` (``--norm``) 选项。
+
+   .. hint::
+      使用 Materials Project 数据库前必须正确配置 ``MP_API_KEY`` 环境变量（在
+      `Materials Project - API 页面 <https://next-gen.materialsproject.org/api>`_
+      注册并获取 API key），将下面命令中的 ``<your_api_key>`` 替换为你的 API key：
+
+      .. code-block:: bash
+
+         $ export MP_API_KEY=<your_api_key>
+
+      对于私有化平台，可以将其添加到 ``~/.bashrc`` 文件中避免反复配置。
+
+   .. tip::
+
+      使用时确保网络畅通，且受制于数据库的访问频率限制，
+      不建议在短时间内反复多次使用。
+      通常情况下，可以先到数据库官网进行查询，
+      具有更好的可视化结果，然后再通过该命令进行数据获取。
+
+   .. versionadded:: 0.4
+      支持 Materials Project 后端数据库。
+
+.. option:: refine
+
+   对晶体结构进行调整，目前支持的操作如下：
+
+   - ``-t/--transform``: 根据给定的变换矩阵进行扩胞。变换矩阵通常是一个 3x3 
+     的整数矩阵，输入时 9 个组元以空格分隔排列成一行，比如 ``-t "2 0 0 0 2 0 0 0 2"`` 。
+     该选项也支持 3 个元素和 1 个元素的格式，分别表示对角矩阵和缩放的单位矩阵。
+     下面的三条命令是等价的：
+
+     .. code-block:: bash
+
+        $ edp refine -t "2 0 0 0 2 0 0 0 2"
+        $ edp refine -t "2 2 2"
+        $ edp refine -t 2
+
+     此外，如果不提供值，软件会尝试从当前目录下的 ``TRANSMAT.in`` 文件读取变换矩阵
+     （兼容 `vaspkit <https://vaspkit.com/>`_ 软件格式）：
+
+     .. code-block:: bash
+
+        $ edp refine -t
+
+     .. important::
+
+        eDoping 软件内部使用行向量矩阵的表示晶胞基矢，这与 VASP、Quantum Espresso、
+        vaspkit 等软件保持一致，但是与 VESTA、phonopy 等软件采用的列向量形式不同。
+        它们的转变矩阵相差一个转置操作。
+
+   - ``-c/--cubicize``: 在给定的原子数附近进行立方体扩胞。比如：
+
+     .. code-block:: bash
+
+        $ edp refine -c 100
+
+     这表示寻找原子数靠近 100 且最接近立方体的超胞。
+
+   - ``-d/--displace``: 移动晶胞中的原子。通常需要提供四个参数，
+     依次表示需要移动的原子索引，沿着笛卡尔坐标系 x/y/z 方向的位移量
+     （以埃为单位，注意：**不是分数坐标**）。比如：
+
+     .. code-block:: bash
+
+        $ edp refine -d Sb3 0 0 0.1
+
+     这表示将第 3 个 Sb 原子沿着 z 方向移动 0.1 埃。
+
+   .. versionadded:: 0.4
+      支持 ``refine`` 命令。
 
 .. option:: replace
 

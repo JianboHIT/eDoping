@@ -6,7 +6,7 @@
 <link rel="index" title="索引" href="genindex.html" /><link rel="search" title="搜索" href="search.html" /><link rel="next" title="eDoping 学习分享" href="zintl.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>eDoping 0.3.3 文档</title>
+        <title>eDoping 0.4.0 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">eDoping 0.3.3 文档</div></a>
+      <a href="#"><div class="brand">eDoping 0.4.0 文档</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -249,7 +249,7 @@
         <article role="main" id="furo-main-content">
           <section id="edoping">
 <h1>eDoping 手册<a class="headerlink" href="#edoping" title="此标题的永久链接">¶</a></h1>
-<p><strong>[切换语言:</strong> 简体中文 | <a class="reference external" href="en/index.html">English</a> <strong>]</strong> (下载 PDF 手册: <a class="reference download internal" download="" href="_downloads/73db91964c41492da7d6858be35dcd8a/eDoping_v0.3.3.pdf"><code class="xref download docutils literal notranslate"><span class="pre">eDoping_v0.3.3.pdf</span></code></a>)</p>
+<p><strong>[切换语言:</strong> 简体中文 | <a class="reference external" href="en/index.html">English</a> <strong>]</strong> (下载 PDF 手册: <a class="reference download internal" download="" href="_downloads/4a41ac3a9f0c840dc47bf03f1dfc1f6a/eDoping_v0.4.0.pdf"><code class="xref download docutils literal notranslate"><span class="pre">eDoping_v0.4.0.pdf</span></code></a>)</p>
 <div class="toctree-wrapper compound">
 </div>
 <section id="id1">
@@ -258,19 +258,19 @@
 <li><p>流程化带电点缺陷的形成能计算</p></li>
 <li><p>完全基于命令行，无需编程和复杂的脚本</p></li>
 <li><p>可以进行多组元体系的元素化学势估计</p></li>
-<li><p>基于 OQMD 的竞争相结构和形成能获取</p></li>
+<li><p>从 OQMD/MaterialsProject 快速获取竞争相结构和形成能</p></li>
 <li><p>缺陷形成能的修正项计算</p></li>
 <li><p>自洽费米能级的估计</p></li>
 </ul>
 </section>
 <section id="id2">
 <h2>程序安装<a class="headerlink" href="#id2" title="此标题的永久链接">¶</a></h2>
-<p>eDoping 程序包基于 python3 软件，确保它已经被正确安装。
-如果可以联网，最简单的方式就是通过 pip 安装 eDoping 程序包:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>eDoping
+<p>eDoping 程序包基于 <code class="docutils literal notranslate"><span class="pre">python3</span></code> 软件，确保它已经被正确安装。
+如果可以联网，最简单的方式就是通过 <code class="docutils literal notranslate"><span class="pre">pip</span></code> 安装（或更新） eDoping 程序包:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>eDoping
 </pre></div>
 </div>
-<p>如果无法联网或者对源代码感兴趣，程序包从 Github 下载，或者利用 git :</p>
+<p>如果无法联网或者对源代码感兴趣，程序包从 Github 下载，或者利用 <code class="docutils literal notranslate"><span class="pre">git</span></code> :</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/JianboHIT/eDoping.git
 </pre></div>
 </div>
@@ -290,7 +290,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp -h
 usage: edp [-h] [-v] [-q] Subcommand ...
 
-Point Defect Formation Energy Calculation - v0.3.1
+Point Defect Formation Energy Calculation - v0.4.0
 
 options:
   -h, --help       show this help message and exit
@@ -307,7 +307,7 @@ Tips:
     evbm           Read VBM from EIGENVAL
     fixchg         Produce charge-fixed inputs
     boxhyd         Place a single hydrogen atom in the box
-    move           Move atomic position in cell
+    refine         Refine the unit cell
     replace        Replace atoms X by Y
     groupby        Group atoms by radial distribution function
     diff           Show difference between two POSCAR
@@ -336,7 +336,7 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   -p fa fb fc, --position fa fb fc
-                        Position of new interstitial atom
+                        Fractional coordinates of new interstitial atom
   -i FILENAME, --input FILENAME
                         Input filename(default: POSCAR)
   -o FILENAME, --output FILENAME
@@ -440,7 +440,8 @@ $<span class="w"> </span>bash<span class="w"> </span>compile_for_linux.sh
 <a class="reference external" href="https://next-gen.materialsproject.org">MaterialsProject</a> ，
 <a class="reference external" href="https://aflowlib.org">AFLOW</a> 等）获得。</p>
 <p>这里，我们提供了一个查询命令 <a class="reference internal" href="#cmdoption-arg-query"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">query</span></code></a> ，
-可以直接从OQMD数据库获取所有竞争相的形成能。比如，对于含有 Mn 原子缺陷的 NbFeSb ，
+可以直接从OQMD数据库获取所有竞争相的形成能（从 v0.4 开始支持 MaterialsProject
+数据库，详见 <a class="reference internal" href="#cmdoption-arg-query"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">query</span></code></a> 介绍）。比如，对于含有 Mn 原子缺陷的 NbFeSb ，
 可以通过如下命令获得 Ehull &lt; 0.01 eV/atom 的所有竞争相的形成能
 （在 <code class="docutils literal notranslate"><span class="pre">3.phases/NbFeSb_with_Mn</span></code> 目录下运行）：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>query<span class="w"> </span>NbFeSb<span class="w"> </span>-x<span class="w"> </span>Mn<span class="w"> </span>--ehull<span class="w"> </span><span class="m">0</span>.01
@@ -751,7 +752,7 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 <h2>命令行使用参考<a class="headerlink" href="#id12" title="此标题的永久链接">¶</a></h2>
 <p>我们可以通过 <code class="docutils literal notranslate"><span class="pre">edp</span> <span class="pre">-h</span></code> 来查看所有支持的命令，
 一般命令的使用格式为：</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span><span class="o">[</span>-v<span class="p">|</span><span class="w"> </span>-q<span class="o">]</span><span class="w"> </span>&lt;command&gt;<span class="w"> </span>--option1<span class="w"> </span>--option2<span class="w"> </span><span class="o">[</span>inputfile<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span><span class="o">[</span>-v<span class="p">|</span>-q<span class="o">]</span><span class="w"> </span>&lt;command&gt;<span class="w"> </span>--option1<span class="w"> </span>--option2<span class="w"> </span><span class="o">[</span>inputfile<span class="o">]</span>
 </pre></div>
 </div>
 <p>这里的 <code class="docutils literal notranslate"><span class="pre">-v</span></code> 选项可以增加屏幕的显示信息，
@@ -949,16 +950,82 @@ No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-query">
 <span class="sig-name descname"><span class="pre">query</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-query" title="永久链接至目标">¶</a></dt>
-<dd><p>从材料数据库 (目前只支持 <a class="reference external" href="https://www.oqmd.org">OQMD</a>) 获取竞争相的信息</p>
-<p>使用时确保网络畅通，且受制于数据库的访问频率限制，
-不建议在短时间内反复多次使用。
-通常情况下，可以先到数据库官网进行查询，
-具有更好的可视化结果，然后再通过该命令进行数据获取。</p>
+<dd><p>从公开材料数据库获取竞争相信息。通过 <code class="docutils literal notranslate"><span class="pre">--backend</span></code> 选项指定数据库的名称：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">OQMD</span></code> (默认值): The Open Quantum Materials Database (<a class="reference external" href="https://www.oqmd.org">https://www.oqmd.org</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MP</span></code> : The Materials Project (<a class="reference external" href="https://next-gen.materialsproject.org">https://next-gen.materialsproject.org</a>)</p></li>
+</ul>
 <p>通过该命令我们可以得到用于化学势估计的输入数据文件 <a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a> ,
 其中给定的最简原子比和化合物平均每个原子的形成焓。因此，
 为了得到正确的化学势 <span class="math notranslate nohighlight">\(\Delta \mu_i\)</span>，
 在使用 <a class="reference internal" href="#cmdoption-arg-chempot"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">chempot</span></code></a> 进行计算时需要添加
 <code class="docutils literal notranslate"><span class="pre">-n</span></code> (<code class="docutils literal notranslate"><span class="pre">--norm</span></code>) 选项。</p>
+<div class="admonition hint">
+<p class="admonition-title">提示</p>
+<p>使用 Materials Project 数据库前必须正确配置 <code class="docutils literal notranslate"><span class="pre">MP_API_KEY</span></code> 环境变量（在
+<a class="reference external" href="https://next-gen.materialsproject.org/api">Materials Project - API 页面</a>
+注册并获取 API key），将下面命令中的 <code class="docutils literal notranslate"><span class="pre">&lt;your_api_key&gt;</span></code> 替换为你的 API key：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">MP_API_KEY</span><span class="o">=</span>&lt;your_api_key&gt;
+</pre></div>
+</div>
+<p>对于私有化平台，可以将其添加到 <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code> 文件中避免反复配置。</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">小技巧</p>
+<p>使用时确保网络畅通，且受制于数据库的访问频率限制，
+不建议在短时间内反复多次使用。
+通常情况下，可以先到数据库官网进行查询，
+具有更好的可视化结果，然后再通过该命令进行数据获取。</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">在 0.4 版本加入: </span>支持 Materials Project 后端数据库。</p>
+</div>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-refine">
+<span class="sig-name descname"><span class="pre">refine</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-refine" title="永久链接至目标">¶</a></dt>
+<dd><p>对晶体结构进行调整，目前支持的操作如下：</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">-t/--transform</span></code>: 根据给定的变换矩阵进行扩胞。变换矩阵通常是一个 3x3
+的整数矩阵，输入时 9 个组元以空格分隔排列成一行，比如 <code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">&quot;2</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">2</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">0</span> <span class="pre">2&quot;</span></code> 。
+该选项也支持 3 个元素和 1 个元素的格式，分别表示对角矩阵和缩放的单位矩阵。
+下面的三条命令是等价的：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>refine<span class="w"> </span>-t<span class="w"> </span><span class="s2">&quot;2 0 0 0 2 0 0 0 2&quot;</span>
+$<span class="w"> </span>edp<span class="w"> </span>refine<span class="w"> </span>-t<span class="w"> </span><span class="s2">&quot;2 2 2&quot;</span>
+$<span class="w"> </span>edp<span class="w"> </span>refine<span class="w"> </span>-t<span class="w"> </span><span class="m">2</span>
+</pre></div>
+</div>
+<p>此外，如果不提供值，软件会尝试从当前目录下的 <code class="docutils literal notranslate"><span class="pre">TRANSMAT.in</span></code> 文件读取变换矩阵
+（兼容 <a class="reference external" href="https://vaspkit.com/">vaspkit</a> 软件格式）：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>refine<span class="w"> </span>-t
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>eDoping 软件内部使用行向量矩阵的表示晶胞基矢，这与 VASP、Quantum Espresso、
+vaspkit 等软件保持一致，但是与 VESTA、phonopy 等软件采用的列向量形式不同。
+它们的转变矩阵相差一个转置操作。</p>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-c/--cubicize</span></code>: 在给定的原子数附近进行立方体扩胞。比如：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>refine<span class="w"> </span>-c<span class="w"> </span><span class="m">100</span>
+</pre></div>
+</div>
+<p>这表示寻找原子数靠近 100 且最接近立方体的超胞。</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-d/--displace</span></code>: 移动晶胞中的原子。通常需要提供四个参数，
+依次表示需要移动的原子索引，沿着笛卡尔坐标系 x/y/z 方向的位移量
+（以埃为单位，注意：<strong>不是分数坐标</strong>）。比如：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>refine<span class="w"> </span>-d<span class="w"> </span>Sb3<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">0</span>.1
+</pre></div>
+</div>
+<p>这表示将第 3 个 Sb 原子沿着 z 方向移动 0.1 埃。</p>
+</li>
+</ul>
+<div class="versionadded">
+<p><span class="versionmodified added">在 0.4 版本加入: </span>支持 <code class="docutils literal notranslate"><span class="pre">refine</span></code> 命令。</p>
+</div>
 </dd></dl>
 
 <dl class="std option">
@@ -990,8 +1057,8 @@ No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
 </dd></dl>
 
 </section>
-<section id="id14">
-<h2>输入/输出文件<a class="headerlink" href="#id14" title="此标题的永久链接">¶</a></h2>
+<section id="id13">
+<h2>输入/输出文件<a class="headerlink" href="#id13" title="此标题的永久链接">¶</a></h2>
 <section id="edoping-in">
 <h3>EDOPING.in<a class="headerlink" href="#edoping-in" title="此标题的永久链接">¶</a></h3>
 <p>这是 <a class="reference internal" href="#cmdoption-arg-cal"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">cal</span></code></a> 命令的输入文件，用于指定点实施缺陷计算的一些配置。
@@ -1199,8 +1266,8 @@ OUTCAR 文件读取。</p>
 </div>
 </section>
 </section>
-<section id="id15">
-<h2>文章引用<a class="headerlink" href="#id15" title="此标题的永久链接">¶</a></h2>
+<section id="id14">
+<h2>文章引用<a class="headerlink" href="#id14" title="此标题的永久链接">¶</a></h2>
 <p><strong>如果此软件以及文档给您的工作提供了帮助，
 请引用我们的文章，这对我们很重要，非常感谢！</strong></p>
 <p>[1] J. Zhu, J. Li, Z. Ti, L. Wang, Y. Shen, L. Wei, X. Liu, X. Chen, P. Liu,
@@ -1278,14 +1345,14 @@ performance through high-throughput computations,
 </ul>
 </li>
 <li><a class="reference internal" href="#id12">命令行使用参考</a></li>
-<li><a class="reference internal" href="#id14">输入/输出文件</a><ul>
+<li><a class="reference internal" href="#id13">输入/输出文件</a><ul>
 <li><a class="reference internal" href="#edoping-in">EDOPING.in</a></li>
 <li><a class="reference internal" href="#edoping-log">EDOPING.log</a></li>
 <li><a class="reference internal" href="#edoping-dat">EDOPING.dat</a></li>
 <li><a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id15">文章引用</a></li>
+<li><a class="reference internal" href="#id14">文章引用</a></li>
 </ul>
 </li>
 </ul>
@@ -1297,7 +1364,7 @@ performance through high-throughput computations,
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1c03f6e6"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=4166518c"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
