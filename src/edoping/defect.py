@@ -651,7 +651,7 @@ def cubicize(cell, nref=100):
     nreal = np.rint(natom * np.linalg.det(dim)).astype('int64')
     return dim, nreal
 
-def supercell(cell, transform):
+def supercell(cell, transform, shift_eps=1e-6):
     '''
     Create a supercell from the transformation matrix.
 
@@ -661,6 +661,10 @@ def supercell(cell, transform):
         A Cell object.
     transform : array-like, shape (3, 3)
         Row-wise transformation matrix (integer elements) defining the supercell.
+    shift_eps : float, optional
+        When determining the cell boundary, a tiny shift is added to fractional 
+        coordinates to mitigate the floating-point rounding error. The default 
+        is 1e-6.
 
     Returns
     -------
@@ -688,7 +692,7 @@ def supercell(cell, transform):
     for atom, poss in cell.sites.items():
         num = len(poss) * scale
         poss2 = np.reshape((np.array(poss) + cc) @ trans_rev, (-1, 3))
-        index_inner = np.all((poss2 >= 0) & (poss2 < 1), axis=1)
+        index_inner = np.all((poss2 + shift_eps >= 0) & (poss2 + shift_eps < 1), axis=1)
         poss2 = poss2[index_inner]
         num2 = len(poss2)
         if num2 != num:
