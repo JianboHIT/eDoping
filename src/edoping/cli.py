@@ -81,11 +81,11 @@ def cmd(arg=None):
     
     parser_groupby = sub_parser.add_parser('groupby', help='Group atoms by radial distribution function')
     parser_groupby.add_argument('-f', '--filename', default='POSCAR', help='Assign filename(default: POSCAR)')
-    parser_groupby.add_argument('atom', metavar='ATOM', help='The name of element to groupby')
+    parser_groupby.add_argument('atom', metavar='ATOM', help='The symbol of element to groupby')
+    parser_groupby.add_argument('-p', '--prec', type=float, default=1, help='Precision level for sampling distances(default: 1)')
     parser_groupby.add_argument('--head', type=int, default=30, help='The number of atoms in the nearest neighbor(default: 30)')
     parser_groupby.add_argument('--pad', type=int, default=2, help='Number of values padded to the cell sides(default: 2)')
-    parser_groupby.add_argument('--digits', type=int, default=1, help='Given precision in decimal digits(default: 1)')
-    parser_groupby.add_argument('--grep', metavar='STRING', help='Display only lines containing the specified string')
+    parser_groupby.add_argument('--grep', metavar='STRING', help='Display only lines containing the specified atom')
     
     parser_diff = sub_parser.add_parser('diff', help='Show difference between two POSCAR')
     parser_diff.add_argument('-p', '--prec', type=float, default=0.2, help='The precision of distance(default: 0.2)')
@@ -391,31 +391,48 @@ def cmd(arg=None):
             label_new = '{}'.format(atom_new['atom'])
             print(dsp.format(label_old, label_new, args.output))
     elif args.task == 'groupby':
+        from itertools import zip_longest
         from .dft import Cell
         from .defect import cal_rdf
+        atom = args.atom
+        prec = args.prec
         pos = Cell(poscar=args.filename)
-        Natom = len(pos.sites[args.atom])
-        kwargs = {
-            'atom_idx': [(args.atom, idx+1) for idx in range(Natom)],
-            'nhead': args.head,
-            'npad': args.pad,
-            'ndigits': args.digits,
-        }
-        dists = cal_rdf(pos, **kwargs)
-        infos = list(dists.keys())
-        for i, k in enumerate(infos):
-            print('Group #{}: {}'.format(i+1, ', '.join(dists[k])))
+        if atom not in pos.sites:
+            raise ValueError('Cannot find atom: {}'.format(atom))
+
+        # calculate RDF for each atom site and group them by the RDF
+        rdfs_full = cal_rdf(
+            pos,
+            centres=[(atom, idx+1) for idx in range(len(pos.sites[atom]))],
+            nhead=args.head,
+            npad=args.pad,
+            prec=pow(10, prec),
+        )
+        rdf_group = dict()
+        for i, rdf in enumerate(rdfs_full):
+            rdf_group.setdefault(tuple(rdf), []).append(f'{atom}{i+1}')
+        rdfs_unique = list(rdf_group.keys())
+
+        for i, k in enumerate(rdfs_unique):
+            print('Group #{}: {}'.format(i+1, ', '.join(rdf_group[k])))
         if not is_quiet:
+            ngroup = len(rdfs_unique)
+            digits = int(prec + 0.999999) if prec > 0 else 0
+            nwidth = 17 + digits if digits > 2 else 19
+            fmt1, fmt2 = '(%.{}f'.format(digits), ", '%s', %d)"
+            fmt = '%{}s%-{}s'.format(nwidth-12, 12)
+            fdst = lambda d, e, n: fmt % (fmt1 % (d/pow(10, prec)), fmt2 % (e, n))
+            fmd = '%{}s%-{}d'.format(nwidth//2 + 3, nwidth - nwidth//2 - 3)
+            fdsd = lambda i: fmd % ('Group #', i)
+
             print()
-            headers = ['Group #{}'.format(i+1) for i in range(len(infos))]
-            print('===={}'.format('='.join(['='*18 for _ in headers])))
-            print('No.|{}'.format('|'.join(['{:^18s}'.format(header) for header in headers])))
-            print('---+{}'.format('+'.join(['-'*18 for _ in headers])))
-            for i, dts in enumerate(zip(*infos)):
-                contents = ['{}'.format(dt) for dt in dts]
-                line = '{:^3d}|{}'.format(i, '|'.join(['{:^18s}'.format(cont) for cont in contents]))
-                if (not args.grep) or ("'{}'".format(args.grep) in line): print(line)
-            print('===={}'.format('='.join(['='*18 for _ in headers])))
+            print('===', *(['='*nwidth,] * ngroup), sep='=')
+            print('No.', *[fdsd(i+1) for i in range(ngroup)], sep='|')
+            print('---', *(['-'*nwidth,] * ngroup), sep='+')
+            for i, dts in enumerate(zip_longest(*rdfs_unique, fillvalue=(0, 'X', 0))):
+                line = f'{i:^3d}|' + '|'.join([fdst(*dt) for dt in dts])
+                if (not args.grep) or (f"'{args.grep}'" in line): print(line)
+            print('===', *(['='*nwidth,] * ngroup), sep='=')
     elif args.task == 'diff':
         from .dft import Cell
         from .defect import diff_cell, disp_diffs

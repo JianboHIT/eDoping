@@ -16,7 +16,7 @@
 import sys, os, time
 import numpy as np
 from itertools import product
-from collections import defaultdict
+from collections import Counter
 from .misc import Logger, filein, filetrans, filedata
 from .misc import __prog__, __author__, __version__, __date__, __description__
 from .dft import Cell, read_energy, read_volume, \
@@ -569,7 +569,7 @@ def cal_trans(q, H0, Emin=-1, Emax=2, Npt=1001, outbsline=False):
     else:
         return result
 
-def cal_rdf(cell, atom_idx, nhead=30, npad=2, ndigits=1):
+def cal_rdf(cell, centres, nhead=30, npad=2, prec=10):
     '''
     Calculate radial distribution function (RDF) correlative
 
@@ -577,53 +577,40 @@ def cal_rdf(cell, atom_idx, nhead=30, npad=2, ndigits=1):
     ----------
     cell : Cell
         A Cell object
-    atom_idx : list
-        List of tuple in (atom, idx)
+    centres : list
+        Centre atoms, formated as a list of tuple in (atom, idx)
     nhead : int, optional
         The number of nearest neighbors to consider, by default 30
     npad : int, optional
         The number of padding unit-cell at one side, by default 2
-    ndigits : int, optional
-        The number of digits of decimal precision, by default 1
+    prec : float, optional
+        Sampling precision for distance hashing, by default 10
 
     Returns
     -------
-    dict:
-        key: a tuple in (loc, elt, Ncount)
-        value: label of given centre atoms
+    list:
+        A list of RDFs for each centre atom.
     '''
-    basis = np.array(cell.basis)
-    sites = cell.sites
-    origin = [sites[atom][idx-1] for atom, idx in atom_idx]
-    origin = np.array(origin).reshape((-1, 1, 3))
-    
-    # produce super cell 
-    # npad = 2
-    c1, c2, c3 = np.mgrid[-npad:npad+1, -npad:npad+1, -npad:npad+1]
-    cc = np.c_[c1.flatten(), c2.flatten(), c3.flatten()]    # shape: (-1, 3)
-    
-    # claculate distances
-    dists_ = [defaultdict(list) for _ in range(len(atom_idx))]  # len: Norg
-    pp = np.vstack(list(sites.values()))
-    pp = np.reshape(np.array(pp), (-1, 1, 1, 3))
-    pp = (pp + cc - origin) @ basis             # shape: (Natom, Norg, Nsup, 3)
-    pp = np.linalg.norm(pp, ord=2, axis=-1)     # shape: (Natom, Norg, Nsup)
-    for (elt, idx, pos), dd in zip(cell.all_pos(), pp):
-        for d, dist in zip(dd, dists_):
-            for d_i in d:
-                dist[(round(float(d_i), ndigits), elt)].append((idx, pos))
+    if isinstance(centres, str):
+        centres = [(centres, i+1) for i in range(len(cell.sites[centres]))]
 
-    # nhead = 30
-    fillvalue = (0, 'X', 0)         # if site is less than nhead, use fillvalue
-    dists = defaultdict(list)
-    for (atom, idx), dist in zip(atom_idx, dists_):
-        dt = []
-        keys = iter(sorted(dist))   # get a generator of sorted keys
-        for _ in range(nhead+1):
-            key = next(keys, fillvalue)
-            dt.append(key+(len(dist[key]), ))   # key: (loc, elt, Ncount)
-        dists[tuple(dt)].append(f'{atom}{idx}') # value: label of centre atoms 
-    return dists
+    origin = [cell.sites[atom][idx-1] for atom, idx in centres]
+    origin = np.array(origin).reshape((-1, 1, 1, 3))    # shape: (Ncent, 1, 1, 3)
+
+    # produce super cell and calculate distances
+    cc = product(range(-npad, npad+1), repeat=3)
+    cc = np.reshape(list(cc), (-1, 1, 3))           # shape: (Nsup, 1, 3)
+    pp = np.vstack(list(cell.sites.values()))       # shape: (Natom, 3)
+    pp = (pp + cc - origin) @ np.array(cell.basis)  # shape: (Ncent, Nsup, Natom, 3)
+    pp = np.linalg.norm(pp, ord=2, axis=-1)         # shape: (Ncent, Nsup, Natom)
+    bb = cc.shape[0] * [s for (s, *_) in cell.all_pos()]    # len: Nsup * Natom
+
+    # find <nhead> nearest neighbors for each centre atom
+    rdfs = []
+    for px in (pp * prec):
+        cdict = Counter((round(p), b) for p, b in zip(px.flatten(), bb))
+        rdfs.append([key+(cdict[key],) for key in sorted(cdict)[:nhead+1]])
+    return rdfs
 
 def cubicize(cell, nref=100):
     '''
