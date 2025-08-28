@@ -91,8 +91,7 @@ def query_oqmd(params, timeout=60, batch=200, include_struct=False):
         datas.extend(content['data'])
     if include_struct:
         for data in datas:
-            cell = Cell()
-            cell.basis = np.array(data['unit_cell'])
+            cell = Cell(basis=np.array(data['unit_cell']))
             for row in data['sites']:
                 atom, _, fa, fb, fc, *_ = row.strip().split()
                 fa, fb, fc = float(fa), float(fb), float(fc)
@@ -185,8 +184,7 @@ def query_mp(params, timeout=60, batch=200, include_struct=False):
     if include_struct:
         for data in datas:
             structure = data['structure']
-            cell = Cell()
-            cell.basis = np.array(structure['lattice']['matrix'])
+            cell = Cell(basis=np.array(structure['lattice']['matrix']))
             for site in structure['sites']:
                 atom = site['species'][0]['element']
                 pos = np.array(site['abc'])

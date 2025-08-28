@@ -36,16 +36,23 @@ class Cell():
                  ]
             ...
     '''
-    def __init__(self, poscar=None, ptype='vasp'):
-        self.basis = np.identity(3)
-        self.sites = OrderedDict()
-        
-        if poscar:
-            self.read(poscar=poscar, ptype=ptype)
-    
-    def read(self, poscar='POSCAR', ptype='vasp'):
+    def __init__(self, basis=None, sites=None):
+        if basis is None:
+            self.basis = np.identity(3)
+        else:
+            self.basis = np.asarray(basis)
+
+        if sites is None:
+            self.sites = OrderedDict()
+        elif isinstance(sites, OrderedDict):
+            self.sites = sites
+        else:
+            self.sites = OrderedDict(sites)
+
+    @classmethod
+    def from_poscar(cls, poscar='POSCAR'):
         '''
-        Parse POSCAR manually.
+        Create a Cell object from POSCAR file.
         '''
         # read file
         with open(poscar, 'r') as f:
@@ -88,9 +95,8 @@ class Cell():
                 for elt, site in sites.items():
                     sites[elt] = [np.array(pos) for pos in site]
         
-        # update attributes
-        self.basis = basis
-        self.sites = sites
+        # create Cell object
+        return cls(basis, sites)
 
     def write(self, poscar='POSCAR.new', header=None, ptype='vasp'):
         '''

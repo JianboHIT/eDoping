@@ -355,8 +355,8 @@ def formation(inputlist=None, infolevel=1):
         print('Find defect site(s) for potential alignment correction:')
         # print('Potential alignment correction:')
         # print('Reading POSCARs ...', end='        ')
-        pos1 = Cell(os.path.join(ipt.dperfect, 'POSCAR'))
-        pos2 = Cell(os.path.join(ipt.ddefect, ipt.drefer, 'POSCAR'))
+        pos1 = Cell.from_poscar(os.path.join(ipt.dperfect, 'POSCAR'))
+        pos2 = Cell.from_poscar(os.path.join(ipt.ddefect, ipt.drefer, 'POSCAR'))
         # idx1, idx2, dmax = pos1.diff(pos2, showdiff=True, out='far')
         diffs = diff_cell(pos1, pos2)
         dist = disp_diffs(pos1.basis, diffs, with_dist=True)
@@ -779,10 +779,8 @@ def disp_diffs(basis, diffs, full_list=False, with_dist=True):
         sites = [df[1] for df in diffs]
         defects = [df[1] for df in diffs_only]
         
-        cell = Cell()
-        cell.basis = basis
-        cell.sites = dict(X=sites)
-        dd = cell.get_dist(defects) # shape: (N_defect, N_sites)
+        pesudo_cell = Cell(basis=basis, sites=[('X', sites),])
+        dd = pesudo_cell.get_dist(defects) # shape: (N_defect, N_sites)
         dist = np.sum(dd, axis=0)   # shape: (N_sites,)
         diffs = [df+[d,] for df, d in zip(diffs, dist)]
     else:

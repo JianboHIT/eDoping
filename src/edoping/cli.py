@@ -221,7 +221,7 @@ def cmd(arg=None):
         if is_detail:
             print('Parsing number of valence electrons from POTCAR and POSCAR in {}...'.format(args.inputdir))
         z_dict = read_zval(potcar='{}/POTCAR'.format(args.inputdir))
-        pos = Cell(poscar='{}/POSCAR'.format(args.inputdir))
+        pos = Cell.from_poscar(poscar='{}/POSCAR'.format(args.inputdir))
         epos = ' '.join(pos.sites.keys())
         epot = ' '.join(z_dict.keys())
         if epos != epot:
@@ -254,10 +254,8 @@ def cmd(arg=None):
                 print('Produce directory {} successfully.'.format(outdir))
     elif args.task == 'boxhyd':
         from .dft import Cell
-        pos = Cell(poscar=args.input)
-        poshyd = Cell()
-        poshyd.basis = pos.basis
-        poshyd.sites['H'] = [[0,0,0]]
+        pos = Cell.from_poscar(poscar=args.input)
+        poshyd = Cell(basis=pos.basis, sites=[('H', [[0,0,0]]),])
         poshyd.write(args.output)
         if not is_quiet:
             dsp='The new POSCAR is saved to {}'
@@ -287,14 +285,14 @@ def cmd(arg=None):
                 if is_detail:
                     print('Transformation matrix:')
                     print(trans_mat)
-            pos = Cell(poscar=args.input)
+            pos = Cell.from_poscar(poscar=args.input)
             pos2 = supercell(pos, trans_mat)
             if is_quiet:
                 print('{:d}'.format(pos2.get_natom()))
             else:
                 print('Build supercell with {} atoms'.format(pos2.get_natom()))
         elif args.cubicize:
-            pos = Cell(poscar=args.input)
+            pos = Cell.from_poscar(poscar=args.input)
             nref = args.cubicize
             trans_mat, nreal = cubicize(pos, nref)
             trans_mat = read_transmat(trans_mat)    # check format and save to TRANSMAT
@@ -308,7 +306,7 @@ def cmd(arg=None):
                     print(trans_mat)
             pos2 = supercell(pos, trans_mat)
         elif args.displace:
-            pos = Cell(poscar=args.input)
+            pos = Cell.from_poscar(poscar=args.input)
             site_, dx_, dy_, dz_ = args.displace
             site = re.match(r'([a-zA-Z]+)(\d*)', site_)
             if site:
@@ -336,7 +334,7 @@ def cmd(arg=None):
             print('Save new POSCAR to {}'.format(args.output))
     elif args.task == 'replace':
         from .dft import Cell
-        poscar = Cell(poscar=args.input)
+        poscar = Cell.from_poscar(poscar=args.input)
         old = re.match(r'([a-zA-Z]+)(\d*)', args.old)
         if old:
             atom, idx = old.groups()
@@ -378,7 +376,7 @@ def cmd(arg=None):
         from .defect import cal_rdf
         atom = args.atom
         prec = args.prec
-        pos = Cell(poscar=args.filename)
+        pos = Cell.from_poscar(poscar=args.filename)
         if atom not in pos.sites:
             raise ValueError('Cannot find atom: {}'.format(atom))
 
@@ -418,8 +416,8 @@ def cmd(arg=None):
     elif args.task == 'diff':
         from .dft import Cell
         from .defect import diff_cell, disp_diffs
-        c1 = Cell(poscar=args.filename1)
-        c2 = Cell(poscar=args.filename2)
+        c1 = Cell.from_poscar(poscar=args.filename1)
+        c2 = Cell.from_poscar(poscar=args.filename2)
         diffs = diff_cell(c1, c2, prec=args.prec)
         disp_diffs(c1.basis, diffs,
                    full_list=is_detail,
