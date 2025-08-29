@@ -258,7 +258,7 @@ def cmd(arg=None):
         poshyd = Cell(basis=pos.basis, sites=[('H', [[0,0,0]]),])
         poshyd.write(args.output)
         if not is_quiet:
-            dsp='The new POSCAR is saved to {}'
+            dsp="Save the new structure to '{}' file"
             print(dsp.format(args.output))
     elif args.task =='refine':
         import numpy as np
@@ -331,7 +331,7 @@ def cmd(arg=None):
             pos2 = pos
         pos2.write(poscar=args.output)
         if not is_quiet:
-            print('Save new POSCAR to {}'.format(args.output))
+            print(f"Save the new POSCAR to '{args.output}' file")
     elif args.task == 'replace':
         from .dft import Cell
         poscar = Cell.from_poscar(poscar=args.input)
@@ -365,7 +365,7 @@ def cmd(arg=None):
             poscar.insert(**atom_new)
 
         poscar.write(poscar=args.output)
-        dsp = 'Replace {} by {}, and new POSCAR is saved to {}'
+        dsp = 'Replace {} by {}, and new structure is saved to {}'
         if not is_quiet:
             label_old = '{}{}'.format(atom_old['atom'], atom_old['idx'])
             label_new = '{}'.format(atom_new['atom'])
