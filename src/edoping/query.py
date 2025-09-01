@@ -289,8 +289,9 @@ def get_phases(elements, max_ehull=None, include_struct=False,
         phases = list()
         for data in query_mp(params, **query_options):
             compos = data['composition_reduced']
+            compstr = {k: k if v == 1 else f"{k}{v:g}" for k, v in compos.items()}
             phase = {
-                'name': ''.join([f"{k}{compos[k]:g}" for k in elements if k in compos]),
+                'name': ''.join([compstr[k] for k in elements if k in compstr]),
                 'id': data['material_id'],
                 'delta_e': data['formation_energy_per_atom'],
                 'ehull': data['energy_above_hull'],
