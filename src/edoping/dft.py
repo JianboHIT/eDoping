@@ -13,6 +13,7 @@
 #   limitations under the License.
 
 
+import re
 import numpy as np
 from io import StringIO
 from collections import OrderedDict
@@ -48,6 +49,13 @@ class Cell():
             self.sites = sites
         else:
             self.sites = OrderedDict(sites)
+
+    def __str__(self):
+        return ' '.join([f'{k}:{len(v)}' for k, v in self.sites.items()])
+
+    @staticmethod
+    def parse_composition(string, pattern=r'([A-Z][a-z]*)\s*(\d+)?', convertor=int):
+        return [(m.group(1), convertor(m.group(2) or '1')) for m in re.finditer(pattern, string)]
 
     @classmethod
     def from_poscar(cls, poscar='POSCAR'):
@@ -178,6 +186,43 @@ class Cell():
             self.sites[atom] = [pos,]
             if tohead:
                 self.sites.move_to_end(atom, last=False)
+
+    def split(self, atom, new_atoms, numbers, shuffle=False):
+        '''
+        Split sites of a atom into several new atoms with specified numbers.
+        '''
+        if atom not in self.sites:
+            raise ValueError(f'Failed to locate {atom}')
+
+        if len(new_atoms) != len(numbers):
+            raise ValueError('The length of `new_atoms` and `numbers` must be equal')
+
+        if any(n < 0 for n in numbers):
+            raise ValueError('The numbers must be positive')
+
+        if sum(numbers) != len(self.sites[atom]):
+            raise ValueError('The total number of new atoms and original atoms must be equal')
+
+        # stage the elements to be moved
+        to_move = list(self.sites.keys())
+        to_move = to_move[to_move.index(atom)+1:]
+
+        # split the target sites
+        target_site = self.sites.pop(atom)
+        if shuffle:
+            np.random.shuffle(target_site)
+        new_sites = np.split(target_site, np.cumsum(numbers[:-1]))
+
+        # add new atoms and sites
+        for elt, site in zip(new_atoms, new_sites):
+            if elt in self.sites:
+                self.sites[elt] = np.vstack([self.sites[elt], site])
+            else:
+                self.sites[elt] = site
+
+        # move the elements to the end
+        for elt in to_move:
+            self.sites.move_to_end(elt)
 
     def get_volume(self):
         '''

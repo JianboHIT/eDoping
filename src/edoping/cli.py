@@ -16,8 +16,6 @@
 
 
 import argparse
-import re
-
 from .misc import filein, filecmpot, filetrans, filedata, \
                   __prog__, __description__, __version__, __ref__
 
@@ -76,9 +74,11 @@ def cmd(arg=None):
     parser_refine.add_argument('-o', '--output', metavar='FILENAME', default='POSCAR', help='Output filename(default: POSCAR)')
 
     parser_replace = sub_parser.add_parser('replace', help='Replace atoms X by Y')
-    parser_replace.add_argument('old', metavar='X', help='Name of previous atom')
-    parser_replace.add_argument('new', metavar='Y', help='Name of present atom')
+    parser_replace.add_argument('old', metavar='X', help="Label of the previous atom, e.g., 'Sb12' represents the 12th Sb atom")
+    parser_replace.add_argument('new', metavar='Y', help="Label of the present atom, e.g., 'Bi' (the index is typically omitted)")
     parser_replace.add_argument('-p', '--position', type=float, nargs=3, metavar=('fa', 'fb', 'fc'), help='Fractional coordinates of new interstitial atom')
+    parser_replace.add_argument('-m', '--multiple', action='store_true', help='Enable multiple atomic substitutions for creating alloy structures')
+    parser_replace.add_argument('-s', '--shuffle', action='store_true', help='Similar to the -m option, but additionally shuffles the positions')
     parser_replace.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Input filename(default: POSCAR)')
     parser_replace.add_argument('-o', '--output', metavar='FILENAME', default='POSCAR', help='Output filename(default: POSCAR)')
     
@@ -319,10 +319,9 @@ def cmd(arg=None):
         elif args.displace:
             pos = Cell.from_poscar(poscar=args.input)
             site_, dx_, dy_, dz_ = args.displace
-            site = re.match(r'([a-zA-Z]+)(\d*)', site_)
-            if site:
-                atom, idx = site.groups()
-                idx = int(idx) if idx else 1
+            rst = Cell.parse_composition(site_)
+            if rst:
+                atom, idx = rst[0]
                 if atom not in pos.sites:
                     raise ValueError('Cannot find atom: {}'.format(atom))
                 if (idx < 1) or (idx > len(pos.sites[atom])):
@@ -345,44 +344,46 @@ def cmd(arg=None):
             pos2 = Cell.from_poscar(poscar=args.input)
         pos2.write(poscar=args.output)
         if not is_quiet:
-            print(f"Save the new POSCAR to '{args.output}' file")
+            print(f"Save the new structure to '{args.output}' file")
     elif args.task == 'replace':
         from .dft import Cell
         poscar = Cell.from_poscar(poscar=args.input)
-        old = re.match(r'([a-zA-Z]+)(\d*)', args.old)
-        if old:
-            atom, idx = old.groups()
-            atom_old = {
-                'atom': atom,
-                'idx': int(idx) if idx else 1
-            }
-        else:
-            raise ValueError('Invaild value: {}'.format(args.old))
+        rst_old = Cell.parse_composition(args.old)
+        rst_new = Cell.parse_composition(args.new)
+        if not rst_old:
+            raise ValueError('Invalid site format: {}'.format(args.old))
+        if not rst_new:
+            raise ValueError('Invalid site format: {}'.format(args.new))
 
-        if atom_old['atom'].lower().startswith('vac'):
-            if args.position is None:
-                raise ValueError('Position of interstitial atom is required by --position option.')
-            loc = args.position
+        if args.multiple or args.shuffle:
+            atom_old, _ = rst_old[0]
+            atoms_new, numbers_new = list(zip(*rst_new))
+            poscar.split(atom_old, atoms_new, numbers_new, shuffle=args.shuffle)
+            for elt in list(poscar.sites.keys()):
+                if elt.startswith('Vac'):
+                    del poscar.sites[elt]
+            label_old = atom_old
+            label_new = "'" + ' '.join(f'{a}{n}' for a, n in rst_new) + "'"
         else:
-            loc = poscar.pop(**atom_old)
+            atom_old, idx_old = rst_old[0]
+            atom_new, _ = rst_new[0]
 
-        new = re.match(r'([a-zA-Z]+)', args.new)
-        if new:
-            atom_new = {
-                'atom': new.groups()[0],
-                'pos': loc
-            }
-        else:
-            raise ValueError('Invaild value: {}'.format(args.new))
+            if atom_old.startswith('Vac'):
+                if args.position is None:
+                    raise ValueError('Position of interstitial atom is required by --position option.')
+                loc_new = args.position
+            else:
+                loc_new = poscar.pop(atom_old, idx_old)
 
-        if not atom_new['atom'].lower().startswith('vac'):
-            poscar.insert(**atom_new)
+            if not atom_new.startswith('Vac'):
+                poscar.insert(atom_new, loc_new)
+
+            label_old = f'{atom_old}{idx_old}'
+            label_new = atom_new
 
         poscar.write(poscar=args.output)
         dsp = 'Replace {} by {}, and new structure is saved to {}'
         if not is_quiet:
-            label_old = '{}{}'.format(atom_old['atom'], atom_old['idx'])
-            label_new = '{}'.format(atom_new['atom'])
             print(dsp.format(label_old, label_new, args.output))
     elif args.task == 'groupby':
         from itertools import zip_longest
@@ -437,9 +438,10 @@ def cmd(arg=None):
                    full_list=is_detail,
                    with_dist=args.distance)
     elif args.task == 'query':
+        from .dft import Cell
         from .query import get_phases
-        elmt_comp = re.findall(r'[A-z][a-z]*', args.compound)
-        elmt_extra = re.findall(r'[A-z][a-z]*', args.extra)
+        elmt_comp = [elt for elt, _idx in Cell.parse_composition(args.compound)]
+        elmt_extra = [elt for elt, _idx in Cell.parse_composition(args.extra)]
         elmt_all = list(elmt_comp)
         for elt in elmt_extra:
             if elt not in elmt_all:
@@ -469,9 +471,6 @@ def cmd(arg=None):
 
         if not is_quiet:
             print(f'Number of ground-state phases found: {len(phases)}')
-
-        get_comp = lambda name: {m[0]: int(m[1] or '1') 
-            for m in re.findall(r'([A-Z][a-z]*)(\d*\.\d+|\d+)?', name)}
         
         cmpots = ['# {}\n'.format('   '.join(elmt_all)), ]    # header line
         dsp = ' {} '*(len(elmt_all)+1) + '\n'
@@ -480,7 +479,7 @@ def cmd(arg=None):
         dsp_fout = 'POSCAR.{name}.vasp'
         dsp_disp = '    {name:<15} {delta_e:>12.6f}      {id}'
         
-        target = get_comp(args.compound)
+        target = dict(Cell.parse_composition(args.compound))
         ratios = [target.get(e, 0) for e in elmt_all]
         cmpots.append(dsp.format(*ratios, '_Not_found_'))
         target_found = False
@@ -489,7 +488,7 @@ def cmd(arg=None):
             print('   name                  delta_e      IDs')
         export_struct = args.structure
         for phase in phases:
-            comp = get_comp(phase['name'])
+            comp = dict(Cell.parse_composition(phase['name']))
             ratios = [comp.get(e, 0) for e in elmt_all]
             delta_e = phase['delta_e']
             line = dsp.format(*ratios, delta_e)
