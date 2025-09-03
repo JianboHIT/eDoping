@@ -103,9 +103,9 @@ class Cell():
         Write into POSCAR (only support fractional coordinates).
         '''
         if eps_zero is None:
-            fseq = lambda _seq: ''.join(fmt % x for x in _seq)
+            fseq = lambda _seq: ' '.join(fmt % x for x in _seq)
         else:
-            fseq = lambda _seq: ''.join(fmt % (0 if abs(x)<eps_zero else x) for x in _seq)
+            fseq = lambda _seq: ' '.join(fmt % (0 if abs(x)<eps_zero else x) for x in _seq)
 
         basis = self.basis
         sites = self.sites
@@ -113,8 +113,8 @@ class Cell():
         lines.append(f'{1:8.3f}\n')
         for basis_i in basis:
             lines.append(fseq(basis_i)+'\n')
-        elts = [f'{k:>5s}' for k in sites.keys()]
-        nums = [f'{len(v):>5d}' for v in sites.values()]
+        elts = [f' {k:>4s}' for k in sites.keys()]
+        nums = [f' {len(v):>4d}' for v in sites.values()]
         lines.append(''.join(elts)+'\n')
         lines.append(''.join(nums)+'\n')
         lines.append('Direct\n')
