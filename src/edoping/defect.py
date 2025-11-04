@@ -638,7 +638,7 @@ def cubicize(cell, nref=100):
     nreal = np.rint(natom * np.linalg.det(dim)).astype('int64')
     return dim, nreal
 
-def supercell(cell, transform, shift_eps=1e-6):
+def supercell(cell, transform, shift_eps=1e-6, return_frame=None):
     '''
     Create a supercell from the transformation matrix.
 
@@ -652,11 +652,26 @@ def supercell(cell, transform, shift_eps=1e-6):
         When determining the cell boundary, a tiny shift is added to fractional 
         coordinates to mitigate the floating-point rounding error. The default 
         is 1e-6.
+    return_frame : None, or array-like with shape (3,), optional
+        Whehter to return the frame of the original cell in the supercell. The 
+        default is None. Otherwise, a 3-element array is required, which reperesents
+        the offset of the frame in the supercell.
 
     Returns
     -------
     Cell
         The supercell.
+    ndarray (optional)
+        If return_frame is provided, a (8, 3) array representing the vertex positions
+        of the original cell in the supercell is returned as below order:
+        - (0, 0, 0)
+        - (0, 0, 1)
+        - (0, 1, 0)
+        - (0, 1, 1)
+        - (1, 0, 0)
+        - (1, 0, 1)
+        - (1, 1, 0)
+        - (1, 1, 1)
     '''
     trans_mat = np.asarray(transform)
     if trans_mat.shape != (3, 3):
@@ -685,7 +700,11 @@ def supercell(cell, transform, shift_eps=1e-6):
         if num2 != num:
             raise ValueError(f'Supercell has {num2} {atom} atoms, but {num} expected.')
         scell.sites[atom] = poss2
-    return scell
+    if return_frame is None:
+        return scell
+    else:
+        frame = vertices @ trans_rev + np.asarray(return_frame)
+        return scell, frame
 
 def diff_cell(cell_1, cell_2, prec=0.2):
         '''
