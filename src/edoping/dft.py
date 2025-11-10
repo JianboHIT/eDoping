@@ -111,11 +111,11 @@ class Cell():
                 # the cartesian mode, convert to direct mode
                 trans = np.linalg.inv(basis)
                 for elt, site in sites.items():
-                    sites[elt] = [np.array(pos) @ trans for pos in site]
+                    sites[elt] = np.asarray(site) @ trans
             else:
                 # direct, fractional coordinates
                 for elt, site in sites.items():
-                    sites[elt] = [np.array(pos) for pos in site]
+                    sites[elt] = np.asarray(site)
             if dynamics:
                 for elt, label in labels.items():
                     labels[elt] = np.array(label)
@@ -177,11 +177,13 @@ class Cell():
             The postion of pop atom
         '''
         if atom in self.sites:
-            pos = self.sites[atom].pop(idx-1)
-            if len(self.sites[atom]) == 0:
+            site = np.asarray(self.sites[atom])
+            pos = site[idx - 1]
+            self.sites[atom] = np.delete(site, idx - 1, axis=0)
+            if self.sites[atom].size == 0:
                 del self.sites[atom]
         else:
-            raise RuntimeError(f'Failed to locate {atom}')
+            raise KeyError(f'Failed to locate {atom}')
         return pos
 
     def index(self, atom, idx=1):
@@ -210,9 +212,9 @@ class Cell():
             Whether to put the species first if it is new, by default True
         '''
         if atom in self.sites:
-            self.sites[atom].insert(idx-1, pos)
+            self.sites[atom] = np.insert(self.sites[atom], idx-1, pos, axis=0)
         else:
-            self.sites[atom] = [pos,]
+            self.sites[atom] = np.atleast_2d(pos)
             if tohead:
                 self.sites.move_to_end(atom, last=False)
 
@@ -221,7 +223,7 @@ class Cell():
         Split sites of a atom into several new atoms with specified numbers.
         '''
         if atom not in self.sites:
-            raise ValueError(f'Failed to locate {atom}')
+            raise KeyError(f'Failed to locate {atom}')
 
         if len(new_atoms) != len(numbers):
             raise ValueError('The length of `new_atoms` and `numbers` must be equal')
@@ -257,9 +259,7 @@ class Cell():
         '''
         Calculate volume of cell
         '''
-        basis = np.array(self.basis)
-        volume = np.linalg.det(basis)
-        return volume
+        return np.linalg.det(self.basis)
     
     def get_natom(self):
         '''
@@ -355,11 +355,11 @@ class Cell():
         if atoms:
             for atom in atoms:
                 for idx, pos in enumerate(self.sites[atom], start=1):
-                    yield (atom, idx, pos)
+                    yield (atom, idx, np.asarray(pos))
         else:
             for atom, site in self.sites.items():
                 for idx, pos in enumerate(site, start=1):
-                    yield (atom, idx, pos)
+                    yield (atom, idx, np.asarray(pos))
 
 
 def read_energy(outcar='OUTCAR', average=False):
