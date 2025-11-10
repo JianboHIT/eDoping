@@ -57,10 +57,10 @@ class Cell():
     def parse_composition(string, pattern=r'([A-Z][a-z]*)\s*(\d+)?', convertor=int):
         return [(m.group(1), convertor(m.group(2) or '1')) for m in re.finditer(pattern, string)]
 
-    @classmethod
-    def from_poscar(cls, poscar='POSCAR'):
+    @staticmethod
+    def parse_poscar(poscar='POSCAR', dynamics=False):
         '''
-        Create a Cell object from POSCAR file.
+        Parse POSCAR file, and return (basis, sites, comments)
         '''
         # read file
         with open(poscar, 'r') as f:
@@ -81,19 +81,33 @@ class Cell():
             elts = f.readline().strip().split()
             nums = [int(i) for i in f.readline().split()]
             postype = f.readline().strip()[0]       # fisrt letter
-            sites = OrderedDict() # num, site_list, label_list
+            if postype in 'sS':
+                # selective dynamics mode, parse the coordinates mode from the next line
+                postype = f.readline().strip()[0]
+
+            sites = OrderedDict()
+            labels = OrderedDict()
             for num, elt in zip(nums, elts):
-                for _ in range(num):
-                    pos = [float(i) for i in f.readline().split()[:3]]
+                for idx in range(num):
+                    items = f.readline().split(maxsplit=3)
+                    if len(items) == 3:
+                        pos = [float(i.strip()) for i in items]
+                        cmt = ''
+                    elif len(items) == 4:
+                        pos = [float(i.strip()) for i in items[:3]]
+                        cmt = items[-1].strip()
+                        if dynamics:
+                            cmt = [i == 'T' for i in cmt.upper().split()[:3]]
+                    else:
+                        raise RuntimeError(f'Failed to parse POSCAR at {elt} {idx+1}')
+
                     if elt in sites:
                         sites[elt].append(pos)
+                        labels[elt].append(cmt)
                     else:
                         sites[elt] = [pos, ]
-            if postype in 'sS':
-                # selective dynamics mode
-                err_info = 'POSCAR with selective dynamics mode is not supported'
-                raise NotImplementedError(err_info)
-            elif postype in 'cCkK':
+                        labels[elt] = [cmt, ]
+            if postype in 'cCkK':
                 # the cartesian mode, convert to direct mode
                 trans = np.linalg.inv(basis)
                 for elt, site in sites.items():
@@ -102,11 +116,21 @@ class Cell():
                 # direct, fractional coordinates
                 for elt, site in sites.items():
                     sites[elt] = [np.array(pos) for pos in site]
-        
-        # create Cell object
+            if dynamics:
+                for elt, label in labels.items():
+                    labels[elt] = np.array(label)
+        return basis, sites, labels
+
+    @classmethod
+    def from_poscar(cls, poscar='POSCAR'):
+        '''
+        Create a Cell object from POSCAR file.
+        '''
+        basis, sites, *_ = cls.parse_poscar(poscar)
         return cls(basis, sites)
 
-    def write(self, poscar=f'POSCAR.{__prog__}', header=None, fmt='%22.15f', eps_zero=1e-14):
+    def write(self, poscar=f'POSCAR.{__prog__}', header=None, labels=None,
+              dynamics=False, fmt='%22.15f', eps_zero=1e-14):
         '''
         Write into POSCAR (only support fractional coordinates).
         '''
@@ -125,9 +149,14 @@ class Cell():
         nums = [f' {len(v):>4d}' for v in sites.values()]
         lines.append(''.join(elts)+'\n')
         lines.append(''.join(nums)+'\n')
+        lines.append('Selective dynamics\n' if dynamics else '')
         lines.append('Direct\n')
-        for elt, idx, pos in self.all_pos():
-            lines.append(f'{fseq(pos)}    {elt}{idx}\n')
+        if labels:
+            for (*_, pos), label in zip(self.all_pos(), labels):
+                lines.append(f'{fseq(pos)}    {label}\n')
+        else:
+            for elt, idx, pos in self.all_pos():
+                lines.append(f'{fseq(pos)}    {elt}{idx}\n')
         with open(poscar, 'w') as f:
             f.writelines(lines)
     
