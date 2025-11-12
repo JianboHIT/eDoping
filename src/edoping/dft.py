@@ -53,6 +53,14 @@ class Cell():
     def __str__(self):
         return ' '.join([f'{k}:{len(v)}' for k, v in self.sites.items()])
 
+    def copy(self):
+        '''
+        Create a deep copy of the current object.
+        '''
+        basis=np.array(self.basis, copy=True)
+        sites=OrderedDict((k, np.array(v, copy=True)) for k, v in self.sites.items())
+        return self.__class__(basis=basis, sites=sites)
+
     @staticmethod
     def parse_composition(string, pattern=r'([A-Z][a-z]*)\s*(\d+)?', convertor=int):
         return [(m.group(1), convertor(m.group(2) or '1')) for m in re.finditer(pattern, string)]
