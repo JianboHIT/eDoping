@@ -63,7 +63,66 @@ class Cell():
 
     @staticmethod
     def parse_composition(string, pattern=r'([A-Z][a-z]*)\s*(\d+)?', convertor=int):
+        '''
+        Parse a chemical composition string into element-quantity pairs, e.g.,
+        'H2O' -> [('H', 2), ('O', 1)].
+        '''
         return [(m.group(1), convertor(m.group(2) or '1')) for m in re.finditer(pattern, string)]
+
+    @staticmethod
+    def parse_basis(basis, use_cos=False):
+        '''
+        Convert between 6-element and 9-element representations of lattice basis vectors.
+
+        Parameters
+        ----------
+        basis : array-like
+            A representation of the lattice basis vectors:
+            - 9 elements: Represents the 3x3 basis matrix in row-major order.
+            - 6 elements: Represents lattice parameters, including lengths and angles.
+        use_cos : bool, optional
+            Whether to interpret the angle parameters as cosine values, by default False
+        '''
+        flat = np.ravel(basis)
+        if flat.size == 9:
+            a1 = np.sqrt(np.sum(np.power(flat[:3], 2)))
+            a2 = np.sqrt(np.sum(np.power(flat[3:6], 2)))
+            a3 = np.sqrt(np.sum(np.power(flat[6:], 2)))
+            cos1 = np.sum(flat[3:6] * flat[6:]) / (a2 * a3)
+            cos2 = np.sum(flat[:3] * flat[6:]) / (a1 * a3)
+            cos3 = np.sum(flat[:3] * flat[3:6]) / (a1 * a2)
+            if use_cos:
+                return a1, a2, a3, cos1, cos2, cos3
+            deg1 = np.degrees(np.acos(cos1))
+            deg2 = np.degrees(np.acos(cos2))
+            deg3 = np.degrees(np.acos(cos3))
+            return a1, a2, a3, deg1, deg2, deg3
+        elif flat.size == 6:
+            if use_cos:
+                a1, a2, a3, cos1, cos2, cos3 = flat
+                sin2 = np.sqrt(1-cos2*cos2)
+                sin3 = np.sqrt(1-cos3*cos3)
+            else:
+                a1, a2, a3, deg1, deg2, deg3 = flat
+                cos1 = np.cos(np.radians(deg1))
+                cos2 = np.cos(np.radians(deg2))
+                cos3 = np.cos(np.radians(deg3))
+                sin2 = np.sin(np.radians(deg2))
+                sin3 = np.sin(np.radians(deg3))
+            cosx = (cos1 - cos2*cos3) / sin3
+            conv = np.array([
+                [1, 0, 0],
+                [cos3, sin3, 0],
+                [cos2, cosx, np.sqrt(sin2*sin2 - cosx*cosx)]
+            ])
+            # det(conv) = np.sqrt(1 - cos1*cos1 - cos2*cos2 - cos3*cos3 + 2*cos1*cos2*cos3)
+            #           = np.sqrt(det([[1, cos3, cos2],
+            #                          [cos3, 1, cos1],
+            #                          [cos2, cos1, 1]]))
+            #           = np.sqrt(det(conv @ conv.T))
+            return np.diag([a1, a2, a3]) @ conv
+        else:
+            raise ValueError('Failed to parse basis')
 
     @staticmethod
     def parse_poscar(poscar='POSCAR', dynamics=False):
