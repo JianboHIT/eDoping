@@ -386,6 +386,32 @@ class Cell():
         dmin = np.min(dists, axis=0)                # shape: (N1, N2)
         return np.transpose(dmin)                   # shape: (N2, N1)
     
+    def sort_pos(self, order=321):
+        '''
+        Sort atomic positions in each site in-place by specified axes priority.
+
+        Parameters
+        ----------
+        order : int or str, optional
+            Specifies sorting direction and axes priority as an integer or string. 
+            Axes are represented as '1' = a-axis, '2' = b-axis, '3' = c-axis, with the 
+            first digit having the highest priority. A preceding '+' (or no symbol) 
+            indicates ascending order, while '-' indicates descending order.
+        '''
+        m = re.fullmatch(r'([+-]?)([123]{1,3})', f"{order}" if isinstance(order, int) else order)
+        if not m:
+            raise ValueError("Invalid 'order': does not match the pattern '([+-]?)([123]{1,3})'.")
+        is_ascending = (m.group(1) != '-')
+        priority = [int(i)-1 for i in reversed(m.group(2))]
+
+        if len(set(priority)) != len(priority):
+            raise ValueError("'order' must not contain duplicate digits")
+
+        for elt, pos in self.sites.items():
+            pos = np.asarray(pos)
+            pos = pos[np.lexsort(keys=[pos[:, i] for i in priority])]
+            self.sites[elt] = pos if is_ascending else pos[::-1]
+
     def loc_pos(self, pos):
         '''
         Locate the nearest site in cell to corresponding given position
