@@ -70,6 +70,7 @@ def cmd(arg=None):
     parser_refine_exclusive.add_argument('-s', '--strain', metavar='TENSOR', help="Apply a cartesian strain tensor, i.e. P' = P @ S")
     parser_refine_exclusive.add_argument('-c', '--cubicize', type=int, metavar='NUM', help='Find an almost cubic supercell near the given atom count')
     parser_refine_exclusive.add_argument('-d', '--displace', nargs=4, metavar=('Site', 'dx', 'dy', 'dz'), help='Make a cartesian displacement in Angstroms (e.g.: Sb3 0 0 0.1)')
+    parser_refine.add_argument('-r', '--sort', nargs='?', const='321', metavar='ORDER', help='Sort all atoms based on fractional coordinates')
     parser_refine.add_argument('-i', '--input', metavar='FILENAME', default='POSCAR', help='Input filename(default: POSCAR)')
     parser_refine.add_argument('-o', '--output', metavar='FILENAME', default='POSCAR', help='Output filename(default: POSCAR)')
 
@@ -342,6 +343,10 @@ def cmd(arg=None):
         else:
             print('No refinement option is specified')
             pos2 = Cell.from_poscar(poscar=args.input)
+        if args.sort:
+            pos2.sort_pos(order=args.sort)
+            if not is_quiet:
+                print('Sort all atoms based on fractional coordinates')
         pos2.write(poscar=args.output)
         if not is_quiet:
             print(f"Save the new structure to '{args.output}' file")
