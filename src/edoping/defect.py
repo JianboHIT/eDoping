@@ -23,7 +23,7 @@ from .dft import Cell, read_energy, read_volume, \
                  read_eigval, read_evbm_from_ne, read_pot
 
 
-class InputList():
+class InputConfig:
     _default = {'dperfect': '../perfect',
                 'ddefect': '.',
                 'cmpot': [0, 0],
@@ -45,42 +45,38 @@ class InputList():
                 'npts': 1001}  # read-only
     __slots__ = _default.keys()
 
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, auto_finalize=False):
+        '''
+        A container for managing and validating input parameters.
+        '''
         for key in self.__slots__:
             setattr(self, key, None)  # inital to None
+
         if filename is not None:
-            self.from_file(filename)
+            with open(filename, 'r') as f:
+                for line in f:
+                    name, value, *_ = self.parse_para(line)
+                    if name is not None:
+                        setattr(self, name, value)
+            if auto_finalize:
+                self.finalize()
 
-    def from_file(self, filename=filein):
+    def __str__(self):
         '''
-        Update parameters from file manually.
-
-        Parameters
-        ----------
-        filename : str, optional
-            Filename of *.in file. The default is 'EDOPING.in'.
-
+        Display in print().
         '''
-        with open(filename, 'r') as f:
-            opts = self.parse(f.readlines())
-        for opt in opts:
-            setattr(self, opt[0], opt[1])
+        return '\n'.join(f'{k.upper():>10s}: {getattr(self, k)}' for k in self.__slots__)
 
-    def set_default(self):
+    def finalize(self):
         '''
-        Auto-fill unset parameters.
-
+        Fill missing parameters with defaults and validate for consistency.
         '''
+        ### set default values for unset parameters
         for key in self.__slots__:
             if getattr(self, key) is None:
                 setattr(self, key, self._default[key])
-        self.check()
 
-    def check(self):
-        '''
-        Check input parameters. TODO
-        
-        '''
+        ### check consistency of parameters
         if self.ddname == 'auto':
             prefix = self.prefix
             ddname = []
@@ -113,86 +109,65 @@ class InputList():
             idx = self.valence.index(0) if 0 in self.valence else 0
             self.drefer = self.ddname[idx]
 
-    def __str__(self):
-        '''
-        Display in print().
-        
-        '''
-        strs = ['{:>10s}: {}'.format(key.upper(), getattr(self, key))
-                for key in self.__slots__]
-        return '\n'.join(strs)
+    @staticmethod
+    def parse_para(line):
+        name = None
+        value = None
+        comment = None
 
-    @classmethod
-    def parse(cls, lines):
-        '''
-        Parse parameters from text line by line.
-        
-        '''
-        if isinstance(lines, list):
-            paras = []
-            for line in lines:
-                para = cls.parse(line)
-                if para[0] is not None:
-                    paras.append(para)
-            return paras
+        # extract comment
+        if '#' in line:
+            pp = line.strip().split('#', 1)
+            pairs, comment = pp
         else:
-            name = None
-            value = None
-            comment = None
+            pairs = line
 
-            # extract comment
-            if '#' in lines:
-                pp = lines.strip().split('#', 1)
-                pairs, comment = pp
-            else:
-                pairs = lines
+        # filter comment line and read valid parameters
+        if '=' in pairs:
+            p1, p2 = pairs.split('=', 1)
+            ck = [(ig in p2) for ig in '=,;?']  # illegal character
+            if any(ck):
+                dsp = 'Only one parameter can be set in one line!\n'
+                dsp2 = '  > {}'.format(line)
+                raise ValueError(''.join([dsp, dsp2]))
+            name = p1.strip().lower()
 
-            # filter comment line and read valid parameters
-            if '=' in pairs:
-                p1, p2 = pairs.split('=', 1)
-                ck = [(ig in p2) for ig in '=,;?']  # illegal character
-                if any(ck):
-                    dsp = 'Only one parameter can be set in one line!\n'
-                    dsp2 = '  > {}'.format(lines)
-                    raise ValueError(''.join([dsp, dsp2]))
-                name = p1.strip().lower()
+            if name in ['dperfect', 'ddefect', 'drefer', 'prefix']:
+                value = p2.strip()  # String
+                if any(s in value for s in ' <>:,"|?*'):
+                    raise ValueError('Illegal characters for {}'.format(name.upper()))
 
-                if name in ['dperfect', 'ddefect', 'drefer', 'prefix']:
-                    value = p2.strip()  # String
-                    if any(s in value for s in ' <>:,"|?*'):
-                        raise ValueError('Illegal characters for {}'.format(name.upper()))
+            elif name in ['npts', 'bftype']:
+                value = int(p2)  # Int
 
-                elif name in ['npts', 'bftype']:
-                    value = int(p2)  # Int
+            elif name in ['ewald', 'epsilon', 'penergy', 'evbm', 'ecbm',
+                            'emin', 'emax', 'pvolume', 'iccoef']:
+                value = float(p2)  # Float
 
-                elif name in ['ewald', 'epsilon', 'penergy', 'evbm', 'ecbm',
-                              'emin', 'emax', 'pvolume', 'iccoef']:
-                    value = float(p2)  # Float
+            elif name in ['valence']:
+                # Int-list
+                value = [int(item) for item in p2.split()]
 
-                elif name in ['valence']:
-                    # Int-list
-                    value = [int(item) for item in p2.split()]
+            elif name in ['cmpot', 'padiff']:
+                # Float-list
+                value = [float(item) for item in p2.split()]
 
-                elif name in ['cmpot', 'padiff']:
-                    # Float-list
-                    value = [float(item) for item in p2.split()]
-
-                elif name == 'ddname':
-                    # Str or Str-list
-                    ck1 = ' ' not in p2.strip()
-                    ck2 = p2.lower().startswith('auto')
-                    ck3 = p2.lower().startswith('pre')
-                    if any([ck1, ck2, ck3]):
-                        value = 'auto'
-                    else:
-                        value = p2.strip().split()
+            elif name == 'ddname':
+                # Str or Str-list
+                ck1 = ' ' not in p2.strip()
+                ck2 = p2.lower().startswith('auto')
+                ck3 = p2.lower().startswith('pre')
+                if any([ck1, ck2, ck3]):
+                    value = 'auto'
                 else:
-                    print("WARNING: Undefined Keyword: {} ".format(name))
+                    value = p2.strip().split()
+            else:
+                print("WARNING: Undefined Keyword: {} ".format(name))
 
-            return name, value, comment
+        return name, value, comment
 
 
-def formation(inputlist=None, infolevel=1):
+def formation(inputfile=None, infolevel=1):
     '''
     Calculate defect formation energy.
 
@@ -207,19 +182,19 @@ def formation(inputlist=None, infolevel=1):
     print(*infos, sep='\n')
     print('')
 
-    # Read InputList
-    if inputlist is None:
-        ipt = InputList(filein)
-    elif isinstance(inputlist, InputList):
-        ipt = inputlist
-    elif isinstance(inputlist, str):
-        ipt = InputList(filename=inputlist)
+    # Read InputConfig
+    if inputfile is None:
+        ipt = InputConfig(filein, auto_finalize=True)
+    elif isinstance(inputfile, str):
+        ipt = InputConfig(inputfile, auto_finalize=True)
+    elif isinstance(inputfile, InputConfig):
+        ipt = inputfile
+        ipt.finalize()
     else:
-        raise RuntimeError('Unrecognized input #1')
-    ipt.set_default()
+        raise RuntimeError('Unrecognized input: {}'.format(inputfile))
     
     # print('Read input parameters:\n')
-    print('{:-^55s}'.format(' INPUT LIST '))
+    print('{:-^55s}'.format(' INPUTS '))
     print(ipt)
     print('-' * 55 + '\n')
     # print('\n')

@@ -167,7 +167,7 @@ def cmd(arg=None):
         parser.print_help()
     elif args.task == 'cal':
         from .defect import formation
-        formation(inputlist=args.input)
+        formation(inputfile=args.input)
     elif args.task == 'energy':
         from .dft import read_energy, read_members
         value = read_energy(outcar=args.filename, average=args.ave)
