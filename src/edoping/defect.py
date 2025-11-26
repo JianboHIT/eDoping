@@ -681,79 +681,79 @@ def supercell(cell, transform, shift_eps=1e-6, return_frame=None):
         return scell, frame
 
 def diff_cell(cell_1, cell_2, prec=0.2):
-        '''
-        Compare two Cell() object
+    '''
+    Compare two Cell() object
 
-        Parameters
-        ----------
-        cell_1 : Cell
-            The first Cell() object
-        cell_2 : Cell
-            The other Cell() objcet, which nust has the same basis vectors.
-        prec : float, optional
-            The precision to determine if the positions coincide, by default 0.2
+    Parameters
+    ----------
+    cell_1 : Cell
+        The first Cell() object
+    cell_2 : Cell
+        The other Cell() objcet, which nust has the same basis vectors.
+    prec : float, optional
+        The precision to determine if the positions coincide, by default 0.2
 
-        Returns
-        -------
-        list of list
-            [[state, pos, elt_1, idx_1, elt_2, idx_2,], ... ]
-        
-        Example:
-            diffs = diff_cell(cell, cell2)
-            
-            dsp_head = '{:^7s}{:^8}{:^8}{:^8}{:^12s}{:^12s}'
-            head = dsp_head.format('No.','f_a', 'f_b', 'f_c', 'previous', 'present')
-            dsp = '{:^3s}{:<4d}{:>8.4f}{:>8.4f}{:>8.4f}{:^12s}{:^12s}'
-            
-            print(head)
-            for idx, out in enumerate(diffs, start=1):
-                state, pos, elt1, idx1, elt2, idx2 = out
-                label1 = '{}{}'.format(elt1, idx1)
-                label2 = '{}{}'.format(elt2, idx2)
-                print(dsp.format(state, idx, *pos, label1, label2))
-        '''
+    Returns
+    -------
+    list of list
+        [[state, pos, elt_1, idx_1, elt_2, idx_2,], ... ]
 
-        # cell_1 and cell_2 will share the basis of cell_1
-        basis = np.array(cell_1.basis)
-        basis2 = np.array(cell_2.basis)
-        if np.any(np.abs(basis2-basis) > 0.2):
-            raise RuntimeError('Unmatched basis of two cells')
-        
-        # get all site positons, and move 1-bound to 0-bound
-        elts1, idxs1, poss1 = zip(*cell_1.all_pos())
-        pp1 = np.array(poss1).reshape((-1, 1, 3))   # shape: (N1, 1, 3)
-        
-        elts2, idxs2, poss2 = zip(*cell_2.all_pos())
-        pp2 = np.array(poss2)                       # shape: (N2, 3)
-        
-        c1, c2, c3 = np.mgrid[-1:2,-1:2,-1:2]
-        cc = np.c_[c1.flatten(),c2.flatten(),c3.flatten()]
-        cc = np.reshape(cc, (-1, 1, 1, 3))          # shape: (27, 1, 1, 3)
-        
-        dr = (cc + pp2 - pp1) @ basis
-        dists = np.linalg.norm(dr, ord=2, axis=-1)  # shape: (27, N1, N2)
-        dmin = np.min(dists, axis=0)
-        
-        diffs = []
-        Vac_idx = 0
-        compare = (dmin < prec)                     # shape: (N1, N2)
-        for elt1, idx1, pos1, cmp in zip(elts1, idxs1, poss1, compare):
-            ix = np.where(cmp)[0]
-            if len(ix):
-                # at pubic site, can be same or substitution
-                elt2, idx2 = elts2[ix[0]], idxs2[ix[0]]
-                state = '' if elt1 == elt2 else 's'
-                diffs.append([state, pos1, elt1, idx1, elt2, idx2])
-            else:
-                # only in cell_1
-                Vac_idx += 1
-                diffs.append(['v', pos1, elt1, idx1, 'Vac', Vac_idx])
-        only_2 = np.where(~np.any(compare, axis=0))[0]
-        for Vac_idx, index in enumerate(only_2, start=1):
-            # only in cell_2
-            elt2, idx2, pos2 = elts2[index], idxs2[index], poss2[index]
-            diffs.append(['i', pos2, 'Vac', Vac_idx, elt2, idx2])
-        return diffs
+    Example:
+        diffs = diff_cell(cell, cell2)
+
+        dsp_head = '{:^7s}{:^8}{:^8}{:^8}{:^12s}{:^12s}'
+        head = dsp_head.format('No.','f_a', 'f_b', 'f_c', 'previous', 'present')
+        dsp = '{:^3s}{:<4d}{:>8.4f}{:>8.4f}{:>8.4f}{:^12s}{:^12s}'
+
+        print(head)
+        for idx, out in enumerate(diffs, start=1):
+            state, pos, elt1, idx1, elt2, idx2 = out
+            label1 = '{}{}'.format(elt1, idx1)
+            label2 = '{}{}'.format(elt2, idx2)
+            print(dsp.format(state, idx, *pos, label1, label2))
+    '''
+
+    # cell_1 and cell_2 will share the basis of cell_1
+    basis = np.array(cell_1.basis)
+    basis2 = np.array(cell_2.basis)
+    if np.any(np.abs(basis2-basis) > 0.2):
+        raise RuntimeError('Unmatched basis of two cells')
+
+    # get all site positons, and move 1-bound to 0-bound
+    elts1, idxs1, poss1 = zip(*cell_1.all_pos())
+    pp1 = np.array(poss1).reshape((-1, 1, 3))   # shape: (N1, 1, 3)
+
+    elts2, idxs2, poss2 = zip(*cell_2.all_pos())
+    pp2 = np.array(poss2)                       # shape: (N2, 3)
+
+    c1, c2, c3 = np.mgrid[-1:2,-1:2,-1:2]
+    cc = np.c_[c1.flatten(),c2.flatten(),c3.flatten()]
+    cc = np.reshape(cc, (-1, 1, 1, 3))          # shape: (27, 1, 1, 3)
+
+    dr = (cc + pp2 - pp1) @ basis
+    dists = np.linalg.norm(dr, ord=2, axis=-1)  # shape: (27, N1, N2)
+    dmin = np.min(dists, axis=0)
+
+    diffs = []
+    Vac_idx = 0
+    compare = (dmin < prec)                     # shape: (N1, N2)
+    for elt1, idx1, pos1, cmp in zip(elts1, idxs1, poss1, compare):
+        ix = np.where(cmp)[0]
+        if len(ix):
+            # at pubic site, can be same or substitution
+            elt2, idx2 = elts2[ix[0]], idxs2[ix[0]]
+            state = '' if elt1 == elt2 else 's'
+            diffs.append([state, pos1, elt1, idx1, elt2, idx2])
+        else:
+            # only in cell_1
+            Vac_idx += 1
+            diffs.append(['v', pos1, elt1, idx1, 'Vac', Vac_idx])
+    only_2 = np.where(~np.any(compare, axis=0))[0]
+    for Vac_idx, index in enumerate(only_2, start=1):
+        # only in cell_2
+        elt2, idx2, pos2 = elts2[index], idxs2[index], poss2[index]
+        diffs.append(['i', pos2, 'Vac', Vac_idx, elt2, idx2])
+    return diffs
 
 def disp_diffs(basis, diffs, full_list=False, with_dist=True):
     '''
