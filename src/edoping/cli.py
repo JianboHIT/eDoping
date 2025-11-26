@@ -449,13 +449,13 @@ def cmd(arg=None):
             print('===', *(['='*nwidth,] * ngroup), sep='=')
     elif args.task == 'diff':
         from .dft import Cell
-        from .defect import diff_cell, disp_diffs
+        from .defect import diff_cell
         c1 = Cell.from_poscar(poscar=args.filename1)
         c2 = Cell.from_poscar(poscar=args.filename2)
-        diffs = diff_cell(c1, c2, prec=args.prec)
-        disp_diffs(c1.basis, diffs,
-                   full_list=is_detail,
-                   with_dist=args.distance)
+        diff_cell(c1, c2,
+                  prec=args.prec,
+                  cal_dist=args.distance,
+                  show_diff='full' if is_detail else True)
     elif args.task == 'query':
         from .dft import Cell
         from .query import get_phases

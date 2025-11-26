@@ -333,8 +333,9 @@ def formation(inputfile=None, infolevel=1):
         pos1 = Cell.from_poscar(os.path.join(ipt.dperfect, 'POSCAR'))
         pos2 = Cell.from_poscar(os.path.join(ipt.ddefect, ipt.drefer, 'POSCAR'))
         # idx1, idx2, dmax = pos1.diff(pos2, showdiff=True, out='far')
-        diffs = diff_cell(pos1, pos2)
-        dist = disp_diffs(pos1.basis, diffs, with_dist=True)
+        # diffs = diff_cell(pos1, pos2)
+        # dist = disp_diffs(pos1.basis, diffs, with_dist=True)
+        diffs, dist = diff_cell(pos1, pos2, cal_dist=True, show_diff=True)
         if dist is None:
             raise RuntimeError('No point defect is found')
         _, dsite, elt1, eidx1, elt2, eidx2 = diffs[np.argmax(dist)]
@@ -680,44 +681,41 @@ def supercell(cell, transform, shift_eps=1e-6, return_frame=None):
         frame = vertices @ trans_rev + np.asarray(return_frame)
         return scell, frame
 
-def diff_cell(cell_1, cell_2, prec=0.2):
+def diff_cell(cell_1, cell_2, prec=0.2, cal_dist=False, show_diff=False, ord=1):
     '''
-    Compare two Cell() object
+    Compare two Cell() objects and optionally compute per-site distances.
 
     Parameters
     ----------
     cell_1 : Cell
-        The first Cell() object
+        The first Cell() object.
     cell_2 : Cell
-        The other Cell() objcet, which nust has the same basis vectors.
+        The other Cell() object, which must have the same basis vectors.
     prec : float, optional
-        The precision to determine if the positions coincide, by default 0.2
+        Precision threshold to determine if atomic positions coincide,
+        by default 0.2.
+    cal_dist : bool, optional
+        Whether to compute per-site distances to defect positions, by default False.
+    show_diff : bool or 'full', optional
+        Whether to show a summary of differences, by default False. If the special
+        value 'full' is provided, a detailed site-by-site comparison is printed as well.
+    ord : float, optional
+        Norm order for distance reduction, by default 1. If set to None, the full
+        distance matrix is returned.
 
     Returns
     -------
-    list of list
-        [[state, pos, elt_1, idx_1, elt_2, idx_2,], ... ]
-
-    Example:
-        diffs = diff_cell(cell, cell2)
-
-        dsp_head = '{:^7s}{:^8}{:^8}{:^8}{:^12s}{:^12s}'
-        head = dsp_head.format('No.','f_a', 'f_b', 'f_c', 'previous', 'present')
-        dsp = '{:^3s}{:<4d}{:>8.4f}{:>8.4f}{:>8.4f}{:^12s}{:^12s}'
-
-        print(head)
-        for idx, out in enumerate(diffs, start=1):
-            state, pos, elt1, idx1, elt2, idx2 = out
-            label1 = '{}{}'.format(elt1, idx1)
-            label2 = '{}{}'.format(elt2, idx2)
-            print(dsp.format(state, idx, *pos, label1, label2))
+    diffs : list of list
+        Comparison results [[state, pos, elt_1, idx_1, elt_2, idx_2], ...].
+    dist : ndarray or None
+        Per-site distance array if `cal_dist=True` and defects exist, otherwise None.
     '''
 
     # cell_1 and cell_2 will share the basis of cell_1
     basis = np.array(cell_1.basis)
     basis2 = np.array(cell_2.basis)
     if np.any(np.abs(basis2-basis) > 0.2):
-        raise RuntimeError('Unmatched basis of two cells')
+        raise ValueError('Unmatched basis of two cells')
 
     # get all site positons, and move 1-bound to 0-bound
     elts1, idxs1, poss1 = zip(*cell_1.all_pos())
@@ -753,55 +751,42 @@ def diff_cell(cell_1, cell_2, prec=0.2):
         # only in cell_2
         elt2, idx2, pos2 = elts2[index], idxs2[index], poss2[index]
         diffs.append(['i', pos2, 'Vac', Vac_idx, elt2, idx2])
-    return diffs
 
-def disp_diffs(basis, diffs, full_list=False, with_dist=True):
-    '''
-    Display diffs. `diffs` may produced by `diff_cell` function.
-    '''
+    # Optional compute per-site distances
+    dist = None
+    if cal_dist and any(df[0] for df in diffs):
+        defects = [df[1] for df in diffs if df[0]]
+        all_sites = [df[1] for df in diffs]
+        pseudo_cell = Cell(basis=basis, sites=[('X', all_sites)])
+        dd = pseudo_cell.get_dist(defects)  # shape: (N_defects, N_sites)
+        dist = dd if ord is None else np.linalg.norm(dd, ord=ord, axis=0)
 
-    diffs_only = [df for df in diffs if df[0]]
-    
-    if len(diffs_only):
-        be_same = False
-    else:
-        be_same = True
-        with_dist = False
-    
-    if with_dist:
-        sites = [df[1] for df in diffs]
-        defects = [df[1] for df in diffs_only]
-        
-        pesudo_cell = Cell(basis=basis, sites=[('X', sites),])
-        dd = pesudo_cell.get_dist(defects) # shape: (N_defect, N_sites)
-        dist = np.sum(dd, axis=0)   # shape: (N_sites,)
-        diffs = [df+[d,] for df, d in zip(diffs, dist)]
-    else:
-        dist = None
-    
+    # Optional display differences
     dsp_head = '{:^7s}{:^8}{:^8}{:^8}{:^12s}{:^12s}'
     head = dsp_head.format('No.','f_a', 'f_b', 'f_c', 'previous', 'present')
     dsp = '{1:^3s}{0:<4d}{2[0]:>8.4f}{2[1]:>8.4f}{2[2]:>8.4f}{3:>6s}{4:<6d}{5:>6s}{6:<6d}'
-    
-    if full_list:
-        if with_dist:
-            print(head+'{:^12s}'.format('d_min'))
-            dsp_list = dsp + '{7:^12.2f}'
-        else:
-            print(head)
-            dsp_list = dsp
 
-        for idx, df in enumerate(diffs, start=1):
-            print(dsp_list.format(idx, *df))
+    if show_diff == 'full':
+        if dist is None:
+            print(head)
+            for idx, df in enumerate(diffs, start=1):
+                print(dsp.format(idx, *df))
+        else:
+            print(head, '{:^12s}'.format('d_min'))
+            for idx, (df, dt) in enumerate(zip(diffs, dist), start=1):
+                print(dsp.format(idx, *df), '{:^12.2f}'.format(dt))
         print('\nDifferent:')
-    
-    print(head)
-    if be_same:
-        print('(No difference is found)')
-        return dist
-    for idx, df in enumerate(diffs_only, start=1):
-        print(dsp.format(idx, *df))
-    return dist
+
+    if show_diff:
+        print(head)
+        diffs_only = [df for df in diffs if df[0]]
+        if diffs_only:
+            for idx, df in enumerate(diffs_only, start=1):
+                print(dsp.format(idx, *df))
+        else:
+            print('(No difference is found)')
+
+    return diffs, dist
 
 def write_bsenergy(data, q, filename=filedata, volume=1, gx=1):
     '''
