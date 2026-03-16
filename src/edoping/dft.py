@@ -227,6 +227,27 @@ class Cell():
         with open(poscar, 'w') as f:
             f.writelines(lines)
     
+    def move(self, atom, idx, pos, relative=False):
+        '''
+        Move atom_idx to a specified position in-place.
+
+        Parameters
+        ----------
+        atom : str
+            Type of atom
+        idx : int, optional
+            The index of pop atom (index start from 1)
+        pos : ndarray with shape (3,)
+            The destination position
+        relative : bool, optional
+            Whterher the position is relative to the current position, by default False
+        '''
+        _ = self.get_pos(atom, idx) # check if atom exists
+        if relative:
+            self.sites[atom][idx-1] += np.array(pos, copy=True)
+        else:
+            self.sites[atom][idx-1] = np.array(pos, copy=True)
+
     def pop(self, atom, idx=1):
         '''
         Remove atom_idx. Note that this operation will change the original indices.

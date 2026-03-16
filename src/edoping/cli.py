@@ -322,21 +322,17 @@ def cmd(arg=None):
             site_, dx_, dy_, dz_ = args.displace
             rst = Cell.parse_composition(site_)
             if rst:
-                atom, idx = rst[0]
-                if atom not in pos.sites:
-                    raise ValueError('Cannot find atom: {}'.format(atom))
-                if (idx < 1) or (idx > len(pos.sites[atom])):
-                    raise ValueError('Invalid index: {}'.format(idx))
+                atom_idx = rst[0]
                 dr_cart = np.array([float(v) for v in [dx_, dy_, dz_]])
                 distance = np.linalg.norm(dr_cart)
                 if is_detail:
-                    print('Displace {}{} by ({:.4f}, {:.4f}, {:.4f}), {:.4g} Angstroms'.format(atom, idx, *dr_cart, distance))
+                    print('Displace {}{} by ({:.4f}, {:.4f}, {:.4f}), {:.4g} Angstroms'.format(*atom_idx, *dr_cart, distance))
                 elif is_quiet:
                     print('{:.4g}'.format(distance))
                 else:
-                    print('Displace {}{} by {:.4g} Angstroms'.format(atom, idx, distance))
+                    print('Displace {}{} by {:.4g} Angstroms'.format(*atom_idx, distance))
                 dr_frac = dr_cart @ np.linalg.inv(pos.basis)
-                pos.sites[atom][idx-1] += dr_frac - np.floor(dr_frac)
+                pos.move(*atom_idx, dr_frac - np.floor(dr_frac), relative=True)
             else:
                 raise ValueError('Invalid site format: {}'.format(site_))
             pos2 = pos
