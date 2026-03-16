@@ -229,7 +229,7 @@ class Cell():
     
     def pop(self, atom, idx=1):
         '''
-        Remove atom_idx
+        Remove atom_idx. Note that this operation will change the original indices.
 
         Parameters
         ----------
@@ -241,31 +241,18 @@ class Cell():
         Returns
         -------
         ndarray in shape (3,)
-            The postion of pop atom
+            The position of pop atom
         '''
-        if atom in self.sites:
-            site = np.asarray(self.sites[atom])
-            pos = site[idx - 1]
-            self.sites[atom] = np.delete(site, idx - 1, axis=0)
-            if self.sites[atom].size == 0:
-                del self.sites[atom]
-        else:
-            raise KeyError(f'Failed to locate {atom}')
+        pos = self.get_pos(atom, idx)
+        self.sites[atom] = np.delete(self.sites[atom], idx - 1, axis=0)
+        if self.sites[atom].size == 0:
+            del self.sites[atom]
         return pos
-
-    def index(self, atom, idx=1):
-        '''
-        Get global index (1-start) from atom & idx (1-start)
-        '''
-        for index_, (atom_, idx_, *_) in enumerate(self.all_pos(), start=1):
-            if (atom == atom_) and (idx == idx_):
-                return index_
-        else:
-            return -1
 
     def insert(self, atom, pos, idx=1, tohead=True):
         '''
-        Insert a new atom at specified postion
+        Insert a new atom at specified position. Note that this operation will
+        change the original indices.
 
         Parameters
         ----------
@@ -278,6 +265,7 @@ class Cell():
         tohead : bool, optional
             Whether to put the species first if it is new, by default True
         '''
+        pos = np.array(pos, copy=True)
         if atom in self.sites:
             self.sites[atom] = np.insert(self.sites[atom], idx-1, pos, axis=0)
         else:
@@ -334,22 +322,30 @@ class Cell():
         '''
         return sum(len(site) for site in self.sites.values())
     
-    def get_pos(self, numbers):
+    def get_pos(self, atom, idx=1):
         '''
-        Get (atom, idx, pos) combination from given numbers (start from 1)
+        Get position of atom_idx
 
         Parameters
         ----------
-        numbers : List[int]
-            List of global idx (start from 1)
+        atom : str
+            Type of atom
+        idx : int, optional
+            The index of pop atom (index start from 1), by default 1
 
         Returns
         -------
-        list
-            [(atom, idx, pos), ...]
+        ndarray in shape (3,)
+            The position of atom_idx
         '''
-        all_pos = list(self.all_pos())
-        return [all_pos[round(i)-1] for i in numbers]
+        if atom in self.sites:
+            site = np.asarray(self.sites[atom])
+            if idx <= len(site):
+                return np.array(site[idx - 1], copy=True)
+            else:
+                raise ValueError(f'Failed to locate {atom}{idx}')
+        else:
+            raise KeyError(f'Failed to locate {atom}')
     
     def get_dist(self, pos):
         '''
@@ -428,7 +424,8 @@ class Cell():
         '''
         dmin = self.get_dist(pos)
         ix = np.argmin(dmin, axis=-1)
-        return self.get_pos(ix+1)
+        all_pos = list(self.all_pos())
+        return [all_pos[round(i)] for i in ix]
     
     def all_pos(self, atoms=None):
         '''

@@ -363,13 +363,12 @@ def formation(inputlist=None, infolevel=1):
         if dist is None:
             raise RuntimeError('No point defect is found')
         _, dsite, elt1, eidx1, elt2, eidx2 = diffs[np.argmax(dist)]
-        dmax = np.max(dist)
-        idx1 = pos1.index(elt1, eidx1) - 1  # global index, 0-start
-        idx2 = pos2.index(elt2, eidx2) - 1  # global index, 0-start
         print('\nFind the farthest site: ', end='')
         dsp = '{:.4f} at {:s}{:d} ({:.4f} {:.4f} {:.4f})'
-        print(dsp.format(dmax, elt1, eidx1, *dsite))
+        print(dsp.format(np.max(dist), elt1, eidx1, *dsite))
 
+        idx1 = [(elt, idx) for elt, idx, _ in pos1.all_pos()].index((elt1, eidx1))
+        idx2 = [(elt, idx) for elt, idx, _ in pos2.all_pos()].index((elt2, eidx2))
         print('Read electrostatic potential from perfect cell: ', end='')
         pot1 = read_pot(os.path.join(ipt.dperfect, 'OUTCAR'))[idx1]
         print('{:.4f}'.format(pot1))
