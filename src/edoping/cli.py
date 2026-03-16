@@ -38,7 +38,8 @@ def cmd(arg=None):
 
     parser_energy = sub_parser.add_parser('energy', help='Read final energy from OUTCAR')
     parser_energy.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename(default: OUTCAR)')
-    parser_energy.add_argument('--ave', '--average', action='store_true', help='Calculate energy per atom')
+    parser_energy.add_argument('--ave', '--average', action='store_true', help='Calculate energy per atom, while default is energy per unit-cell')
+    parser_energy.add_argument('-c', '--count', metavar='ELEMENT_LIST', const='ELMTLIST', nargs='?', help='Count the numbers of specified element, e.g. "Nb Fe Sb Mn"')
 
     parser_ewald = sub_parser.add_parser('ewald', help='Read Ewald from OUTCAR')
     parser_ewald.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename(default: OUTCAR)')
@@ -161,13 +162,23 @@ def cmd(arg=None):
         from .defect import formation
         formation(inputlist=args.input)
     elif args.task == 'energy':
-        from .dft import read_energy
+        from .dft import read_energy, read_members
         value = read_energy(outcar=args.filename, average=args.ave)
         unit = 'eV/atom' if args.ave else 'eV/cell'
-        if is_quiet:
-            print('{:.4f}'.format(value))
+        if args.count:
+            members = read_members(outcar=args.filename)
+            stat = list(members.keys()) if args.count == 'ELMTLIST' else args.count.split()
+            rst1 = ''.join(' {} '.format(members.get(atom, 0)) for atom in stat) + ' '
+            rst2 = ' ( ' + ' '.join('{}_{}'.format(atom, members.get(atom, 0)) for atom in stat) + ' )'
+            rst3 = ' ( ' + '  '.join('{}'.format(members.get(atom, 0)) for atom in stat) + ' )'
         else:
-            print('Final energy: {:.4f} {}'.format(value, unit))
+            rst1, rst2, rst3 = '', '', ''
+        if is_quiet:
+            print('{}{:.4f}'.format(rst1, value))
+        elif is_detail:
+            print('Final energy{}: {:.4f} {}'.format(rst2, value, unit))
+        else:
+            print('Final energy{}: {:.4f} {}'.format(rst3, value, unit))
     elif args.task == 'ewald':
         from .dft import read_ewald
         value = read_ewald(outcar=args.filename)

@@ -493,6 +493,35 @@ def read_energy(outcar='OUTCAR', average=False):
     return energy
 
 
+def read_members(outcar='OUTCAR'):
+    '''
+    Read the number of each type of atom from OUTCAR.
+
+    '''
+    with open(outcar, 'r') as f:
+        atoms = []
+        last_atom = ''
+        for line in f:
+            if 'TITEL' in line:
+                # e.g.:    TITEL  = PAW_PBE Ni 02Aug2007
+                pot = line.strip().split()[3]
+                atoms.append(pot.split('_')[0])
+            elif 'LATTYP' in line:
+                break
+
+        for line in f:
+            if 'ions per type' in line:
+                counts_str = line.strip().split('=')[1]
+                counts = [int(i) for i in counts_str.strip().split()]
+                break
+
+        members = OrderedDict()
+        for atom, count in zip(atoms, counts):
+            members[atom] = members.get(atom, 0) + count
+
+    return members
+
+
 def read_ewald(outcar='OUTCAR'):
     '''
     Read final Ewald from OUTCAR.
