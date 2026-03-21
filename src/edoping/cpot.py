@@ -128,3 +128,52 @@ def pminmax(coefs, energies, labels=None, objcoefs=None, referance=None, eq_idx=
         result = (name, rst.x + refs, rst.status, rst.message)
         results.append(result)
     return results
+
+def pyhull(Xcomp, Ecomp, ends=None):
+    '''
+    Computes the ground state convex hull and energies above the hull for a binary system.
+
+    Parameters
+    ----------
+    Xcomp : 1D array_like
+        Monotonically sorted phase compositions (e.g., mole fractions).
+        Using `fractions.Fraction` is highly recommended to avoid floating-point
+        artifacts when resolving degenerate tie-lines.
+    Ecomp : 1D array_like
+        Energies corresponding to `Xcomp`.
+    ends : (int, int), optional
+        Indices of the current tie-line endpoints. Evaluates the full composition
+        range if None.
+
+    Returns
+    -------
+    list of int
+        Indices of the thermodynamically stable phases (hull vertices).
+    numpy.ndarray or float
+        Global E_above_hull for all phases. Returns `np.inf` for collapsed bounding boxes.
+    '''
+    Xcomp = np.asarray(Xcomp)
+    Ecomp = np.asarray(Ecomp, dtype=float)
+
+    if ends is None:
+        end_a, end_b = 0, len(Xcomp) - 1
+    else:
+        end_a, end_b = ends
+
+    Xa = Xcomp[end_a]
+    Xb = Xcomp[end_b]
+
+    if Xa >= Xb:
+        return [], np.inf
+
+    a = ((Xb - Xcomp) / (Xb - Xa)).astype(float)
+    b = ((Xcomp - Xa) / (Xb - Xa)).astype(float)
+    Ehull = Ecomp - a * Ecomp[end_a] - b * Ecomp[end_b]
+
+    if np.all(Ehull >= 0):
+        return [end_a, end_b], Ehull
+
+    end_c = int(np.argmin(Ehull))
+    convex_a, Ehull_a = pyhull(Xcomp, Ecomp, ends=(end_a, end_c))
+    convex_b, Ehull_b = pyhull(Xcomp, Ecomp, ends=(end_c, end_b))
+    return convex_a[:-1] + [end_c, ] + convex_b[1:], np.minimum(Ehull_a, Ehull_b)
