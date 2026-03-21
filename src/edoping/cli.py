@@ -525,13 +525,10 @@ def cmd(arg=None):
             print(f'WARNING: Target compound "{args.compound}"'
                   ' is not included in the retrieved data.\n')
     elif args.task == 'chempot':
-        from .cpot import pminmax
-        # pminmax(filename, objcoefs=None)
-        # return (name, x0, status, msg),labels
-        results,labels = pminmax(args.filename, 
-                                 objcoefs=args.cond,
-                                 referance=args.refs,
-                                 normalize=args.norm)
+        from .cpot import read_cmpot, pminmax
+        coefs, energies, labels = read_cmpot(args.filename, normalize=args.norm)
+        results = pminmax(coefs, energies, labels=labels, objcoefs=args.cond, referance=args.refs)
+
         if is_quiet:
             for rst in results:
                 if is_detail:

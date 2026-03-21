@@ -14,8 +14,6 @@
 
 
 import numpy as np
-from io import StringIO
-from collections.abc import Iterable
 
 try:
     from scipy.optimize import linprog
@@ -26,86 +24,66 @@ else:
 
 from .misc import required, filecmpot
 
-def read_cmpot(filename=filecmpot, eq_idx=0, normalize=False):
+def read_cmpot(filename=filecmpot, normalize=False):
     with open(filename, 'r') as f:
-        lines = f.readlines()
-        
-    if '#' in lines[0]:
-        header = lines[0].strip().lstrip('#').split()
-        del(lines[0])
+        # Only read the first line
+        line = f.readline()
+
+    if line.strip().startswith('#'):
+        header = line.strip().lstrip('#').split()
     else:
         header = None
-    
-    data = np.loadtxt(StringIO(''.join(lines)))
-    coefs = data[:,:-1]    # (n,Nelmt)
-    energy = data[:,-1:]   # (n,1)
+
+    full_data = np.loadtxt(filename)
+    coefs = full_data[:,:-1]    # (n,Nelmt)
+    energies = full_data[:,-1]    # (n,)
     if normalize:
-        Natom = coefs.sum(axis=-1, keepdims=True)
-        energy *= Natom    # equal to ceefs /= Natom
+        Natom = coefs.sum(axis=-1)
+        energies *= Natom         # equal to ceefs /= Natom
     Nelmt = coefs.shape[-1]
     if header is None:
-        header = [chr(idx+65) for idx in range(Nelmt)]   # A, B, C, ...
+        labels = [chr(idx+65) for idx in range(Nelmt)]   # A, B, C, ...
         # header = ['A{:02d}'.format(idx+1) for idx in range(Nelmt)]
     elif len(header) < Nelmt:
         raise RuntimeError('The number of element is less than the coefficients')
     else:
-        header = header[:Nelmt]
-    
-    # st_eq_idx = np.all(data, axis=-1)
-    # st_eq_coefs = coefs[st_eq_idx, :]
-    # st_eq_energy = energy[st_eq_idx, :]
-    # 
-    # st_ub_idx = np.logical_not(st_eq_idx)
-    # st_ub_coefs = coefs[st_ub_idx, :]
-    # st_ub_energy = energy[st_ub_idx, :]
-    
-    if not isinstance(eq_idx, Iterable):
-        eq_idx = [eq_idx, ]
-    
-    st_eq_coefs  = []
-    st_eq_energy = []
-    st_ub_coefs  = []
-    st_ub_energy = []
-    for i, (c, e) in enumerate(zip(coefs, energy)):
-        if i in eq_idx:
-            st_eq_coefs.append(c)
-            st_eq_energy.append(e)
-        else:
-            st_ub_coefs.append(c)
-            st_ub_energy.append(e)
-
-    st_eq_coefs  = np.vstack(st_eq_coefs)
-    st_eq_energy = np.vstack(st_eq_energy) 
-    st_ub_coefs  = np.vstack(st_ub_coefs)
-    st_ub_energy = np.vstack(st_ub_energy)
-    
-    return header, (st_ub_coefs, st_ub_energy, st_eq_coefs, st_eq_energy)
+        labels = header[:Nelmt]
+    return coefs, energies, labels
 
 
 @required(is_import_lnp, 'scipy')
-def pminmax(filename, objcoefs=None, referance=None, normalize=False):
+def pminmax(coefs, energies, labels=None, objcoefs=None, referance=None, eq_idx=0):
     '''
     Calculate chemical potential under poor and rich conditions.
 
     Parameters
     ----------
-    filename : str
-        A file contains formation energy.
-    objcoefs : float-list
+    coefs: array-like
+        The stoichometric coefficients of compounds.
+    energies : array-like
+        The formation energies of compounds.
+    labels : list, optional
+        The labels of components. It is useless if `objcoefs` is specified.
+    objcoefs : float-list, optional
         Customized coefficients of the linear objective function.
     referance : float-list, optional
         The referance values of chemical potential, by default None.
     normalize : bool, optional
-        Whether to normalize coefficients or not, by default False
+        Whether to normalize coefficients or not, by default False.
+    eq_idx : int or list, optional
+        The indices of equilibrium phases, by default 0.
 
     Returns
     -------
     results : tuple-list
-        [(name, x0, status, msg),...], elmt_labels
+        [(name, x0, status, msg),...]
 
     '''
-    labels, constraints = read_cmpot(filename, normalize=normalize)
-    A_ub, b_ub, A_eq, b_eq = constraints
+    eq_idx = np.ravel(eq_idx)   # shape: (n_eq,)
+    A_eq = coefs[eq_idx, :]
+    b_eq = energies[eq_idx]
+    A_ub = np.delete(coefs, eq_idx, axis=0)
+    b_ub = np.delete(energies, eq_idx)
     bounds = (None, None)
     if referance is None:
         refs = 0
@@ -114,12 +92,14 @@ def pminmax(filename, objcoefs=None, referance=None, normalize=False):
         if A_eq.shape[-1] != refs.shape[-1]:
             raise RuntimeError('The number of referance values is not equal to species')
 
-    # print(A_ub, b_ub, A_eq, b_eq, bounds, refs)
+    # print(A_ub, b_ub, A_eq, b_eq, bounds, refs, sep='\n\n')
     
     Nelmt = A_eq.shape[-1]
     if objcoefs is None:
         names = []
         objcoefs = []
+        if not labels:
+            raise RuntimeError('The labels of components are not given when objcoefs is None')
         for idx, (weights, label) in enumerate(zip(A_eq.T, labels)):
             if np.all(weights < 1E-4):
                 continue
@@ -147,4 +127,4 @@ def pminmax(filename, objcoefs=None, referance=None, normalize=False):
         rst = linprog(-copt, A_ub, b_ub, A_eq, b_eq, bounds)
         result = (name, rst.x + refs, rst.status, rst.message)
         results.append(result)
-    return results, labels
+    return results
