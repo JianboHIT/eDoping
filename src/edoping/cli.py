@@ -114,6 +114,13 @@ def cmd(arg=None):
     parser_chempot.add_argument('--cond', metavar='WEIGHT', type=float, nargs='+', help='Customized chemical potential conditions')
     parser_chempot.add_argument('--refs', metavar='VALUE', type=float, nargs='+', help='Reference chemical potentials in eV/atom')
 
+    parser_react = sub_parser.add_parser('react', help='Evaluate reactions between two compounds')
+    parser_react.add_argument('-n', '--norm', action='store_true', help='Enable coefficients normalization (if energy/atom is given)')
+    parser_react.add_argument('-f', '--filename', default=filecmpot, help='Assign filename(default: {})'.format(filecmpot))
+    parser_react.add_argument('react', type=int, nargs=2, metavar='INDEX', help='Two reactant indices (1-based)')
+    parser_react.add_argument('--unit', choices=('eV/atom', 'eV', 'kJ/mol', 'kJ'), default='eV/atom', help='The unit of reaction energy (default: eV/atom)')
+    parser_react.add_argument('--with-hull', action='store_true', help='Enable energy-above-hull calculation')
+
     parser_trlevel = sub_parser.add_parser('trlevel', help='Calculate transition levels')
     parser_trlevel.add_argument('-f', '--filename', default=filetrans, help='Assign filename(default: {})'.format(filetrans))
     parser_trlevel.add_argument('--emin', type=float, default=-1, help='The upper bound of Fermi level(default: -1)')
@@ -560,6 +567,58 @@ def cmd(arg=None):
                     print(dsp3.format(rst[3]))
                 else:
                     print()
+    elif args.task == 'react':
+        from .cpot import read_cmpot, preact
+        coefs, energies, labels = read_cmpot(args.filename, normalize=args.norm)
+        reaction_dict, metadata = preact(coefs, energies, labels,
+                                        ridx1=args.react[0]-1,
+                                        ridx2=args.react[1]-1,
+                                        with_hull=args.with_hull)
+
+        # n_reactant1, equation_str, delta_H
+        if '/' in args.unit:
+            reaction_list = [[v[0][0]/v[1], k, v[3], v[-1]] for k, v in reaction_dict.items()]
+        else:
+            if args.with_hull:
+                raise RuntimeError('Energy-above-hull can not be computed under non-reduced unit')
+            reaction_list = [[v[0][0]/v[1], k, v[3] * v[1], v[-1]] for k, v in reaction_dict.items()]
+        reaction_list.sort()
+
+        if is_quiet:
+            if args.with_hull:
+                dsp_header = "# n({0})\tDelta_H[{1}]\tE_hull[{1}]"
+                dsp = "{0:.3f}\t{2:8.4f}\t{3:8.4f}      # {1}"
+            else:
+                dsp_header = "# n({0})\tDelta_H[{1}]"
+                dsp = "{0:.3f}\t{2:8.4f}      # {1}"
+            print(dsp_header.format(metadata['reactant_1']['name'], args.unit))
+        elif is_detail:
+            dsp = "{0:.3f}\t{1:" + str(metadata['length_equ_str'] + 3) + "s}\tDelta_H = {2:8.4f} {4}"
+            if args.with_hull:
+                conv_hull = metadata['hull_vertices']
+                for i in range(metadata['Nreact']):
+                    prefix = '* ' if i in conv_hull else '  '
+                    reaction_list[i][1] = prefix + reaction_list[i][1]
+                dsp += "\t( E_hull = {3:8.4f} {4} )"
+        else:
+            print("# Reaction Equation: x {} + y {} -> Products ({}x + {}y = 1)".format(
+                metadata['reactant_1']['name'],
+                metadata['reactant_2']['name'],
+                metadata['reactant_1']['natom'] if metadata['reactant_1']['natom'] > 1 else '',
+                metadata['reactant_2']['natom'] if metadata['reactant_2']['natom'] > 1 else '',
+            ))
+            dsp = "{0:.3f}\t{1:" + str(metadata['length_equ_str'] + 3) + "s}\t{2:8.4f}"
+            print("# Column 1: Total Atomic Fraction of {}".format(metadata['reactant_1']['name']))
+            print("# Column 2: Reaction Equation")
+            print("# Column 3: Reaction Energy[{}]".format(args.unit))
+            if args.with_hull:
+                print("# Column 4: Hull Energy[{}]".format(args.unit))
+                dsp += "\t{3:.4f}"
+
+        natom = metadata['reactant_1']['natom']
+        unit = 96.485 if 'kJ' in args.unit else 1.0
+        for coef, equat_str, enthalpy, hull in reaction_list:
+            print(dsp.format(coef*natom, equat_str, enthalpy*unit, hull*unit, args.unit))
     elif args.task == 'trlevel':
         from .defect import read_H0, cal_trans, write_bsenergy
         data, volume = read_H0(args.filename)
