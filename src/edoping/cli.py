@@ -172,12 +172,15 @@ def cmd(arg=None):
         else:
             print('Final (absolute) Ewald: {:.4f}'.format(value))
     elif args.task == 'volume':
-        from .dft import read_volume
+        from .dft import read_volume, read_lattyp
         value = read_volume(outcar=args.filename)
         if is_quiet:
             print('{:.4f}'.format(value))
         else:
-            print('Final volume of cell: {:.4f}'.format(value))
+            if is_detail:
+                lat = read_lattyp(outcar=args.filename)
+                print('Lattice info: {}'.format(lat['info']))
+            print('Final volume of cell: {:.4f} A^3'.format(value))
     elif args.task == 'epsilon':
         from .dft import read_epsilon
         # read_epsilon(outcar='OUTCAR', isNumeric=False)
