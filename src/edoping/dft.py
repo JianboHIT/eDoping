@@ -555,6 +555,93 @@ def read_zval(potcar='POTCAR'):
                 z_dict[atom] = zval
     return z_dict
 
+def read_lattyp(outcar='OUTCAR'):
+    '''
+    Read lattice type from OUTCAR.
+    (sed -n '/LATTYP/,/^  $/p' OUTCAR)
+
+    Returns
+    -------
+    lat_dict: dict with keys name, description, a, b, c, alpha, beta, gamma
+    '''
+    LATNAME = {
+        'a simple cubic cell': 'cub',                       # Cubic (CUB, cP)
+        'a body centered cubic cell': 'bcc',                # Body-centered cubic (BCC, cI)
+        'a face centered cubic cell': 'fcc',                # Face-centered cubic (FCC, cF)
+        'a hexagonal cell': 'hex',                          # Hexagonal (HEX, hP)
+        'a simple tetragonal cell': 'tet',                  # Tetragonal (TET, tP)
+        'a body centered tetragonal cell': 'bct',           # Body-centered tetragonal (BCT, tI)
+        'a trigonal (rhomboedric) cell': 'rhm',             # Rhombohedral (RHL, hR)
+        'a simple orthorhombic cell': 'orth',               # Orthorhombic (ORC, oP)
+        'a body centered orthorhombic cell': 'bco',         # Body-centered orthorhombic (ORCI, oI)
+        'a face centered orthorhombic cell': 'fco',         # Face-centered orthorhombic (ORCF, oF)
+        'a base centered orthorhombic cell': 'cco',         # C-centered orthorhombic (ORCC, oS)
+        'a simple monoclinic cell': 'mon',                  # Monoclinic (MCL, mP)
+        'a base centered monoclinic cell': 'ccm',           # C-centered monoclinic (MCLC, mS)
+        'a triclinic cell': 'tri',                          # Triclinic (TRI, aP)
+    }
+
+    lat_dict = dict()
+    #   LATTYP: Found a body centered cubic cell.
+    #  ALAT       =     3.3121580000
+    with open(outcar, 'r') as f:
+        for line in f:
+            if 'LATTYP' in line:
+                desc = line.strip().split(':')[1].strip()
+                break
+        else:
+            raise ValueError('LATTYP not found in OUTCAR.')
+
+        # parse lattice type
+        lat_dict['description'] = desc
+        for key in LATNAME:
+            if key in desc:
+                name = LATNAME[key]
+                break
+        else:
+            name = '<unknown>'
+
+        lat_dict['name'] = name
+        info = f'[{name}]'
+
+        # parse lattice parameter
+        for line in f:
+            if '=' in line:
+                key, value = line.split('=')
+                key = key.strip().lower()
+                value = float(value.strip())
+                if key == 'alat':
+                    alat = value
+                    lat_dict['a'] = value
+                    info += f' a = {alat:.3f} A'
+                elif key == 'b/a-ratio':
+                    value = value * alat
+                    lat_dict['b'] = value
+                    info += f', b = {value:.3f} A'
+                elif key == 'c/a-ratio':
+                    value = value * alat
+                    lat_dict['c'] = value
+                    info += f', c = {value:.3f} A'
+                elif key == 'cos(alpha)':
+                    value = np.degrees(np.arccos(value))
+                    lat_dict['alpha'] = value
+                    info += f', alpha = {value:.2f} degC'
+                elif key == 'cos(beta)':
+                    value = np.degrees(np.arccos(value))
+                    lat_dict['beta'] = value
+                    info += f', beta = {value:.2f} degC'
+                elif key == 'cos(gamma)':
+                    value = np.degrees(np.arccos(value))
+                    lat_dict['gamma'] = value
+                    info += f', gamma = {value:.2f} degC'
+                else:
+                    raise ValueError(f'Unexpected key in LATTYP section: {key} ({desc})')
+            else:
+                break
+        lat_dict['info'] = info
+    return lat_dict
+
+
 def read_transmat(transform='TRANSMAT.in'):
     '''
     Read transformation matrix from TRANSMAT.in or space-separated string.
