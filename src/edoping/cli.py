@@ -35,6 +35,7 @@ def cmd(arg=None):
 
     parser_cal = sub_parser.add_parser('cal', help='Calculate defect formation energy')
     parser_cal.add_argument('-i', '--input', metavar='FILENAME', default=filein, help=f'Assign filename (default: {filein})')
+    parser_cal.add_argument('--template', action='store_true', help='Write a template input configuration file')
 
     parser_energy = sub_parser.add_parser('energy', help='Read final energy from OUTCAR')
     parser_energy.add_argument('-f', '--filename', default='OUTCAR', help='Assign filename(default: OUTCAR)')
@@ -166,8 +167,13 @@ def cmd(arg=None):
     if args.task is None:
         parser.print_help()
     elif args.task == 'cal':
-        from .defect import formation
-        formation(inputfile=args.input)
+        from .defect import InputConfig, formation
+        if args.template:
+            InputConfig.write_template(args.input)
+            if not is_quiet:
+                print('A template input configuration file is written to {}'.format(args.input))
+        else:
+            formation(inputfile=args.input)
     elif args.task == 'energy':
         from .dft import read_energy, read_members
         value = read_energy(outcar=args.filename, average=args.ave)
