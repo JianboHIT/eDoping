@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2023-2025, Jingyu Li, Jianbo Zhu
+# Copyright (C) 2023-2026, Jingyu Li, Jianbo Zhu
 # This file is distributed under the same license as the eDoping package.
-# Jianbo Zhu <zhjb1996@163.com>, 2025.
+# Jianbo Zhu <zhjb1996@163.com>, 2026.
 #
 msgid ""
 msgstr ""
