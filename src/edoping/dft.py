@@ -425,17 +425,17 @@ def read_eigval(eigenval='EIGENVAL'):
     return (ele_num, kpt_num, eig_num), (kpts, kptw), (energy, weight)
 
 
-def read_evbm(eigenval='EIGENVAL', pvalue=0.1):
+def read_evbm(eigenval='EIGENVAL', pvalue=0.5):
     '''
     Read VBM & CBM energy and corresponding k-points. Threshold value to 
-    determine unoccupied bands is allowed to assigned manually(0.1 default).
+    determine unoccupied bands is allowed to assigned manually(0.5 default).
 
     Parameters
     ----------
     eigenval : str, optional
         Filename of EIGENVAL. The default is 'EIGENVAL'.
     pvalue : TYPE, optional
-        Threshold value. The default is 0.1.
+        Threshold value. The default is 0.5.
 
     Returns
     -------
@@ -449,24 +449,23 @@ def read_evbm(eigenval='EIGENVAL', pvalue=0.1):
     kpts[np.abs(kpts) < 1E-8] = 0
     energy = []
     weight = []
-    wx = 1
     for i in range(eig_num):
         ei,wi = np.loadtxt(StringIO(
             ''.join(data[8+i::eig_num+2])),
             usecols=(1, 2), unpack=True)
         energy.append(ei)
         weight.append(wi)
-        if wi.max() < pvalue and wx > (1-pvalue):
+        if wi.mean() < pvalue:
+            # At this point, i is the index of the first unoccupied band,
+            # also is equal to the number of "valence" bands. (N_vband)
             break
-        else:
-            wx = wi.min()
     idxc = np.argmin(energy[-1])
     idxv = np.argmax(energy[-2])
     e_cbm = energy[-1][idxc]
     k_cbm = kpts[idxc]
     e_vbm = energy[-2][idxv]
     k_vbm = kpts[idxv]
-    return (e_vbm, i-1, k_vbm[:3]), (e_cbm, i, k_cbm[:3]), e_cbm-e_vbm
+    return (e_vbm, i, k_vbm[:3]), (e_cbm, i+1, k_cbm[:3]), e_cbm-e_vbm
 
 
 def read_evbm_from_ne(eigenval='EIGENVAL', Ne=None, dNe=0):
