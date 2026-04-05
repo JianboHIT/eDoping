@@ -24,6 +24,27 @@ from .dft import Cell, read_energy, read_volume, \
 
 
 class InputConfig:
+    _template = '''
+DPERFECT = 1.perfect
+DDEFECT  = 2-1.defect
+CMPOT    = 0 0
+VALENCE  = -3 -2 -1 0 1 2 3
+# PREFIX   = charge_
+# DDNAME   = auto
+# DREFER   = optim-1
+EVBM     = inf
+ECBM     = inf
+PENERGY  = inf
+PVOLUME  = inf
+EWALD    = inf
+EPSILON  = inf
+# ICCOEF   = inf
+# PADIFF   = inf
+BFTYPE   = 0
+EMIN     = -1.0
+EMAX     = 2.0
+NPTS     = 3001
+'''
     _default = {'dperfect': '../perfect',
                 'ddefect': '.',
                 'cmpot': [0, 0],
@@ -108,6 +129,14 @@ class InputConfig:
         if self.drefer.lower().startswith('auto'):
             idx = self.valence.index(0) if 0 in self.valence else 0
             self.drefer = self.ddname[idx]
+
+    @classmethod
+    def write_template(cls, filename=None):
+        '''
+        Write a template input configuration file.
+        '''
+        with open(filename or filein, 'w') as f:
+            f.write(cls._template.strip())
 
     @staticmethod
     def parse_para(line):
