@@ -20,7 +20,7 @@ from collections import Counter
 from .misc import Logger, filein, filetrans, filedata
 from .misc import __prog__, __author__, __version__, __date__, __description__
 from .dft import Cell, read_energy, read_volume, \
-                 read_eigval, read_evbm, read_pot
+                 read_eigval, read_evbm_from_ne, read_pot
 
 
 class InputList():
@@ -226,8 +226,8 @@ def formation(inputlist=None, infolevel=1):
 
     # Read Evbm
     if ipt.evbm == float('inf'):
-        Eband = read_evbm(
-            os.path.join(ipt.dperfect, 'EIGENVAL'))
+        Eband = read_evbm_from_ne(os.path.join(ipt.dperfect, 'EIGENVAL'))
+        # Eband: ((e_vbm, index, k_vbm), (e_cbm, index, k_cbm), Egap)
         Evbm = Eband[0][0]
         Eband_cbm = Eband[1][0]
         print('Read VBM from EIGENVAL: {}'.format(Evbm))
