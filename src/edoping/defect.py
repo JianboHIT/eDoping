@@ -17,7 +17,7 @@ import sys, os, time
 import numpy as np
 from itertools import product
 from collections import Counter
-from .misc import Logger, filein, filetrans, filedata
+from .misc import Logger, filein, fileqform, filetrans, filedata
 from .misc import __prog__, __author__, __version__, __date__, __description__
 from .dft import Cell, read_energy, read_volume, \
                  read_eigval, read_evbm_from_ne, read_pot
@@ -408,6 +408,9 @@ def formation(inputfile=None, infolevel=1):
     print('*Chemical potential change: {:.2f}'.format(Dcm))
     print('*Energy at VBM: {:.2f}'.format(Evbm))
     print('')
+
+    # write qform file
+    write_qform(ipt.valence, E0q, fileqform)
 
     # calculation
     print('Transtion Energy Level:')
@@ -816,6 +819,36 @@ def diff_cell(cell_1, cell_2, prec=0.2, cal_dist=False, show_diff=False, ord=1):
             print('(No difference is found)')
 
     return diffs, dist
+
+def read_qform(filename=fileqform, unpack=False):
+    '''
+    Read (q, H0, gx) data from qform file.
+    '''
+    datas = np.loadtxt(filename, unpack=True)
+    if len(datas) == 2:
+        q, H0 = datas
+        gx = np.ones_like(q)
+    else:
+        q, H0, gx, *_ = datas
+    return (q, H0, gx) if unpack else np.c_[q, H0, gx]
+
+def write_qform(q, H0, filename=fileqform, gx=None):
+    '''
+    Write q-form data to file.
+    '''
+    header = '# {:^6s}  {:^8s}'.format('q', 'H0')
+    dsp = '{0:^+8g}  {1:^8.4f}'
+    if gx is None:
+        data = np.c_[q, H0]
+    else:
+        gx = np.broadcast_to(gx, np.array(q).shape)
+        data = np.c_[q, H0, gx]
+        header += '  {:^8s}'.format('gx')
+        dsp += '  {2:^8g}'
+    with open(filename, 'w') as f:
+        f.write(header + '\n')
+        for row in data:
+            f.write(dsp.format(*row) + '\n')
 
 def write_bsenergy(data, q, filename=filedata, volume=1, gx=1):
     '''

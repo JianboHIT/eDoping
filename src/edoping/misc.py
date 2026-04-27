@@ -22,6 +22,7 @@ __prog__ = 'EDOPING'
 filein = '{}.in'.format(__prog__)
 fileout = '{}.log'.format(__prog__)
 filedata = '{}.dat'.format(__prog__)
+fileqform = '{}.qform'.format(__prog__)
 filetrans = '{}.trans'.format(__prog__)
 filecmpot = '{}.cmpot'.format(__prog__)
 filedebug = '{}.debug'.format(__prog__)
