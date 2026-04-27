@@ -46,7 +46,7 @@ def scfermi_bs(t, doscar='DOSCAR', *filenames):
     Solve fermi level from base state line
     '''
     kbT = 8.617333262e-05 * t
-    dosE, dosV = np.array(read_dos(doscar))   # energy and dos_value
+    dosE, dosV, _dosG = read_dos(doscar)    # energy and dos_value
     Nele = trapezoid((dosE<=0)*dosV, dosE)
 
     defect = []
@@ -117,7 +117,7 @@ def scfermi_fz(t, conc, charge, volume, doscar='DOSCAR', Evbm=0, detail=False):
     if Q2x*charge < 0:
         raise RuntimeError('Doping conc. and charge must in same sign.')
         
-    dosE, dosV = np.array(read_dos(doscar, efermi=Evbm))   # energy and dos_value
+    dosE, dosV, _dosG = read_dos(doscar, efermi=Evbm)    # energy and dos_value
     Nele = trapezoid((dosE<=0)*dosV, dosE)
     
     @np.vectorize
@@ -151,7 +151,7 @@ def scfermi_fz(t, conc, charge, volume, doscar='DOSCAR', Evbm=0, detail=False):
 @required(is_import_scipy, 'scipy')
 def scfermi(t, *filenames, doscar='DOSCAR', Evbm=0, detail=False):
     kbT = 8.617333262e-05 * t
-    dosE, dosV = np.array(read_dos(doscar, efermi=Evbm))   # energy and dos_value
+    dosE, dosV, _dosG = read_dos(doscar, efermi=Evbm)    # energy and dos_value
     Nele = trapezoid((dosE<=0)*dosV, dosE)
     np.savetxt('data.dat', np.c_[dosE, (dosE<=0)*dosV], fmt='%.4f')
     # print(Evbm, Nele)

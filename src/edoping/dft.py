@@ -721,35 +721,54 @@ def read_evbm_from_ne(eigenval='EIGENVAL', Ne=None, dNe=0):
     e_vbm = e_vbms[idxvk,1]
     e_cbm = e_cbms[idxck,1]
     return (e_vbm, idxv+1, k_vbm[:3]), (e_cbm, idxc+1, k_cbm[:3]), e_cbm-e_vbm
-    
 
-def read_dos(doscar='DOSCAR', efermi=0):
+def read_dos(doscar='DOSCAR', efermi=None):
     '''
     Read DOS data from DOSCAR or tdos.dat
     
+    Parameters
+    ----------
+    doscar : str, optional
+        Filename of DOSCAR or pure DOS data (tdos.dat). The default is 'DOSCAR'.
+    efermi : float, optional
+        Fermi level. If None(default), read from DOSCAR file or set to 0 if tdos.dat.
+
     Returns
-    energy, dos
+    -------
+    energy, dos, idos
     '''
-    with open(doscar, 'r') as f:
-        data = f.readlines()
-
     # detect DOSCAR
-    num_i = [len(line.strip().split()) for line in data[:6]]
-    if doscar == 'DOSCAR' or all([num_i[0] == 4, num_i[2] == 1, num_i[3] == 1]):
+    if 'doscar' in doscar.lower():
         # treat as DOSCAR file
-        NEDOS = int(data[5].strip().split()[2])
-        data = data[6:6+NEDOS]
+        with open(doscar, 'r') as f:
+            # read NEDOS and Efermi from the 6th line
+            for _ in range(6):
+                line = f.readline()
+            NEDOS = int(line.strip().split()[2])
+            if efermi is None:
+                efermi = float(line.strip().split()[3])
 
-    energy = []
-    dos = []
-    for line in data:
-        if not line.startswith('#'):
-            data = [float(item) for item in line.strip().split()]
-            energy.append(data[0]-efermi)
-            dos.append(data[1])
-
-    return energy, dos
-
+        data = np.loadtxt(doscar, skiprows=6, max_rows=NEDOS)
+        energy = data[:,0] - efermi
+        if data.shape[1] == 3:
+            # n_spin = 1
+            dos = data[:,1]
+            idos = data[:,2]
+        elif data.shape[1] == 5:
+            # n_spin = 2
+            dos = data[:,1] + data[:,2]
+            idos = data[:,3] + data[:,4]
+        else:
+            raise ValueError(f'Unknown number of columns in {doscar}')
+    else:
+        # treat as tdos.dat file
+        if efermi is None:
+            efermi = 0
+        data = np.loadtxt(doscar)
+        energy = data[:,0] - efermi
+        dos = data[:,1]
+        idos = data[:,2] if data.shape[1] > 2 else None
+    return energy, dos, idos
 
 def read_zval(potcar='POTCAR'):
     '''
