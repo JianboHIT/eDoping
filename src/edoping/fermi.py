@@ -28,7 +28,7 @@ else:
     is_import_scipy = True
 
 from .misc import required
-from .defect import read_formation, read_H0
+from .defect import read_formation, read_H0, read_qform
 from .dft import read_dos
 
 
@@ -39,6 +39,12 @@ def fd(x):
     u = np.tanh(x/2)
     return (1-u)/2
 
+def dfd(x):
+    '''
+    Reduced Fermi-Dirac distribution derivative exp(x)/(1+exp(x))^2
+    '''
+    u = np.tanh(x/2)
+    return 1/4*(1-u*u)
 
 @required(is_import_scipy, 'scipy')
 def scfermi_bs(t, doscar='DOSCAR', *filenames):
@@ -149,42 +155,28 @@ def scfermi_fz(t, conc, charge, volume, doscar='DOSCAR', Evbm=0, detail=False):
 
 
 @required(is_import_scipy, 'scipy')
-def scfermi(t, *filenames, doscar='DOSCAR', Evbm=0, detail=False):
-    kbT = 8.617333262e-05 * t
-    dosE, dosV, _dosG = read_dos(doscar, efermi=Evbm)    # energy and dos_value
-    Nele = trapezoid((dosE<=0)*dosV, dosE)
-    np.savetxt('data.dat', np.c_[dosE, (dosE<=0)*dosV], fmt='%.4f')
-    # print(Evbm, Nele)
+def fermi_sc(tempera, *qforms, doscar='DOSCAR', vbm=None, use_idos=True):
+    '''
+    Calculate sc-fermi level from defect formation energy
+    '''
+    kbT = 8.617333262e-05 * tempera
 
-    defect = []
-    volume = []
-    for filename in filenames:
-        defect_i, volume_i = read_H0(filename)  # (data: charge, H0, gx),volume
-        defect.append(defect_i)
-        volume.append(volume_i)
-    defect = np.vstack(defect)
-    volume = np.array(volume).mean()*1E-24   # A^3 to cm^3
-    
-    @np.vectorize
-    def fq1(xfermi):
-        '''
-        Q1 = sum(q_defect_i)
-        '''
-        Q1 = 0
-        for q, h, g in defect:
-            Q1 += g*q*np.exp(-(h+q*xfermi)/kbT)
-        return Q1
-    
-    @np.vectorize
-    def fq2(xfermi):
-        '''
-        Q2 = n-p
-        '''
-        Q2 = trapezoid(dosV*fd((dosE-xfermi)/kbT), dosE) - Nele
-        return Q2
-    
+    # Q1 = sum(q_defect_i)
+    defect = np.vstack([read_qform(fn, unpack=False) for fn in qforms]) # shape of (N,3)
+    q, h, g = np.transpose(defect)
+    fq1 = lambda xfermi: np.sum(g*q*np.exp(-(h+q*xfermi)/kbT))
+
+    # Q2 = n-p
+    dosE, dosV, dosG = read_dos(doscar, efermi=vbm)    # energy, dos_value, dos_integral
+    if (not use_idos) or (dosG is None):
+        Nele = trapezoid((dosE<=0)*dosV, dosE)
+        fq2 = lambda xfermi: trapezoid(dosV*fd((dosE-xfermi)/kbT), dosE) - Nele
+    else:
+        Nele = interp1d(dosE, dosG)(0)
+        fq2 = lambda xfermi: trapezoid(dosG*dfd((dosE-xfermi)/kbT), dosE)/kbT - Nele
+
     fqtot = lambda x: fq2(x) - fq1(x)     # net ele, increase with Efermi
-    
+
     amp_max = np.min(np.abs(dosE[[0, -1]]))
     amp = 0.5
     while amp < amp_max:
@@ -194,16 +186,11 @@ def scfermi(t, *filenames, doscar='DOSCAR', Evbm=0, detail=False):
             amp += 0.5
     else:
         raise RuntimeError('Out the energy range of DOS.')
-    
+
     efermi = brentq(fqtot, -amp, amp)
     n_p = fq2(efermi)
-    conc = n_p / volume
-    
-    if detail:
-        return n_p, efermi, conc
-    else:     
-        return efermi, conc
-    
+    return efermi, n_p
+
 
 def equ_defect(t, *filenames, efermi=(0, ), detail=False):
     '''

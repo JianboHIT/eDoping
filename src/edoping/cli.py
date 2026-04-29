@@ -131,10 +131,12 @@ def cmd(arg=None):
     parser_trlevel.add_argument('-o', '--output', metavar='FILENAME', default=filedata, help='Output filename(default: {})'.format(filedata))
 
     parser_scfermi = sub_parser.add_parser('scfermi', help='Calculate sc-fermi level')
-    parser_scfermi.add_argument('-t', '--temperature', type=float, default=1000, help='Temperature')
-    parser_scfermi.add_argument('filename', metavar='FILENAME', nargs='+', help='Defect formation energy file (*.trans or *.log)')
-    parser_scfermi.add_argument('-d', '--dos', metavar='DOSDATA', default='DOSCAR', help='DOSCAR(default) or tdos.dat')
-    parser_scfermi.add_argument('--vbm', type=float, default=0, help='Energy of VBM (quite necessary, default:0)')
+    parser_scfermi.add_argument('-d', '--dos', metavar='FILE', default='DOSCAR', help='DOSCAR file or tdos.dat (default: DOSCAR)')
+    parser_scfermi.add_argument('-b', '--vbm', type=float, help='Energy of VBM (default: from DOSCAR or zero for tdos.dat)')
+    parser_scfermi.add_argument('-m', '--volume', metavar='VOL', type=float, default=1, help='Volume of cell (corresponding to DOS) in A^3 (default: 1)')
+    parser_scfermi.add_argument('--use-idos', action='store_true', help='Use IDOS (if available) instead of DOS (default: False)')
+    parser_scfermi.add_argument('-t', '--temperature', metavar='temperature', type=float, default=1000, help='Temperature in Kelvin (default: 1000)')
+    parser_scfermi.add_argument('filename', metavar='FILENAME', nargs='+', help='Defect formation energy file (*.qform file)')
 
     # (t, conc, charge, volume, doscar='DOSCAR'):
     parser_fzfermi = sub_parser.add_parser('fzfermi', help='Calculate fz-fermi level')
@@ -645,29 +647,21 @@ def cmd(arg=None):
                 print('Save formation eneryg data to {}.'.format(args.output))
         
     elif args.task == 'scfermi':
-        from .fermi import scfermi
-        # scfermi(t, *filenames, doscar='DOSCAR', Evbm=0, detail=False)
-        out = scfermi(args.temperature, 
-                      *args.filename, 
-                      doscar=args.dos, 
-                      Evbm=args.vbm,
-                      detail=is_detail)
-        dsp = ('Self-consistent Fermi level (eV)',
-               'Equilibrium carrier concentration (cm^-3)',
-               'Net number of electron in cell')
+        from .fermi import fermi_sc
+        EF, n_p = fermi_sc(args.temperature,
+                           *args.filename,
+                           doscar=args.dos,
+                           vbm=args.vbm,
+                           use_idos=args.use_idos)
+        Ne = n_p / (args.volume * 1e-24)    # e/cell -> cm^-3
         if is_quiet:
-            # not_detail: EF, Ne
-            #  is_detail: n_p, EF, Ne 
-            print(*out)
-        elif is_detail:
-            n_p, EF, Ne = out
-            print('{} : {:.3f}'.format(dsp[0], EF))
-            print('{} : {:.4E}'.format(dsp[1], Ne))
-            print('{} : {:+.6E}'.format(dsp[2], n_p))
+            print(EF, Ne, n_p)
         else:
-            EF, Ne = out
-            print('{} : {:.3f}'.format(dsp[0], EF))
-            print('{} : {:.4E}'.format(dsp[1], Ne))
+            print('Self-consistent Fermi level (eV): {:.3f}'.format( EF))
+            print('Equilibrium carrier concentration (cm^-3): {:.4E}'.format(Ne))
+            if is_detail:
+                print('Net number of electron in cell: {:+.6E}'.format(n_p))
+
     elif args.task == 'fzfermi':
         from .fermi import scfermi_fz
         # scfermi_fz(t, conc, charge, volume, doscar='DOSCAR', Evbm=0)
