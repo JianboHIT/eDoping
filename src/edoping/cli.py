@@ -319,7 +319,7 @@ def cmd(arg=None):
         elif args.strain:
             pos = Cell.from_poscar(poscar=args.input)
             strain_tensor = read_transmat(args.strain)
-            pos.basis @= strain_tensor
+            pos.basis = pos.basis @ strain_tensor
             volume_ratio = np.linalg.det(strain_tensor)
             if is_quiet:
                 print(f'{volume_ratio:.4f}')
