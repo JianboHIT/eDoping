@@ -506,7 +506,7 @@ def read_members(outcar='OUTCAR'):
                 # e.g.:    TITEL  = PAW_PBE Ni 02Aug2007
                 pot = line.strip().split()[3]
                 atoms.append(pot.split('_')[0])
-            elif 'LATTYP' in line:
+            elif 'POSCAR' in line:
                 break
 
         for line in f:
