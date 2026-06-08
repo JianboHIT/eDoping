@@ -322,6 +322,9 @@ class Cell():
 
         # add new atoms and sites
         for elt, site in zip(new_atoms, new_sites):
+            if len(site) == 0:
+                continue
+
             if elt in self.sites:
                 self.sites[elt] = np.vstack([self.sites[elt], site])
             else:
