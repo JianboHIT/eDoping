@@ -692,7 +692,7 @@ def supercell(cell, transform, shift_eps=1e-6, return_frame=None):
     trans_vert = vertices @ trans_mat
     lower = np.floor(np.min(trans_vert, axis=0))
     upper = np.ceil(np.max(trans_vert, axis=0))
-    cc = product(*[np.arange(a, b) for a, b in zip(lower, upper)])
+    cc = product(*[np.arange(a, b+1) for a, b in zip(lower, upper)])
     cc = sorted(cc, key=lambda x: np.linalg.norm(x, ord=2)) # sort by L2 norm
     cc = np.reshape(cc, (-1, 1, 3))                         # shape: (Nsuper, 1, 3)
 
