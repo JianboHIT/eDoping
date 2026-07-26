@@ -6,7 +6,7 @@
 <link rel="index" title="索引" href="genindex.html" /><link rel="search" title="搜索" href="search.html" /><link rel="next" title="eDoping 学习分享" href="zintl.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>eDoping 0.5.0 文档</title>
+        <title>eDoping 0.5.1 文档</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">eDoping 0.5.0 文档</div></a>
+      <a href="#"><div class="brand">eDoping 0.5.1 文档</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -249,7 +249,7 @@
         <article role="main" id="furo-main-content">
           <section id="edoping">
 <h1>eDoping 手册<a class="headerlink" href="#edoping" title="此标题的永久链接">¶</a></h1>
-<p><strong>[切换语言:</strong> 简体中文 | <a class="reference external" href="en/index.html">English</a> <strong>]</strong> (下载 PDF 手册: <a class="reference download internal" download="" href="_downloads/247ee4066eaaf139d28a02261f525f43/eDoping_v0.5.0.pdf"><code class="xref download docutils literal notranslate"><span class="pre">eDoping_v0.5.0.pdf</span></code></a>)</p>
+<p><strong>[切换语言:</strong> 简体中文 | <a class="reference external" href="en/index.html">English</a> <strong>]</strong> (下载 PDF 手册: <a class="reference download internal" download="" href="_downloads/0c0726383efdd4b6bd1a5af3daba3686/eDoping_v0.5.1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">eDoping_v0.5.1.pdf</span></code></a>)</p>
 <div class="toctree-wrapper compound">
 </div>
 <section id="id1">
@@ -288,18 +288,18 @@
 通过 <code class="docutils literal notranslate"><span class="pre">-h</span></code> (或者 <code class="docutils literal notranslate"><span class="pre">--help</span></code>) 选项可以打印帮助信息，
 同时检查安装是否成功：</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp -h
-usage: edp [-h] [-v] [-q] Subcommand ...
+usage: edp [-h] [-v | -q] Subcommand ...
 
-Point Defect Formation Energy Calculation - v0.4.0
+Point Defect Formation Energy Calculation - v0.5.1
 
-options:
+optional arguments:
   -h, --help       show this help message and exit
   -v, --verbosity  increase output verbosity
   -q, --quiet      only show key output
 
 Tips:
   Subcommand       Description
-    cal            Calculate defect fromation energy
+    cal            Calculate defect formation energy
     energy         Read final energy from OUTCAR
     ewald          Read Ewald from OUTCAR
     volume         Read volume from OUTCAR
@@ -313,6 +313,7 @@ Tips:
     diff           Show difference between two POSCAR
     query          Fetch data from OQMD website
     chempot        Calculate chemical potential
+    react          Evaluate reactions between two compounds
     trlevel        Calculate transition levels
     scfermi        Calculate sc-fermi level
     fzfermi        Calculate fz-fermi level
@@ -327,16 +328,18 @@ If you have used EDOPING, please cite the following article:
 </div>
 <p>我们可以进一步查看子命令的帮助信息:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp replace -h
-usage: edp replace [-h] [-p fa fb fc] [-i FILENAME] [-o FILENAME] X Y
+usage: edp replace [-h] [-p fa fb fc] [-m] [-s] [-i FILENAME] [-o FILENAME] X Y
 
 positional arguments:
-  X                     Name of previous atom
-  Y                     Name of present atom
+  X                     Label of the previous atom, e.g., &#39;Sb12&#39; represents the 12th Sb atom
+  Y                     Label of the present atom, e.g., &#39;Bi&#39; (the index is typically omitted)
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   -p fa fb fc, --position fa fb fc
                         Fractional coordinates of new interstitial atom
+  -m, --multiple        Enable multiple atomic substitutions for creating alloy structures
+  -s, --shuffle         Similar to the -m option, but additionally shuffles the positions
   -i FILENAME, --input FILENAME
                         Input filename(default: POSCAR)
   -o FILENAME, --output FILENAME
@@ -640,7 +643,7 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
   energy  without entropy=     -755.64631647  energy(sigma-&gt;0) =     -755.65114440
 </pre></div>
 </div>
-<p>这个例子中，体系的能量值为 -755.646 eV。
+<p>这个例子中，体系的能量值为 -755.651 eV。
 也可以通过 <a class="reference internal" href="#cmdoption-arg-energy"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">energy</span></code></a> 命令从 OUTCAR 文件中读取能量值。</p>
 <div class="admonition seealso">
 <p class="admonition-title">参见</p>
@@ -773,7 +776,17 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 <dt class="sig sig-object std" id="cmdoption-arg-cal">
 <span class="sig-name descname"><span class="pre">cal</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-cal" title="永久链接至目标">¶</a></dt>
 <dd><p>根据配置文件（由 <code class="docutils literal notranslate"><span class="pre">-i/--input</span></code> 选项指定, 默认为 <a class="reference internal" href="#edoping-in">EDOPING.in</a>）
-计算缺陷形成能随费米能级的变化。</p>
+计算缺陷形成能随费米能级的变化。在一开始，可以通过 <code class="docutils literal notranslate"><span class="pre">--template</span></code>
+选项生成一个模板输入文件：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>cal<span class="w"> </span>--template
+</pre></div>
+</div>
+<p>此时不会进行计算，而是生成一个包含默认配置的 <a class="reference internal" href="#edoping-in">EDOPING.in</a> 文件
+（目前不支持自定义名称，小心覆盖此前已存在的同名文件），
+可以在此基础上进行修改，然后开始计算。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">在 0.5 版本加入: </span>支持 <code class="docutils literal notranslate"><span class="pre">--template</span></code> 选项。</p>
+</div>
 </dd></dl>
 
 <dl class="std option">
@@ -819,7 +832,7 @@ Final<span class="w"> </span><span class="o">(</span>absolute<span class="o">)</
 从而最终获得相应的绝对化学势。在程序内部，
 实际上就是将最后求解的化学势数值加上该参考值。</p>
 <div class="versionadded">
-<p><span class="versionmodified added">在 0.3 版本加入: </span><code class="docutils literal notranslate"><span class="pre">--refs</span></code> 选项。</p>
+<p><span class="versionmodified added">在 0.3 版本加入: </span>支持 <code class="docutils literal notranslate"><span class="pre">--refs</span></code> 选项。</p>
 </div>
 </dd></dl>
 
@@ -840,7 +853,27 @@ $ edp diff 1.perfect/POSCAR 2-1.defect-Mn_i/relax/POSCAR
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-energy">
 <span class="sig-name descname"><span class="pre">energy</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-energy" title="永久链接至目标">¶</a></dt>
-<dd><p>从 OUTCAR 文件读取最后一步的能量。</p>
+<dd><p>从 OUTCAR 文件读取最后一步的能量。支持选项：</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">--ave/--average</span></code>: 输出平均每个原子的能量而不是整个晶胞的能量。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-c/--count</span></code>: 统计晶胞中感兴趣原子的个数。比如对于一个含有 32 个 Nb，32 个
+Fe 和 32 个 Sb 的系统，我们可以统计任何我们感兴趣的原子（这里的 Ti，Co，Fe，Sb）
+在这个系统中的含量：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp energy -c &quot;Ti Co Fe Sb&quot;
+Final energy ( 0  0  32  32 ): -757.0157 eV/cell
+</pre></div>
+</div>
+<p>这里输出结果的括号中的数字分别表示当前系统中 Ti，Co，Fe，Sb 的原子数。
+该功能对于准备 <a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a> 文件非常有用（可以配合前置 <code class="docutils literal notranslate"><span class="pre">-q</span></code> 选项）:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp -q energy -c &quot;Ti Co Fe Sb&quot;
+ 0  0  32  32  -757.0157
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="versionadded">
+<p><span class="versionmodified added">在 0.5 版本加入: </span>支持 <code class="docutils literal notranslate"><span class="pre">-c/--count</span></code> 选项。</p>
+</div>
 </dd></dl>
 
 <dl class="std option">
@@ -983,6 +1016,45 @@ No.|     Group #1     |     Group #2     |     Group #3     |     Group #4
 </dd></dl>
 
 <dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-react">
+<span class="sig-name descname"><span class="pre">react</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-react" title="永久链接至目标">¶</a></dt>
+<dd><p>基于化合物形成焓，评估两个化合物的之间所有可能反应路径的反应能。</p>
+<p>该功能依赖于 <a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a> 文件，
+内含构成两个反应物的所有原子所形成的所有潜在的化合物的形成焓。
+比如，为了预测 Ni 和 Bi<sub>2</sub>Te<sub>3</sub> 之前潜在化学反应的反应能，需要在
+<a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a>  文件中包含 Ni-Bi-Te
+三种元素所有能形成的稳定化合物的形成焓（可以通过 <a class="reference internal" href="#cmdoption-arg-query"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">query</span></code></a>
+命令从开放数据库获取，或者手动计算）：</p>
+<p>这里四列分别表示化合物中 Bi、Te 和 Ni 的含量及化合物的形成焓（eV/atom），
+其中第 1 个和第 10 个化合物分别对应 Bi<sub>2</sub>Te<sub>3</sub> 和 Ni。
+为了预测二者之间潜在反应的反应能，执行如下命令：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp react -n 1 10
+# Reaction Equation: x Bi2Te3 + y Ni -&gt; Products (5x + y = 1)
+# Column 1: Total Atomic Fraction of Bi2Te3
+# Column 2: Reaction Equation
+# Column 3: Reaction Energy[eV/atom]
+0.000   Ni -&gt; Ni                                          0.0000
+0.012   Bi2Te3 + 402 Ni -&gt; 3 TeNi124 + 2 BiNi15           0.0089
+0.013   Bi2Te3 + 392 Ni -&gt; 2 BiNi10 + 3 TeNi124           0.0070
+0.013   Bi2Te3 + 388 Ni -&gt; 3 TeNi124 + 2 BiNi8            0.0070
+0.013   Bi2Te3 + 374 Ni -&gt; 2 BiNi + 3 TeNi124             0.0060
+0.013   2 Bi2Te3 + 747 Ni -&gt; Bi4Ni3 + 6 TeNi124           0.0061
+</pre></div>
+</div>
+<p>这里的 <code class="docutils literal notranslate"><span class="pre">-n</span></code> 选项表示 <a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a> 文件中提供的形成焓是平均到每个原子的
+（详细的解释请参考 <a class="reference internal" href="#cmdoption-arg-chempot"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">chempot</span></code></a> 命令）。除此以外，
+支持的选项还有：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--with-hull</span></code>: 开启时会同时输出化学反应能相对于基态线的能量，
+数值越小表示反应越容易发生。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unit</span></code>: 指定输出反应能的单位，可选值为 eV/atom （默认）, eV, kJ/mol, kJ。</p></li>
+</ul>
+<div class="versionadded">
+<p><span class="versionmodified added">在 0.5 版本加入: </span>支持 <code class="docutils literal notranslate"><span class="pre">react</span></code> 命令。</p>
+</div>
+</dd></dl>
+
+<dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-refine">
 <span class="sig-name descname"><span class="pre">refine</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-refine" title="永久链接至目标">¶</a></dt>
 <dd><p>对晶体结构进行调整，目前支持的操作如下：</p>
@@ -1008,6 +1080,13 @@ vaspkit 等软件保持一致，但是与 VESTA、phonopy 等软件采用的列�
 它们的转变矩阵相差一个转置操作。</p>
 </div>
 </li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-s/--strain</span></code>: 对晶胞施加一个应变张量，张量元素形式参考 <code class="docutils literal notranslate"><span class="pre">-t/--transform</span></code>
+选项。比如：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>refine<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;1.05 1 1&quot;</span>
+</pre></div>
+</div>
+<p>这表示仅在 x 方向施加 +5% 的应变。</p>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-c/--cubicize</span></code>: 在给定的原子数附近进行立方体扩胞。比如：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>refine<span class="w"> </span>-c<span class="w"> </span><span class="m">100</span>
 </pre></div>
@@ -1022,9 +1101,14 @@ vaspkit 等软件保持一致，但是与 VESTA、phonopy 等软件采用的列�
 </div>
 <p>这表示将第 3 个 Sb 原子沿着 z 方向移动 0.1 埃。</p>
 </li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-r/--sort</span></code>: 对输出晶胞中的原子按照分数坐标进行排序，可以与 <code class="docutils literal notranslate"><span class="pre">-c</span></code>
+或 <code class="docutils literal notranslate"><span class="pre">-d</span></code> 等选项配合使用。</p></li>
 </ul>
 <div class="versionadded">
 <p><span class="versionmodified added">在 0.4 版本加入: </span>支持 <code class="docutils literal notranslate"><span class="pre">refine</span></code> 命令。</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">在 0.5 版本加入: </span>支持 <code class="docutils literal notranslate"><span class="pre">-s/--strain</span></code> 和 <code class="docutils literal notranslate"><span class="pre">-r/--sort</span></code> 选项。</p>
 </div>
 </dd></dl>
 
@@ -1034,26 +1118,100 @@ vaspkit 等软件保持一致，但是与 VESTA、phonopy 等软件采用的列�
 <dd><p>替换 POSCAR 文件中的原子。通常需要两个位置变量以此表示旧的原子和新的原子。
 特别地，当新原子指定为 <code class="docutils literal notranslate"><span class="pre">Vac</span></code> 时表示删除原子，构造空位缺陷；
 当旧原子指定为 <code class="docutils literal notranslate"><span class="pre">Vac</span></code> 时表示仅插入原子，构造间隙缺陷。
-构造间隙缺陷时，必须通过 <code class="docutils literal notranslate"><span class="pre">-p/--position</span></code> 选项指定间隙原子的位置。</p>
-<p>例子1：将 POSCAR 中的 Fe2 替换为 Co，并将新结构保存为 POSCAR-sub ：</p>
+构造间隙缺陷时，必须通过 <code class="docutils literal notranslate"><span class="pre">-p/--position</span></code> 选项指定间隙原子的位置。
+除了替换单一原子，还支持将特定元素替换为一种或多种元素组合，
+并且提供打乱元素组合的选项。</p>
+<p><strong>例子1:</strong> 将 POSCAR 中的 Fe2 替换为 Co，并将新结构保存为 POSCAR-sub ：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-sub<span class="w"> </span>Fe2<span class="w"> </span>Co
-</pre></div>
-</div>
-<p>例子2：在 POSCAR 中构建 Fe2 位置的空位缺陷，并将新结构保存为 POSCAR-vac ：</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-vac<span class="w"> </span>Fe2<span class="w"> </span>Vac
-</pre></div>
-</div>
-<p>例子3：在 POSCAR 中 (0.125, 0.125, 0.125) 处插入 Co 间隙原子，并将新结构保存为 POSCAR-int ：</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-int<span class="w"> </span>Vac<span class="w"> </span>Co<span class="w"> </span>-p<span class="w"> </span><span class="m">0</span>.125<span class="w"> </span><span class="m">0</span>.125<span class="w"> </span><span class="m">0</span>.125
 </pre></div>
 </div>
 <p>可以通过 <a class="reference internal" href="#cmdoption-arg-diff"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">diff</span></code></a> 检查 POSCAR 文件的变化：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>diff<span class="w"> </span>POSCAR<span class="w"> </span>POSCAR-int
 </pre></div>
 </div>
+<p><strong>例子2:</strong> 在 POSCAR 中构建 Fe2 位置的空位缺陷，并将新结构保存为 POSCAR-vac ：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-vac<span class="w"> </span>Fe2<span class="w"> </span>Vac
+</pre></div>
+</div>
+<p><strong>例子3:</strong> 在 POSCAR 中 (0.125, 0.125, 0.125) 处插入 Co 间隙原子，并将新结构保存为 POSCAR-int ：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-int<span class="w"> </span>Vac<span class="w"> </span>Co<span class="w"> </span>-p<span class="w"> </span><span class="m">0</span>.125<span class="w"> </span><span class="m">0</span>.125<span class="w"> </span><span class="m">0</span>.125
+</pre></div>
+</div>
+<p><strong>例子4:</strong> 将 POSCAR 中的 Nb 原子（共 32 个）替换为 16 个 V 原子和 16 个 Ta 原子，
+并将新结构保存为 POSCAR-split （此时前 16 个 Nb 原子被替换为 V 原子，
+后 16 个 Nb 原子被替换为 Ta 原子）：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-split<span class="w"> </span>-m<span class="w"> </span>Nb<span class="w"> </span>V16Ta16
+</pre></div>
+</div>
+<p><strong>例子5:</strong> 将 POSCAR 中的 Nb 原子（共 32 个）随机地替换为 16 个 V 原子和 16 个 Ta 原子，
+并将新结构保存为 POSCAR-random ：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>edp<span class="w"> </span>replace<span class="w"> </span>-o<span class="w"> </span>POSCAR-random<span class="w"> </span>-s<span class="w"> </span>Nb<span class="w"> </span>V16Ta16
+</pre></div>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">提示</p>
+<p>使用 <code class="docutils literal notranslate"><span class="pre">-m</span></code> 或者 <code class="docutils literal notranslate"><span class="pre">-s</span></code> 选项进行元素级别的多原子替换时，
+必须保证给定的原子总数与原始的原子总数相同，否则会触发程序报错。</p>
+</div>
 <div class="versionadded">
 <p><span class="versionmodified added">在 0.3 版本加入: </span>支持通过 <code class="docutils literal notranslate"><span class="pre">Vac</span></code> 字符构造空位缺陷和间隙缺陷。</p>
 </div>
+<div class="versionadded">
+<p><span class="versionmodified added">在 0.5 版本加入: </span>支持 <code class="docutils literal notranslate"><span class="pre">-m</span></code> 和 <code class="docutils literal notranslate"><span class="pre">-s</span></code> 选项进行元素级别的多原子替换操作。</p>
+</div>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-arg-scfermi">
+<span class="sig-name descname"><span class="pre">scfermi</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-scfermi" title="永久链接至目标">¶</a></dt>
+<dd><p>根据缺陷形成能和电荷守恒方程，计算系统的自洽费米能级。</p>
+<p>随着系统费米能级 <span class="math notranslate nohighlight">\(E_F\)</span> 变化，所有缺陷提供的电荷总量为：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[Q_1 = \sum _{q, D} q \cdot g_D^q \cdot \exp \left[ -\ \Delta H _{D} ^{q} (E _{F}) / k_B T \right]\]</div>
+</div>
+<p>另一方面，系统的净电子数随 <span class="math notranslate nohighlight">\(E_F\)</span> 变化关系为：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[Q_2 = n - p = \int _{\text{CBM}}^{+\infty} f \cdot g(E) dE
+            - \int _{-\infty}^{\text{VBM}} (1-f) \cdot g(E) dE\]</div>
+</div>
+<p>其中， <span class="math notranslate nohighlight">\(g_D^q\)</span> 表示缺陷 <span class="math notranslate nohighlight">\(D\)</span> 在电荷 <span class="math notranslate nohighlight">\(q\)</span> 下的简并因子，
+<span class="math notranslate nohighlight">\(g(E)\)</span> 是态密度， <span class="math notranslate nohighlight">\(f\)</span> 为费米分布函数：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[f = \frac{1}{1 + \exp \left[ (E - E_F) / (k_B T) \right]}\]</div>
+</div>
+<p>令 <span class="math notranslate nohighlight">\(Q_1 = Q_2\)</span> , 可以解出一个 <span class="math notranslate nohighlight">\(E_F\)</span> ，即系统的自洽费米能级。</p>
+<p>为了获得 <span class="math notranslate nohighlight">\(Q_1\)</span> ，需要 <span class="math notranslate nohighlight">\(q\)</span>, <span class="math notranslate nohighlight">\(\Delta H _{D} ^{q}\)</span> 和
+<span class="math notranslate nohighlight">\(g_D^q\)</span> ，它们通常被格式化地存储在 <a class="reference internal" href="#edoping-qform">EDOPING.qform</a> 中。
+为了获得 <span class="math notranslate nohighlight">\(Q_2\)</span> ，需要态密度 <span class="math notranslate nohighlight">\(g(E)\)</span> ，这通常由第一性原理计算获得，
+程序默认从 VASP 的输出文件 DOSCAR 中读取该数据（也支持通用型数据文件，
+第一列被解读为能量，第二列是态密度）。</p>
+<p>利用这些文件，可以计算系统的自洽费米能级如下：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ edp scfermi 145.91 EDOPING.qform
+</pre></div>
+</div>
+<p>这里 145.91 是系统体积（单位为 A^3），此时会自动从当前目录下的 DOSCAR
+中读取态密度数据，从 <a class="reference internal" href="#edoping-qform">EDOPING.qform</a> 文件中读取缺陷形成能和简并因子，
+计算 1000 K 下系统的自洽费米能级和相应的电子浓度。</p>
+<p>在此基础上，还支持以下选项：</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">-t</span></code> ：指定温度，单位为 Kelvin，默认值为 1000。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--dos</span></code> ：手动指定态密度文件路径，默认值为 DOSCAR。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--vbm</span></code> ：手动指定 VBM 能值，默认从 DOSCAR 中读取。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--use-idos</span></code> ：使用积分态密度（默认情况下是使用态密度）计算 <span class="math notranslate nohighlight">\(Q_2\)</span> ，
+可以证明：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[Q_2 = \int _{-\infty}^{+\infty} f \cdot g(E) dE
+      - \int _{-\infty}^{\text{VBM}} g(E) dE
+    = \int _{-\infty}^{+\infty} \left( -\frac {\partial f}
+      {\partial E} \right) \cdot G(E) dE - N _\text{VEC}\]</div>
+</div>
+</li>
+</ul>
+<p>在一些情况下，这会提供更加数值稳定的计算结果。</p>
 </dd></dl>
 
 </section>
@@ -1122,7 +1280,7 @@ vaspkit 等软件保持一致，但是与 VESTA、phonopy 等软件采用的列�
 如果提供，则程序会在 <a class="reference internal" href="#cmdoption-arg-DDNAME"><code class="xref std std-option docutils literal notranslate"><span class="pre">DDNAME</span></code></a> / <a class="reference internal" href="#cmdoption-arg-DREFER"><code class="xref std std-option docutils literal notranslate"><span class="pre">DREFER</span></code></a>
 目录下寻找缺陷超胞的 POSCAR 文件。</p>
 <div class="versionadded">
-<p><span class="versionmodified added">在 0.3 版本加入: </span><a class="reference internal" href="#cmdoption-arg-DREFER"><code class="xref std std-option docutils literal notranslate"><span class="pre">DREFER</span></code></a> 参数。</p>
+<p><span class="versionmodified added">在 0.3 版本加入: </span>支持 <a class="reference internal" href="#cmdoption-arg-DREFER"><code class="xref std std-option docutils literal notranslate"><span class="pre">DREFER</span></code></a> 参数。</p>
 </div>
 </dd></dl>
 
@@ -1244,6 +1402,34 @@ OUTCAR 文件读取。</p>
 </pre></div>
 </div>
 </section>
+<section id="edoping-qform">
+<h3>EDOPING.qform<a class="headerlink" href="#edoping-qform" title="此标题的永久链接">¶</a></h3>
+<p><a class="reference internal" href="#cmdoption-arg-cal"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">cal</span></code></a> 命令的计算结果文件，包含不同电荷值缺陷的零点形成能。
+缺陷形成能 <span class="math notranslate nohighlight">\(\Delta H_D^q\)</span> 和费米能级 <span class="math notranslate nohighlight">\(E_F\)</span> 关系可以表达为：</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\Delta H _{D} ^{q} (E _{F}) = q \cdot E _{F} + H _{0} ^{q}\]</div>
+</div>
+<p>这里称 <span class="math notranslate nohighlight">\(H_0^q\)</span> 为零点形成能，即费米能级在 0 时的缺陷形成能
+（eDoping 软件通常将价带顶 <a class="reference internal" href="#cmdoption-arg-EVBM"><code class="xref std std-option docutils literal notranslate"><span class="pre">EVBM</span></code></a> 作为费米能级的参考点）。
+通过 <span class="math notranslate nohighlight">\(H_0^q\)</span> 和 <span class="math notranslate nohighlight">\(q\)</span> 可以解析地确定 <span class="math notranslate nohighlight">\(\Delta H_D^q\)</span>
+和 <span class="math notranslate nohighlight">\(E_F\)</span> 关系，也是该文件的核心数据。它通常包含两列数据，
+第一列是电荷值 <span class="math notranslate nohighlight">\(q\)</span> ，第二列是零点形成能 <span class="math notranslate nohighlight">\(H_0^q\)</span> 。
+此外，还可以包含第三列，表示缺陷的简并因子，如果省略则默认为 <code class="docutils literal notranslate"><span class="pre">1</span></code> 。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#   q        H0</span>
+   <span class="o">-</span><span class="mi">3</span>      <span class="mf">2.6960</span>
+   <span class="o">-</span><span class="mi">2</span>      <span class="mf">2.2865</span>
+   <span class="o">-</span><span class="mi">1</span>      <span class="mf">1.8856</span>
+   <span class="o">+</span><span class="mi">0</span>      <span class="mf">1.4866</span>
+   <span class="o">+</span><span class="mi">1</span>      <span class="mf">1.0858</span>
+   <span class="o">+</span><span class="mi">2</span>      <span class="mf">1.1202</span>
+   <span class="o">+</span><span class="mi">3</span>      <span class="mf">1.2029</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">在 0.5 版本加入: </span>引入 <code class="docutils literal notranslate"><span class="pre">.qform</span></code> 格式文件的相关支持。</p>
+</div>
+</section>
 <section id="edoping-cmpot">
 <h3>EDOPING.cmpot<a class="headerlink" href="#edoping-cmpot" title="此标题的永久链接">¶</a></h3>
 <p><a class="reference internal" href="#cmdoption-arg-chempot"><code class="xref std std-option docutils literal notranslate"><span class="pre">edp</span> <span class="pre">chempot</span></code></a> 命令的输入文件，用于指定化合物的配比和形成能。
@@ -1349,6 +1535,7 @@ performance through high-throughput computations,
 <li><a class="reference internal" href="#edoping-in">EDOPING.in</a></li>
 <li><a class="reference internal" href="#edoping-log">EDOPING.log</a></li>
 <li><a class="reference internal" href="#edoping-dat">EDOPING.dat</a></li>
+<li><a class="reference internal" href="#edoping-qform">EDOPING.qform</a></li>
 <li><a class="reference internal" href="#edoping-cmpot">EDOPING.cmpot</a></li>
 </ul>
 </li>
@@ -1364,7 +1551,7 @@ performance through high-throughput computations,
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=de24c516"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=cce2f90c"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

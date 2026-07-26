@@ -65,18 +65,18 @@ eDoping 程序包基于 ``python3`` 软件，确保它已经被正确安装。
 .. code-block::
 
    $ edp -h
-   usage: edp [-h] [-v] [-q] Subcommand ...
+   usage: edp [-h] [-v | -q] Subcommand ...
 
-   Point Defect Formation Energy Calculation - v0.4.0
+   Point Defect Formation Energy Calculation - v0.5.1
 
-   options:
+   optional arguments:
      -h, --help       show this help message and exit
      -v, --verbosity  increase output verbosity
      -q, --quiet      only show key output
 
    Tips:
      Subcommand       Description
-       cal            Calculate defect fromation energy
+       cal            Calculate defect formation energy
        energy         Read final energy from OUTCAR
        ewald          Read Ewald from OUTCAR
        volume         Read volume from OUTCAR
@@ -90,6 +90,7 @@ eDoping 程序包基于 ``python3`` 软件，确保它已经被正确安装。
        diff           Show difference between two POSCAR
        query          Fetch data from OQMD website
        chempot        Calculate chemical potential
+       react          Evaluate reactions between two compounds
        trlevel        Calculate transition levels
        scfermi        Calculate sc-fermi level
        fzfermi        Calculate fz-fermi level
@@ -106,16 +107,18 @@ eDoping 程序包基于 ``python3`` 软件，确保它已经被正确安装。
 .. code-block:: 
 
    $ edp replace -h
-   usage: edp replace [-h] [-p fa fb fc] [-i FILENAME] [-o FILENAME] X Y
+   usage: edp replace [-h] [-p fa fb fc] [-m] [-s] [-i FILENAME] [-o FILENAME] X Y
 
    positional arguments:
-     X                     Name of previous atom
-     Y                     Name of present atom
+     X                     Label of the previous atom, e.g., 'Sb12' represents the 12th Sb atom
+     Y                     Label of the present atom, e.g., 'Bi' (the index is typically omitted)
 
-   options:
+   optional arguments:
      -h, --help            show this help message and exit
      -p fa fb fc, --position fa fb fc
                            Fractional coordinates of new interstitial atom
+     -m, --multiple        Enable multiple atomic substitutions for creating alloy structures
+     -s, --shuffle         Similar to the -m option, but additionally shuffles the positions
      -i FILENAME, --input FILENAME
                            Input filename(default: POSCAR)
      -o FILENAME, --output FILENAME
@@ -466,7 +469,7 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
    $ grep 'energy  without entropy' OUTCAR | tail -n 1
      energy  without entropy=     -755.64631647  energy(sigma->0) =     -755.65114440
 
-这个例子中，体系的能量值为 -755.646 eV。
+这个例子中，体系的能量值为 -755.651 eV。
 也可以通过 :option:`edp energy <energy>` 命令从 OUTCAR 文件中读取能量值。
 
 .. seealso::
@@ -609,7 +612,19 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
 .. option:: cal
 
    根据配置文件（由 ``-i/--input`` 选项指定, 默认为 `EDOPING.in`_）
-   计算缺陷形成能随费米能级的变化。
+   计算缺陷形成能随费米能级的变化。在一开始，可以通过 ``--template``
+   选项生成一个模板输入文件：
+
+   .. code-block:: bash
+
+      $ edp cal --template
+
+   此时不会进行计算，而是生成一个包含默认配置的 `EDOPING.in`_ 文件
+   （目前不支持自定义名称，小心覆盖此前已存在的同名文件），
+   可以在此基础上进行修改，然后开始计算。
+
+   .. versionadded:: 0.5
+      支持 ``--template`` 选项。
 
 .. option:: chempot
 
@@ -659,7 +674,7 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
    实际上就是将最后求解的化学势数值加上该参考值。
 
    .. versionadded:: 0.3
-      ``--refs`` 选项。
+      支持 ``--refs`` 选项。
 
 .. option:: diff
 
@@ -677,7 +692,29 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
 
 .. option:: energy
 
-   从 OUTCAR 文件读取最后一步的能量。
+   从 OUTCAR 文件读取最后一步的能量。支持选项：
+
+   - ``--ave/--average``: 输出平均每个原子的能量而不是整个晶胞的能量。
+
+   - ``-c/--count``: 统计晶胞中感兴趣原子的个数。比如对于一个含有 32 个 Nb，32 个
+     Fe 和 32 个 Sb 的系统，我们可以统计任何我们感兴趣的原子（这里的 Ti，Co，Fe，Sb）
+     在这个系统中的含量：
+
+     .. code-block::
+
+        $ edp energy -c "Ti Co Fe Sb"
+        Final energy ( 0  0  32  32 ): -757.0157 eV/cell
+
+     这里输出结果的括号中的数字分别表示当前系统中 Ti，Co，Fe，Sb 的原子数。
+     该功能对于准备 `EDOPING.cmpot`_ 文件非常有用（可以配合前置 ``-q`` 选项）:
+
+     .. code-block::
+
+        $ edp -q energy -c "Ti Co Fe Sb"
+         0  0  32  32  -757.0157
+
+   .. versionadded:: 0.5
+      支持 ``-c/--count`` 选项。
 
 .. option:: epsilon
 
@@ -812,6 +849,65 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
    .. versionadded:: 0.4
       支持 Materials Project 后端数据库。
 
+.. option:: react
+
+   基于化合物形成焓，评估两个化合物的之间所有可能反应路径的反应能。
+
+   该功能依赖于 `EDOPING.cmpot`_ 文件，
+   内含构成两个反应物的所有原子所形成的所有潜在的化合物的形成焓。
+   比如，为了预测 Ni 和 Bi\ :sub:`2`\ Te\ :sub:`3` 之前潜在化学反应的反应能，需要在
+   `EDOPING.cmpot`_  文件中包含 Ni-Bi-Te
+   三种元素所有能形成的稳定化合物的形成焓（可以通过 :option:`edp query <query>`
+   命令从开放数据库获取，或者手动计算）：
+
+   .. code-block::``
+
+      # Bi   Te   Ni
+       2  3  0  -0.237205057999999
+       0  1  0  0.0
+       0  2  1  -0.2255356597222201
+       0  1  1  -0.2049984166666654
+       4  3  0  -0.170866885714284
+       0  2  3  -0.1904110513333322
+       1  1  0  -0.199063939999998
+       3  0  1  -0.0412084056250004
+       1  0  0  0.0
+       0  0  1  -0.0011435100000003473
+       8  9  0  -0.210280241176469
+       0  3  2  -0.1946963129999979
+       2  0  1  -0.0596898849999998
+       ...
+
+   这里四列分别表示化合物中 Bi、Te 和 Ni 的含量及化合物的形成焓（eV/atom），
+   其中第 1 个和第 10 个化合物分别对应 Bi\ :sub:`2`\ Te\ :sub:`3` 和 Ni。
+   为了预测二者之间潜在反应的反应能，执行如下命令：
+
+   .. code-block::
+
+      $ edp react -n 1 10
+      # Reaction Equation: x Bi2Te3 + y Ni -> Products (5x + y = 1)
+      # Column 1: Total Atomic Fraction of Bi2Te3
+      # Column 2: Reaction Equation
+      # Column 3: Reaction Energy[eV/atom]
+      0.000   Ni -> Ni                                          0.0000
+      0.012   Bi2Te3 + 402 Ni -> 3 TeNi124 + 2 BiNi15           0.0089
+      0.013   Bi2Te3 + 392 Ni -> 2 BiNi10 + 3 TeNi124           0.0070
+      0.013   Bi2Te3 + 388 Ni -> 3 TeNi124 + 2 BiNi8            0.0070
+      0.013   Bi2Te3 + 374 Ni -> 2 BiNi + 3 TeNi124             0.0060
+      0.013   2 Bi2Te3 + 747 Ni -> Bi4Ni3 + 6 TeNi124           0.0061
+
+   这里的 ``-n`` 选项表示 `EDOPING.cmpot`_ 文件中提供的形成焓是平均到每个原子的
+   （详细的解释请参考 :option:`edp chempot <chempot>` 命令）。除此以外，
+   支持的选项还有：
+
+   - ``--with-hull``: 开启时会同时输出化学反应能相对于基态线的能量，
+     数值越小表示反应越容易发生。
+
+   - ``unit``: 指定输出反应能的单位，可选值为 eV/atom （默认）, eV, kJ/mol, kJ。
+
+   .. versionadded:: 0.5
+      支持 ``react`` 命令。
+
 .. option:: refine
 
    对晶体结构进行调整，目前支持的操作如下：
@@ -840,6 +936,15 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
         vaspkit 等软件保持一致，但是与 VESTA、phonopy 等软件采用的列向量形式不同。
         它们的转变矩阵相差一个转置操作。
 
+   - ``-s/--strain``: 对晶胞施加一个应变张量，张量元素形式参考 ``-t/--transform``
+     选项。比如：
+
+     .. code-block:: bash
+
+        $ edp refine -s "1.05 1 1"
+
+     这表示仅在 x 方向施加 +5% 的应变。
+
    - ``-c/--cubicize``: 在给定的原子数附近进行立方体扩胞。比如：
 
      .. code-block:: bash
@@ -858,8 +963,14 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
 
      这表示将第 3 个 Sb 原子沿着 z 方向移动 0.1 埃。
 
+   - ``-r/--sort``: 对输出晶胞中的原子按照分数坐标进行排序，可以与 ``-c``
+     或 ``-d`` 等选项配合使用。
+
    .. versionadded:: 0.4
       支持 ``refine`` 命令。
+
+   .. versionadded:: 0.5
+      支持 ``-s/--strain`` 和 ``-r/--sort`` 选项。
 
 .. option:: replace
 
@@ -867,24 +978,14 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
    特别地，当新原子指定为 ``Vac`` 时表示删除原子，构造空位缺陷；
    当旧原子指定为 ``Vac`` 时表示仅插入原子，构造间隙缺陷。
    构造间隙缺陷时，必须通过 ``-p/--position`` 选项指定间隙原子的位置。
+   除了替换单一原子，还支持将特定元素替换为一种或多种元素组合，
+   并且提供打乱元素组合的选项。
 
-   例子1：将 POSCAR 中的 Fe2 替换为 Co，并将新结构保存为 POSCAR-sub ：
+   **例子1:** 将 POSCAR 中的 Fe2 替换为 Co，并将新结构保存为 POSCAR-sub ：
 
    .. code-block:: bash
 
       $ edp replace -o POSCAR-sub Fe2 Co
-
-   例子2：在 POSCAR 中构建 Fe2 位置的空位缺陷，并将新结构保存为 POSCAR-vac ：
-
-   .. code-block:: bash
-
-      $ edp replace -o POSCAR-vac Fe2 Vac
-
-   例子3：在 POSCAR 中 (0.125, 0.125, 0.125) 处插入 Co 间隙原子，并将新结构保存为 POSCAR-int ：
-
-   .. code-block:: bash
-
-      $ edp replace -o POSCAR-int Vac Co -p 0.125 0.125 0.125
 
    可以通过 :option:`edp diff <diff>` 检查 POSCAR 文件的变化：
 
@@ -892,8 +993,106 @@ OUTCAR 文件中会包含相应的马德龙常数。这里提供了 :option:`edp
 
       $ edp diff POSCAR POSCAR-int
 
+   **例子2:** 在 POSCAR 中构建 Fe2 位置的空位缺陷，并将新结构保存为 POSCAR-vac ：
+
+   .. code-block:: bash
+
+      $ edp replace -o POSCAR-vac Fe2 Vac
+
+   **例子3:** 在 POSCAR 中 (0.125, 0.125, 0.125) 处插入 Co 间隙原子，并将新结构保存为 POSCAR-int ：
+
+   .. code-block:: bash
+
+      $ edp replace -o POSCAR-int Vac Co -p 0.125 0.125 0.125
+
+   **例子4:** 将 POSCAR 中的 Nb 原子（共 32 个）替换为 16 个 V 原子和 16 个 Ta 原子，
+   并将新结构保存为 POSCAR-split （此时前 16 个 Nb 原子被替换为 V 原子，
+   后 16 个 Nb 原子被替换为 Ta 原子）：
+
+   .. code-block:: bash
+
+      $ edp replace -o POSCAR-split -m Nb V16Ta16
+
+   **例子5:** 将 POSCAR 中的 Nb 原子（共 32 个）随机地替换为 16 个 V 原子和 16 个 Ta 原子，
+   并将新结构保存为 POSCAR-random ：
+
+   .. code-block:: bash
+
+      $ edp replace -o POSCAR-random -s Nb V16Ta16
+
+   .. hint::
+
+      使用 ``-m`` 或者 ``-s`` 选项进行元素级别的多原子替换时，
+      必须保证给定的原子总数与原始的原子总数相同，否则会触发程序报错。
+
    .. versionadded:: 0.3
       支持通过 ``Vac`` 字符构造空位缺陷和间隙缺陷。
+
+   .. versionadded:: 0.5
+      支持 ``-m`` 和 ``-s`` 选项进行元素级别的多原子替换操作。
+
+.. option:: scfermi
+
+   根据缺陷形成能和电荷守恒方程，计算系统的自洽费米能级。
+
+   随着系统费米能级 :math:`E_F` 变化，所有缺陷提供的电荷总量为：
+
+   .. math::
+
+      Q_1 = \sum _{q, D} q \cdot g_D^q \cdot \exp \left[ -\ \Delta H _{D} ^{q} (E _{F}) / k_B T \right]
+
+   另一方面，系统的净电子数随 :math:`E_F` 变化关系为：
+
+   .. math::
+
+      Q_2 = n - p = \int _{\text{CBM}}^{+\infty} f \cdot g(E) dE
+                  - \int _{-\infty}^{\text{VBM}} (1-f) \cdot g(E) dE
+
+   其中， :math:`g_D^q` 表示缺陷 :math:`D` 在电荷 :math:`q` 下的简并因子，
+   :math:`g(E)` 是态密度， :math:`f` 为费米分布函数：
+
+   .. math::
+
+      f = \frac{1}{1 + \exp \left[ (E - E_F) / (k_B T) \right]}
+
+   令 :math:`Q_1 = Q_2` , 可以解出一个 :math:`E_F` ，即系统的自洽费米能级。
+
+   为了获得 :math:`Q_1` ，需要 :math:`q`, :math:`\Delta H _{D} ^{q}` 和
+   :math:`g_D^q` ，它们通常被格式化地存储在 `EDOPING.qform`_ 中。
+   为了获得 :math:`Q_2` ，需要态密度 :math:`g(E)` ，这通常由第一性原理计算获得，
+   程序默认从 VASP 的输出文件 DOSCAR 中读取该数据（也支持通用型数据文件，
+   第一列被解读为能量，第二列是态密度）。
+
+   利用这些文件，可以计算系统的自洽费米能级如下：
+
+   .. code-block::
+
+      $ edp scfermi 145.91 EDOPING.qform
+
+   这里 145.91 是系统体积（单位为 A^3），此时会自动从当前目录下的 DOSCAR
+   中读取态密度数据，从 `EDOPING.qform`_ 文件中读取缺陷形成能和简并因子，
+   计算 1000 K 下系统的自洽费米能级和相应的电子浓度。
+
+   在此基础上，还支持以下选项：
+
+   - ``-t`` ：指定温度，单位为 Kelvin，默认值为 1000。
+
+   - ``--dos`` ：手动指定态密度文件路径，默认值为 DOSCAR。
+
+   - ``--vbm`` ：手动指定 VBM 能值，默认从 DOSCAR 中读取。
+
+   - ``--use-idos`` ：使用积分态密度（默认情况下是使用态密度）计算 :math:`Q_2` ，
+     可以证明：
+
+     .. math::
+
+        Q_2 = \int _{-\infty}^{+\infty} f \cdot g(E) dE
+              - \int _{-\infty}^{\text{VBM}} g(E) dE
+            = \int _{-\infty}^{+\infty} \left( -\frac {\partial f}
+              {\partial E} \right) \cdot G(E) dE - N _\text{VEC}
+
+   在一些情况下，这会提供更加数值稳定的计算结果。
+
 
 输入/输出文件
 -------------
@@ -958,7 +1157,7 @@ EDOPING.in
    目录下寻找缺陷超胞的 POSCAR 文件。
 
    .. versionadded:: 0.3
-      :option:`DREFER` 参数。
+      支持 :option:`DREFER` 参数。
 
 .. option:: PREFIX
 
@@ -1053,6 +1252,37 @@ EDOPING.dat
    -0.9930 -1.6606 3.0000 5.7905 4.3238 2.8915 1.4866 0.1057 -0.8145 -1.6606
    -0.9920 -1.6576 3.0000 5.7875 4.3218 2.8905 1.4866 0.1067 -0.8125 -1.6576
    ...
+
+EDOPING.qform
+^^^^^^^^^^^^^
+
+:option:`edp cal <cal>` 命令的计算结果文件，包含不同电荷值缺陷的零点形成能。
+缺陷形成能 :math:`\Delta H_D^q` 和费米能级 :math:`E_F` 关系可以表达为：
+
+.. math::
+
+   \Delta H _{D} ^{q} (E _{F}) = q \cdot E _{F} + H _{0} ^{q}
+
+这里称 :math:`H_0^q` 为零点形成能，即费米能级在 0 时的缺陷形成能
+（eDoping 软件通常将价带顶 :option:`EVBM` 作为费米能级的参考点）。
+通过 :math:`H_0^q` 和 :math:`q` 可以解析地确定 :math:`\Delta H_D^q`
+和 :math:`E_F` 关系，也是该文件的核心数据。它通常包含两列数据，
+第一列是电荷值 :math:`q` ，第二列是零点形成能 :math:`H_0^q` 。
+此外，还可以包含第三列，表示缺陷的简并因子，如果省略则默认为 ``1`` 。
+
+.. code-block::
+
+   #   q        H0
+      -3      2.6960
+      -2      2.2865
+      -1      1.8856
+      +0      1.4866
+      +1      1.0858
+      +2      1.1202
+      +3      1.2029
+
+.. versionadded:: 0.5
+   引入 ``.qform`` 格式文件的相关支持。
 
 EDOPING.cmpot
 ^^^^^^^^^^^^^
