@@ -131,11 +131,11 @@ def cmd(arg=None):
     parser_trlevel.add_argument('-o', '--output', metavar='FILENAME', default=filedata, help='Output filename(default: {})'.format(filedata))
 
     parser_scfermi = sub_parser.add_parser('scfermi', help='Calculate sc-fermi level')
-    parser_scfermi.add_argument('-d', '--dos', metavar='FILE', default='DOSCAR', help='DOSCAR file or tdos.dat (default: DOSCAR)')
-    parser_scfermi.add_argument('-b', '--vbm', type=float, help='Energy of VBM (default: from DOSCAR or zero for tdos.dat)')
-    parser_scfermi.add_argument('-m', '--volume', metavar='VOL', type=float, default=1, help='Volume of cell (corresponding to DOS) in A^3 (default: 1)')
+    parser_scfermi.add_argument('-t', metavar='TEMPERATURE', type=float, default=1000, help='Temperature in Kelvin (default: 1000)')
+    parser_scfermi.add_argument('--dos', metavar='DOS_FILE', default='DOSCAR', help='DOSCAR file or tdos.dat (default: DOSCAR)')
+    parser_scfermi.add_argument('--vbm', type=float, help='Energy of VBM (default: from DOSCAR or zero for tdos.dat)')
     parser_scfermi.add_argument('--use-idos', action='store_true', help='Use IDOS (if available) instead of DOS (default: False)')
-    parser_scfermi.add_argument('-t', '--temperature', metavar='temperature', type=float, default=1000, help='Temperature in Kelvin (default: 1000)')
+    parser_scfermi.add_argument('volume', type=float, help='Volume of cell (corresponding to DOS) in A^3')
     parser_scfermi.add_argument('filename', metavar='FILENAME', nargs='+', help='Defect formation energy file (*.qform file)')
 
     # (t, conc, charge, volume, doscar='DOSCAR'):
@@ -648,17 +648,19 @@ def cmd(arg=None):
         
     elif args.task == 'scfermi':
         from .fermi import fermi_sc
-        EF, n_p = fermi_sc(args.temperature,
+        EF, n_p = fermi_sc(args.t,
                            *args.filename,
                            doscar=args.dos,
                            vbm=args.vbm,
                            use_idos=args.use_idos)
-        Ne = n_p / (args.volume * 1e-24)    # e/cell -> cm^-3
+        # Ne: carrier concentration (cm^-3)
+        # positive for hole and negative for electron
+        Ne = -n_p / (args.volume * 1e-24)   # e/cell -> cm^-3
         if is_quiet:
             print(EF, Ne, n_p)
         else:
             print('Self-consistent Fermi level (eV): {:.3f}'.format( EF))
-            print('Equilibrium carrier concentration (cm^-3): {:.4E}'.format(Ne))
+            print('Equilibrium carrier concentration (cm^-3): {:+.4E}'.format(Ne))
             if is_detail:
                 print('Net number of electron in cell: {:+.6E}'.format(n_p))
 
